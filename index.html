@@ -1,4 +1,4 @@
-<!doctype html> 
+<!doctype html>
 <html lang="es">
 <head>
   <meta charset="utf-8" />
@@ -230,7 +230,6 @@
       padding: 6px 4px 2px;
       min-width: calc(11 * 180px + 10 * 14px);
     }
-    /* si agregas más de 11 hijos raíz, se extiende */
     .treeGrid.moreCols{
       grid-auto-flow: column;
       grid-auto-columns: 180px;
@@ -283,52 +282,48 @@
     }
 
     /* tamaños y diferencia por nivel */
-    /* tamaños y diferencia por nivel */
-.lvl-parent .circle{
-  width:110px; height:110px;
-  border-width: 4px;
-  border-color: rgba(198,162,74,.78);
-  box-shadow: 0 0 0 6px rgba(198,162,74,.14), 0 10px 22px rgba(0,0,0,.10);
-}
-.lvl-original .circle{
-  width:98px; height:98px;
-  border-width: 3px;
-  border-color: rgba(198,162,74,.60);
-  box-shadow: 0 0 0 5px rgba(198,162,74,.10), 0 9px 18px rgba(0,0,0,.10);
-}
+    .lvl-parent .circle{
+      width:110px; height:110px;
+      border-width: 4px;
+      border-color: rgba(198,162,74,.78);
+      box-shadow: 0 0 0 6px rgba(198,162,74,.14), 0 10px 22px rgba(0,0,0,.10);
+    }
+    .lvl-original .circle{
+      width:98px; height:98px;
+      border-width: 3px;
+      border-color: rgba(198,162,74,.60);
+      box-shadow: 0 0 0 5px rgba(198,162,74,.10), 0 9px 18px rgba(0,0,0,.10);
+    }
+    /* Nietos (plateado) */
+    .lvl-1 .circle{
+      width:66px; height:66px;
+      border-width: 2px;
+      border-color: rgba(185,193,206,.95);
+      box-shadow: 0 0 0 3px rgba(185,193,206,.16);
+    }
+    /* Bisnietos (azul) */
+    .lvl-2 .circle{
+      width:56px; height:56px;
+      border-width: 2px;
+      border-color: rgba(79,134,198,.95);
+      box-shadow: 0 0 0 3px rgba(79,134,198,.14);
+      opacity:.98;
+    }
+    /* Hijos de bisnietos y más (azul muy claro) */
+    .lvl-3 .circle{
+      width:48px; height:48px;
+      border-width: 2px;
+      border-color: rgba(207,225,246,.95);
+      box-shadow: 0 0 0 3px rgba(207,225,246,.16);
+      opacity:.96;
+    }
 
-/* Nietos (plateado) */
-.lvl-1 .circle{
-  width:66px; height:66px;
-  border-width: 2px;
-  border-color: rgba(185,193,206,.95);
-  box-shadow: 0 0 0 3px rgba(185,193,206,.16);
-}
-
-/* Bisnietos (azul) */
-.lvl-2 .circle{
-  width:56px; height:56px;
-  border-width: 2px;
-  border-color: rgba(79,134,198,.95);
-  box-shadow: 0 0 0 3px rgba(79,134,198,.14);
-  opacity:.98;
-}
-
-/* Hijos de bisnietos y más (azul muy claro) */
-.lvl-3 .circle{
-  width:48px; height:48px;
-  border-width: 2px;
-  border-color: rgba(207,225,246,.95);
-  box-shadow: 0 0 0 3px rgba(207,225,246,.16);
-  opacity:.96;
-}
     /* Conectores */
     .childrenGroup{
       position:relative;
       width: 100%;
       padding-top: 10px;
     }
-    /* línea horizontal para “ramas” del mismo padre */
     .childrenGroup::before{
       content:"";
       position:absolute;
@@ -339,7 +334,6 @@
       background: var(--treeLine);
       border-radius: 99px;
     }
-    /* línea vertical desde el padre hacia la línea horizontal */
     .childrenGroup::after{
       content:"";
       position:absolute;
@@ -361,7 +355,6 @@
       margin-top: 8px;
     }
 
-    /* cada hijo tiene su “bajante” hacia la línea horizontal */
     .childWrap{
       position:relative;
       display:flex;
@@ -471,33 +464,12 @@
     }
     .avatar img{width:100%; height:100%; object-fit:cover; display:block;}
 
-    /* Marcos por generación (0=abuelos, 1=hijos originales, 2=nietos, 3=bisnietos, 4+=más claro) */
-
-/* Abuelos (P1/P2) */
-.person[data-depth="0"] .avatar{
-  border: 6px solid rgba(198,162,74,.95); /* dorado grueso */
-}
-
-/* Hijos originales (los 11) */
-.person[data-depth="1"] .avatar{
-  border: 3px solid rgba(198,162,74,.85); /* dorado más delgado */
-}
-
-/* Nietos */
-.person[data-depth="2"] .avatar{
-  border: 3px solid rgba(170,170,170,.95); /* plateado */
-}
-
-/* Bisnietos */
-.person[data-depth="3"] .avatar{
-  border: 3px solid rgba(63, 111, 186, .95); /* aquí cambias el color */
-}
-
-/* Generaciones 4+ (hijos de bisnietos y más) -> más claro */
-.person.gen4p .avatar{
-  border: 3px solid rgba(63, 111, 186, .35); /* mismo color pero más claro */
-}
-
+    /* Marcos por generación en el MODAL (según data-depth) */
+    .person[data-depth="0"] .avatar{ border: 6px solid rgba(198,162,74,.95); }
+    .person[data-depth="1"] .avatar{ border: 3px solid rgba(198,162,74,.85); }
+    .person[data-depth="2"] .avatar{ border: 3px solid rgba(185,193,206,.95); }
+    .person[data-depth="3"] .avatar{ border: 3px solid rgba(79,134,198,.95); }
+    .person.gen4p .avatar{ border: 3px solid rgba(79,134,198,.35); }
 
     .photo-actions{
       display:flex;
@@ -800,6 +772,73 @@
       return s;
     }
 
+    // ======= Buscar y cambiar (con depth) =======
+    function findInChildren(parentNode, id, depth){
+      if (!parentNode?.children?.length) return null;
+      for (const child of parentNode.children) {
+        if (child.id === id) {
+          return { node: child, parent: parentNode, parentChildrenArray: parentNode.children, depth };
+        }
+        const deeper = findInChildren(child, id, depth + 1);
+        if (deeper) return deeper;
+      }
+      return null;
+    }
+
+    function findNodeById(id){
+      // Padres (abuelos): depth 0
+      for (const p of state.parents) {
+        if (p.id === id) return { node: p, parent: null, parentChildrenArray: null, depth: 0 };
+        const hit = findInChildren(p, id, 1);
+        if (hit) return hit;
+      }
+
+      // Hijos originales: depth 1
+      for (const c of state.children) {
+        if (c.id === id) return { node: c, parent: null, parentChildrenArray: state.children, depth: 1 };
+        const hit = findInChildren(c, id, 2);
+        if (hit) return hit;
+      }
+      return null;
+    }
+
+    function patchNode(id, patch, { render=true } = {}){
+      const hit = findNodeById(id);
+      if (!hit?.node) return;
+      Object.assign(hit.node, patch);
+      if (render) renderAll();
+    }
+
+    function addChildTo(parentId){
+      const hit = findNodeById(parentId);
+      if (!hit?.node) return;
+
+      const parent = hit.node;
+      if (!Array.isArray(parent.children)) parent.children = [];
+
+      const nextIndex = parent.children.length + 1;
+      const child = makePerson({ role: `Hijo/a ${nextIndex}` });
+      parent.children.push(child);
+
+      renderAll();
+      scheduleSave();
+    }
+
+    function removeNode(id){
+      if (id === "p1" || id === "p2") return alert("No se pueden eliminar los padres.");
+      if (/^c([1-9]|10|11)$/.test(id)) return alert("Estos 11 hijos no se eliminan (solo edita nombre/foto).");
+
+      const hit = findNodeById(id);
+      if (!hit?.parentChildrenArray) return;
+
+      const idx = hit.parentChildrenArray.findIndex(x => x.id === id);
+      if (idx >= 0) {
+        hit.parentChildrenArray.splice(idx, 1);
+        renderAll();
+        scheduleSave();
+      }
+    }
+
     // ======= Modal editor =======
     function openEditor(nodeId){
       const hit = findNodeById(nodeId);
@@ -812,6 +851,11 @@
       editorBody.innerHTML = "";
       const removable = !(nodeId === "p1" || nodeId === "p2") && !(/^c([1-9]|10|11)$/.test(nodeId));
       const card = editorPersonCard(n, { removable });
+
+      // set depth para marcos del modal
+      card.dataset.depth = String(hit.depth ?? 1);
+      if ((hit.depth ?? 1) >= 4) card.classList.add("gen4p");
+
       if (nodeId === "p1" || nodeId === "p2") card.classList.add("parent-card");
       editorBody.appendChild(card);
 
@@ -945,7 +989,7 @@
       return el;
     }
 
-    // ======= NODO círculo (para el layout tipo ejemplo) =======
+    // ======= NODO círculo (layout) =======
     function renderNodeCircle(node, cls){
       const el = document.createElement("div");
       el.className = `node ${cls}`;
@@ -963,48 +1007,46 @@
       return el;
     }
 
-   // ======= SUBÁRBOL (hasta 4+ niveles visuales) =======
-const MAX_DEPTH = 8; // si nacen más generaciones, sube este número
+    // ======= SUBÁRBOL (usa lvl-* como tu CSS) =======
+    const MAX_DEPTH = 8;
 
-function depthClass(depth){
-  // depth 0 = hijo original (protagonista)
-  // depth 1 = nieto
-  // depth 2 = bisnieto
-  // depth >=3 = tataranietos y más (más claro)
-  if (depth === 0) return "gen1";
-  if (depth === 1) return "gen2";
-  if (depth === 2) return "gen3";
-  if (depth === 3) return "gen4";
-  return "gen5plus";
-}
+    function depthClass(depth){
+      // depth 0: lo maneja isOriginal => lvl-original
+      // depth 1: nietos
+      // depth 2: bisnietos
+      // depth >=3: hijos de bisnietos y más
+      if (depth === 1) return "lvl-1";
+      if (depth === 2) return "lvl-2";
+      return "lvl-3";
+    }
 
-function renderSubtree(node, depth = 0, { isOriginal = false } = {}) {
-  const wrap = document.createElement("div");
-  wrap.className = "subtreeWrap";
+    function renderSubtree(node, depth = 0, { isOriginal = false } = {}) {
+      const wrap = document.createElement("div");
+      wrap.className = "subtree";
 
-  const lvlCls = depthClass(depth) + (isOriginal ? " original" : "");
-  wrap.appendChild(renderNodeCircle(node, lvlCls));
+      const cls = isOriginal ? "lvl-original" : depthClass(depth);
+      wrap.appendChild(renderNodeCircle(node, cls));
 
-  if (Array.isArray(node.children) && node.children.length > 0 && depth < MAX_DEPTH) {
-    const group = document.createElement("div");
-    group.className = "childrenGroup";
+      if (Array.isArray(node.children) && node.children.length > 0 && depth < MAX_DEPTH) {
+        const group = document.createElement("div");
+        group.className = "childrenGroup";
 
-    const row = document.createElement("div");
-    row.className = "childrenRow";
+        const row = document.createElement("div");
+        row.className = "childrenRow";
 
-    node.children.forEach(ch => {
-      const cw = document.createElement("div");
-      cw.className = "childWrap";
-      cw.appendChild(renderSubtree(ch, depth + 1, { isOriginal: false }));
-      row.appendChild(cw);
-    });
+        node.children.forEach(ch => {
+          const cw = document.createElement("div");
+          cw.className = "childWrap";
+          cw.appendChild(renderSubtree(ch, depth + 1, { isOriginal: false }));
+          row.appendChild(cw);
+        });
 
-    group.appendChild(row);
-    wrap.appendChild(group);
-  }
+        group.appendChild(row);
+        wrap.appendChild(group);
+      }
 
-  return wrap;
-}
+      return wrap;
+    }
 
     // ======= Render general =======
     function renderAll(){
@@ -1019,7 +1061,7 @@ function renderSubtree(node, depth = 0, { isOriginal = false } = {}) {
       cw.appendChild(renderNodeCircle(state.parents[0], "lvl-parent"));
       cw.appendChild(renderNodeCircle(state.parents[1], "lvl-parent"));
 
-      // Hijos (11 columnas tipo ejemplo)
+      // Hijos (11 columnas)
       childrenGen.innerHTML = "";
 
       const scroll = document.createElement("div");
@@ -1041,75 +1083,7 @@ function renderSubtree(node, depth = 0, { isOriginal = false } = {}) {
       childrenGen.appendChild(scroll);
     }
 
-    // ======= Buscar y cambiar =======
-    function findInChildren(parentNode, id, depth){
-  if (!parentNode?.children?.length) return null;
-  for (const child of parentNode.children) {
-    if (child.id === id) {
-      return { node: child, parent: parentNode, parentChildrenArray: parentNode.children, depth };
-    }
-    const deeper = findInChildren(child, id, depth + 1);
-    if (deeper) return deeper;
-  }
-  return null;
-}
-
-function findNodeById(id){
-  // Padres (abuelos): depth 0
-  for (const p of state.parents) {
-    if (p.id === id) return { node: p, parent: null, parentChildrenArray: null, depth: 0 };
-    const hit = findInChildren(p, id, 1);
-    if (hit) return hit;
-  }
-
-  // Hijos originales (los 11): depth 1
-  for (const c of state.children) {
-    if (c.id === id) return { node: c, parent: null, parentChildrenArray: state.children, depth: 1 };
-    const hit = findInChildren(c, id, 2);
-    if (hit) return hit;
-  }
-
-  return null;
-}
-
-    function patchNode(id, patch, { render=true } = {}){
-      const hit = findNodeById(id);
-      if (!hit?.node) return;
-      Object.assign(hit.node, patch);
-      if (render) renderAll();
-    }
-
-    function addChildTo(parentId){
-      const hit = findNodeById(parentId);
-      if (!hit?.node) return;
-
-      const parent = hit.node;
-      if (!Array.isArray(parent.children)) parent.children = [];
-
-      const nextIndex = parent.children.length + 1;
-      const child = makePerson({ role: `Hijo/a ${nextIndex}` });
-      parent.children.push(child);
-
-      renderAll();
-      scheduleSave();
-    }
-
-    function removeNode(id){
-      if (id === "p1" || id === "p2") return alert("No se pueden eliminar los padres.");
-      if (/^c([1-9]|10|11)$/.test(id)) return alert("Estos 11 hijos no se eliminan (solo edita nombre/foto).");
-
-      const hit = findNodeById(id);
-      if (!hit?.parentChildrenArray) return;
-
-      const idx = hit.parentChildrenArray.findIndex(x => x.id === id);
-      if (idx >= 0) {
-        hit.parentChildrenArray.splice(idx, 1);
-        renderAll();
-        scheduleSave();
-      }
-    }
-
-    // Agregar hijo raíz (1ª generación)
+    // Botón: agregar hijo raíz (1ª generación)
     addRootChildBtn.addEventListener("click", () => {
       const n = state.children.length + 1;
       state.children.push(makePerson({ role: `Hijo/a ${n}` }));
@@ -1302,7 +1276,6 @@ function findNodeById(id){
   </script>
 </body>
 </html>
-
 
 
 
