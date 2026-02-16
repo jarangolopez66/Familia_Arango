@@ -703,19 +703,33 @@
         }
       });
 
-      // FIX anti-bubbling: inputs del nieto NO actualizan padre
-      el.addEventListener("input", (e) => {
-        const input = e.target;
-        if (!(input instanceof HTMLInputElement)) return;
+      // ✅ En móvil: NO re-render por cada tecla (evita que “salte”)
+el.addEventListener("input", (e) => {
+  const input = e.target;
+  if (!(input instanceof HTMLInputElement)) return;
 
-        const ownerCard = input.closest(".person");
-        if (ownerCard !== el) return;
+  const ownerCard = input.closest(".person");
+  if (ownerCard !== el) return;
 
-        const field = input.dataset.field;
-        if (!field) return;
+  const field = input.dataset.field;
+  if (!field) return;
 
-        patchNode(node.id, { [field]: input.value });
-      });
+  // Actualiza el nodo en memoria (sin renderAll)
+  node[field] = input.value;
+
+  // Actualiza el mini-resumen en móvil (sin re-render)
+  if (field === "name") {
+    const miniNameEl = el.querySelector(".mini-name");
+    if (miniNameEl) miniNameEl.textContent = (node.name && node.name.trim()) ? node.name.trim() : "Sin nombre";
+  }
+  if (field === "birth" || field === "death") {
+    const miniYearsEl = el.querySelector(".mini-years");
+    if (miniYearsEl) miniYearsEl.textContent = yearRange(node.birth, node.death);
+  }
+
+  // Guardado automático (debounce)
+  scheduleSave();
+});
 
       if (Array.isArray(node.children) && node.children.length > 0) {
         const kids = document.createElement("div");
@@ -1013,4 +1027,5 @@
   </script>
 </body>
 </html>
+
 
