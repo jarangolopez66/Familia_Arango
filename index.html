@@ -998,29 +998,35 @@
     }
 
     // ======= Buscar y cambiar =======
-    function findInChildren(parentNode, id){
-      if (!parentNode?.children?.length) return null;
-      for (const child of parentNode.children) {
-        if (child.id === id) return { node:child, parent: parentNode, parentChildrenArray: parentNode.children };
-        const deeper = findInChildren(child, id);
-        if (deeper) return deeper;
-      }
-      return null;
+    function findInChildren(parentNode, id, depth){
+  if (!parentNode?.children?.length) return null;
+  for (const child of parentNode.children) {
+    if (child.id === id) {
+      return { node: child, parent: parentNode, parentChildrenArray: parentNode.children, depth };
     }
+    const deeper = findInChildren(child, id, depth + 1);
+    if (deeper) return deeper;
+  }
+  return null;
+}
 
-    function findNodeById(id){
-      for (const p of state.parents) {
-        if (p.id === id) return { node:p, parent:null, parentChildrenArray:null };
-        const hit = findInChildren(p, id);
-        if (hit) return hit;
-      }
-      for (const c of state.children) {
-        if (c.id === id) return { node:c, parent:null, parentChildrenArray: state.children };
-        const hit = findInChildren(c, id);
-        if (hit) return hit;
-      }
-      return null;
-    }
+function findNodeById(id){
+  // Padres (abuelos): depth 0
+  for (const p of state.parents) {
+    if (p.id === id) return { node: p, parent: null, parentChildrenArray: null, depth: 0 };
+    const hit = findInChildren(p, id, 1);
+    if (hit) return hit;
+  }
+
+  // Hijos originales (los 11): depth 1
+  for (const c of state.children) {
+    if (c.id === id) return { node: c, parent: null, parentChildrenArray: state.children, depth: 1 };
+    const hit = findInChildren(c, id, 2);
+    if (hit) return hit;
+  }
+
+  return null;
+}
 
     function patchNode(id, patch, { render=true } = {}){
       const hit = findNodeById(id);
@@ -1252,6 +1258,7 @@
   </script>
 </body>
 </html>
+
 
 
 
