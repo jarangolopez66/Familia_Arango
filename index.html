@@ -1,4 +1,4 @@
-<!doctype html>
+<!doctype html> 
 <html lang="es">
 <head>
   <meta charset="utf-8" />
@@ -186,10 +186,7 @@
     .gen{display:flex; justify-content:center; gap:18px; flex-wrap:wrap; position:relative;}
 
     /* Padres como PAREJA (unidos) */
-    .couple{
-      justify-content:center;
-      align-items:stretch;
-    }
+    .couple{justify-content:center; align-items:stretch;}
     .coupleWrap{
       display:flex;
       gap:18px;
@@ -197,6 +194,8 @@
       justify-content:center;
       position:relative;
       padding-bottom: 6px;
+      width:100%;
+      flex-wrap:wrap;
     }
     .coupleWrap::after{
       content:"";
@@ -204,14 +203,15 @@
       left:50%;
       transform:translateX(-50%);
       bottom:-10px;
-      width: 60%;
+      width: min(520px, 80%);
       height: 3px;
       background: rgba(198,162,74,.55);
       border-radius: 99px;
     }
 
+    /* Tarjetas (solo se usan en el editor modal) */
     .person{
-      width: 300px; max-width: calc(100vw - 32px);
+      width: 320px; max-width: calc(100vw - 32px);
       background: linear-gradient(180deg, var(--card), var(--card2));
       border: 1px solid rgba(0,0,0,.10);
       border-radius: var(--radius);
@@ -219,7 +219,12 @@
       padding: 14px;
       position:relative;
     }
-    .person.sub{width: 280px;}
+
+    /* Color especial para padres (P1/P2) */
+    .person.parent-card{
+      background: linear-gradient(180deg, #fff2d9, #f4e3bf);
+      border-color: rgba(198,162,74,.55);
+    }
 
     .role{
       font-size:12px;
@@ -269,8 +274,6 @@
     .smallbtn.addkid{background: rgba(198,162,74,.20); border-color: rgba(198,162,74,.35);}
     .smallbtn.remove{background: rgba(182,70,63,.12); border-color: rgba(182,70,63,.28); color:#4a1411;}
 
-    .mini{display:none;}
-
     .fields{
       margin-top:12px;
       display:grid;
@@ -303,34 +306,114 @@
       font-size:12px;
     }
 
-    .kids{
-      margin-top:12px;
-      padding-left:14px;
-      border-left:2px solid rgba(220,201,165,.95);
-      display:flex;
-      flex-wrap:wrap;
-      gap:12px;
-    }
-    .kids .kidwrap{position:relative; padding-left:10px;}
-    .kids .kidwrap::before{
-      content:"";
-      position:absolute;
-      left:-14px;
-      top:30px;
-      width:14px;
-      height:2px;
-      background: rgba(220,201,165,.95);
-      border-radius:2px;
+    /* =========================
+       NUEVA VISTA: 11 originales alineados + bubbles
+       ========================= */
+    .rootGrid{
+      width:100%;
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap:14px;
+      align-items:start;
     }
 
-    /* ✅ Estilo especial solo para los padres (P1 y P2) */
-    .person.parent-card{
-      background: linear-gradient(180deg, #fff2d9, #f4e3bf);
-      border-color: rgba(198,162,74,.55);
+    .rootTile{
+      background: linear-gradient(180deg, rgba(255,255,255,.55), rgba(255,255,255,.35));
+      border:1px solid rgba(0,0,0,.10);
+      border-radius: 16px;
+      padding: 12px;
+      box-shadow: 0 8px 18px rgba(0,0,0,.08);
     }
-    .person.parent-card .role b{
-      color: #201a10;
+
+    .rootTop{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:10px;
+      cursor:pointer;
+      user-select:none;
     }
+
+    .rootPhoto{
+      width:110px; height:110px;
+      border-radius: 18px;
+      overflow:hidden;
+      border:1px solid rgba(0,0,0,.12);
+      background: rgba(0,0,0,.04);
+    }
+    .rootPhoto img{width:100%; height:100%; object-fit:cover; display:block;}
+
+    .rootName{
+      font-weight: 900;
+      font-size: 13px;
+      text-align:center;
+      line-height:1.1;
+      max-width: 100%;
+      overflow:hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .rootYears{
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: -2px;
+    }
+
+    .bubbleBlock{
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(0,0,0,.08);
+    }
+
+    .bubbleRow{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      align-items:flex-start;
+      justify-content:center;
+      margin-top: 8px;
+    }
+
+    .bubble{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:6px;
+      cursor:pointer;
+      user-select:none;
+      max-width: 88px;
+    }
+
+    .bubbleCircle{
+      border-radius: 999px;
+      overflow:hidden;
+      border:1px solid rgba(0,0,0,.12);
+      background: rgba(0,0,0,.04);
+      box-shadow: 0 6px 14px rgba(0,0,0,.08);
+    }
+    .bubbleCircle img{width:100%; height:100%; object-fit:cover; display:block;}
+
+    .bubbleName{
+      font-size: 11px;
+      text-align:center;
+      line-height:1.1;
+      max-width: 88px;
+      overflow:hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: var(--text);
+    }
+
+    .bubbleYears{
+      font-size: 10px;
+      color: var(--muted);
+      margin-top: -4px;
+    }
+
+    /* tamaños por nivel */
+    .lvl1 .bubbleCircle{ width:60px; height:60px; }
+    .lvl2 .bubbleCircle{ width:48px; height:48px; opacity:.95; }
+    .lvl3 .bubbleCircle{ width:40px; height:40px; opacity:.92; }
 
     @media (max-width: 860px){
       .cover-top{grid-template-columns: 1fr;}
@@ -338,34 +421,46 @@
     }
 
     @media (max-width: 560px){
-      .fields{grid-template-columns:1fr;}
-      .avatar{width:120px; height:120px; margin:0 auto;}
-      .row{justify-content:center;}
-      .person{width: 170px; padding: 10px;}
-      .person.expanded{width: 100%;}
+      .rootGrid{grid-template-columns: repeat(2, minmax(140px, 1fr));}
+      .rootPhoto{width:104px; height:104px;}
+      .lvl1 .bubbleCircle{ width:56px; height:56px; }
+      .lvl2 .bubbleCircle{ width:46px; height:46px; }
+      .lvl3 .bubbleCircle{ width:38px; height:38px; }
+    }
 
-      .mini{
-        display:block;
-        text-align:center;
-        margin-top:10px;
-        cursor:pointer;
-        user-select:none;
-      }
-      .mini-name{font-weight: 900; font-size: 13px; line-height: 1.1;}
-      .mini-years{font-size: 12px; opacity: .75; margin-top:4px;}
-      .mini-tap{font-size: 11px; opacity: .60; margin-top:6px;}
-
-      .role, .photo-actions, .fields, .footer, .kids{display:none;}
-      .person.expanded .role,
-      .person.expanded .photo-actions,
-      .person.expanded .fields,
-      .person.expanded .footer,
-      .person.expanded .kids{display:block;}
-      .person.expanded .photo-actions{display:flex;}
-      .person.expanded .kids{display:flex;}
-
-      .coupleWrap{flex-wrap:wrap;}
-      .coupleWrap::after{width: 80%;}
+    /* =========================
+       MODAL EDITOR
+       ========================= */
+    .modal{
+      position:fixed; inset:0;
+      background: rgba(0,0,0,.45);
+      display:none;
+      z-index: 9999;
+      padding: 18px;
+    }
+    .modal.show{display:flex;}
+    .modalPanel{
+      margin:auto;
+      width: min(760px, 100%);
+      max-height: min(92vh, 900px);
+      overflow:auto;
+      background: rgba(246,239,227,.98);
+      border:1px solid rgba(0,0,0,.12);
+      border-radius: 18px;
+      box-shadow: 0 18px 55px rgba(0,0,0,.25);
+      padding: 14px;
+    }
+    .modalHead{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:10px;
+      margin-bottom: 10px;
+    }
+    .modalHead b{font-size:14px;}
+    .modalClose{
+      background: rgba(0,0,0,.06);
+      border:1px solid rgba(0,0,0,.12);
+      color: var(--text);
+      box-shadow:none;
     }
   </style>
 </head>
@@ -419,8 +514,20 @@
     </div>
   </main>
 
+  <!-- Picker único para cover y personas -->
   <input type="file" id="filePicker" accept="image/*"
          style="position:fixed; left:-9999px; top:-9999px; width:1px; height:1px; opacity:0;" />
+
+  <!-- Modal editor -->
+  <div class="modal" id="editorModal" role="dialog" aria-modal="true">
+    <div class="modalPanel">
+      <div class="modalHead">
+        <b id="editorTitle">Editar</b>
+        <button class="btn modalClose" id="editorCloseBtn" type="button">Cerrar</button>
+      </div>
+      <div id="editorBody"></div>
+    </div>
+  </div>
 
   <script type="module">
     import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.94.1/+esm";
@@ -444,8 +551,12 @@
     const first11Strip   = document.getElementById("first11Strip");
 
     const addRootChildBtn = document.getElementById("addRootChildBtn");
-
     const filePicker = document.getElementById("filePicker");
+
+    const editorModal   = document.getElementById("editorModal");
+    const editorCloseBtn= document.getElementById("editorCloseBtn");
+    const editorTitle   = document.getElementById("editorTitle");
+    const editorBody    = document.getElementById("editorBody");
 
     let supabase = null;
     let TREE_ID = DEFAULT_CFG.treeId;
@@ -455,7 +566,37 @@
     let applyingRemote = false;
     let channel = null;
 
+    // target upload
     let pendingPhotoTarget = null; // {type:"cover"} o {type:"person",id}
+
+    // ======= Realtime “pausado” mientras editan =======
+    let isEditing = false;
+    let queuedRemote = null;
+
+    document.addEventListener("focusin", (e) => {
+      if (e.target instanceof HTMLInputElement && e.target.dataset.field) {
+        isEditing = true;
+      }
+    });
+
+    document.addEventListener("focusout", (e) => {
+      if (!(e.target instanceof HTMLInputElement) || !e.target.dataset.field) return;
+
+      setTimeout(() => {
+        const a = document.activeElement;
+        const stillEditing = (a instanceof HTMLInputElement && a.dataset.field);
+        if (stillEditing) return;
+
+        isEditing = false;
+        if (queuedRemote) {
+          applyingRemote = true;
+          state = normalizeState(queuedRemote);
+          queuedRemote = null;
+          renderAll();
+          applyingRemote = false;
+        }
+      }, 0);
+    });
 
     function setConn(ok, text){
       connDot.className = "dot " + (ok ? "ok" : "bad");
@@ -505,6 +646,7 @@
         .replaceAll("'","&#039;");
     }
     function escapeAttr(str) { return escapeHtml(str).replaceAll("\n"," "); }
+
     function yearRange(birth, death){
       const y = (d) => (d && String(d).length >= 4 ? String(d).slice(0,4) : "");
       const b = y(birth), dth = y(death);
@@ -513,6 +655,7 @@
       if (!b && dth) return `–${dth}`;
       return "";
     }
+
     function makeId(prefix="n"){
       if (crypto?.randomUUID) return `${prefix}_${crypto.randomUUID()}`;
       return `${prefix}_${Date.now()}_${Math.random().toString(16).slice(2)}`;
@@ -564,27 +707,36 @@
       return s;
     }
 
-    function captureFocus(){
-      const el = document.activeElement;
-      if (!(el instanceof HTMLInputElement)) return null;
-      const card = el.closest(".person");
-      if (!card) return null;
-      return {
-        id: card.dataset.id || null,
-        field: el.dataset.field || null,
-        start: el.selectionStart ?? 0,
-        end: el.selectionEnd ?? 0
-      };
-    }
-    function restoreFocus(f){
-      if (!f?.id || !f?.field) return;
-      const q = `.person[data-id="${CSS.escape(f.id)}"] input[data-field="${CSS.escape(f.field)}"]`;
-      const input = document.querySelector(q);
-      if (!(input instanceof HTMLInputElement)) return;
-      input.focus({ preventScroll:true });
-      try { input.setSelectionRange(f.start, f.end); } catch {}
+    // ======= Modal editor =======
+    function openEditor(nodeId){
+      const hit = findNodeById(nodeId);
+      if (!hit?.node) return;
+
+      const n = hit.node;
+      const title = (n.name && n.name.trim()) ? n.name.trim() : (n.role || "Editar");
+      editorTitle.textContent = `Editar: ${title}`;
+
+      editorBody.innerHTML = "";
+      const removable = !(nodeId === "p1" || nodeId === "p2") && !(/^c([1-9]|10|11)$/.test(nodeId));
+      const card = editorPersonCard(n, { removable });
+      if (nodeId === "p1" || nodeId === "p2") card.classList.add("parent-card");
+      editorBody.appendChild(card);
+
+      editorModal.classList.add("show");
     }
 
+    function closeEditor(){
+      editorModal.classList.remove("show");
+      editorBody.innerHTML = "";
+      renderAll(); // refresca tiles/bubbles (y mini nombres)
+    }
+
+    editorCloseBtn.addEventListener("click", closeEditor);
+    editorModal.addEventListener("click", (e) => {
+      if (e.target === editorModal) closeEditor();
+    });
+
+    // ======= Render portada =======
     function renderCover(){
       coverImg.src = state.cover_photo_url || placeholderCover;
 
@@ -604,14 +756,13 @@
       });
     }
 
-    function personCard(node, { removable=false, compact=false } = {}) {
+    // ======= Tarjeta SOLO para editor modal =======
+    function editorPersonCard(node, { removable=false } = {}){
       const el = document.createElement("article");
-      el.className = "person" + (compact ? " sub" : "");
+      el.className = "person";
       el.dataset.id = node.id;
 
       const imgSrc = node.photo_url || placeholderImg;
-      const miniName = (node.name && node.name.trim()) ? node.name.trim() : "Sin nombre";
-      const miniYears = yearRange(node.birth, node.death);
 
       el.innerHTML = `
         <div class="role">
@@ -628,12 +779,6 @@
             <button class="smallbtn addkid" data-action="addChild" type="button">+ Agregar hijo/a</button>
             <button class="smallbtn" data-action="clearPhoto" type="button">Quitar foto</button>
           </div>
-        </div>
-
-        <div class="mini" data-action="toggle">
-          <div class="mini-name">${escapeHtml(miniName)}</div>
-          <div class="mini-years">${escapeHtml(miniYears)}</div>
-          <div class="mini-tap">Toca aquí para editar</div>
         </div>
 
         <div class="fields">
@@ -657,127 +802,182 @@
         </div>
       `;
 
-      // Guarda target antes de abrir selector
+      // Antes de abrir picker, define target (para que NO se confunda con cover)
       el.addEventListener("pointerdown", (e) => {
         const lab = e.target.closest('label[data-action="photo"]');
         if (!lab) return;
-        const ownerCard = lab.closest(".person");
-        if (ownerCard !== el) return;
-
         pendingPhotoTarget = { type:"person", id: node.id };
         filePicker.value = "";
       });
 
+      // Botones
       el.addEventListener("click", (e) => {
-        const isMobile = window.matchMedia("(max-width: 560px)").matches;
+        const btn = e.target.closest("button");
+        if (!btn) return;
 
-        const mini = e.target.closest('.mini[data-action="toggle"]');
-        if (isMobile && mini) {
-          const ownerCard = mini.closest(".person");
-          if (ownerCard !== el) return;
-          el.classList.toggle("expanded");
-          return;
-        }
-
-        const actionEl = e.target.closest("button");
-        if (!actionEl) return;
-
-        const ownerCard = actionEl.closest(".person");
-        if (ownerCard !== el) return;
-
-        const action = actionEl.dataset.action;
+        const action = btn.dataset.action;
         if (!action) return;
 
         if (action === "clearPhoto") {
-          patchNode(node.id, { photo_url: placeholderImg, photo_path: "" });
+          patchNode(node.id, { photo_url: placeholderImg, photo_path: "" }, { render:false });
           scheduleSave();
+          // refresca solo la imagen del editor
+          const img = el.querySelector(".avatar img");
+          if (img) img.src = placeholderImg;
           return;
         }
         if (action === "addChild") {
           addChildTo(node.id);
+          // refresca el editor (para que aparezca la nueva persona como bubble después)
+          openEditor(node.id);
           return;
         }
         if (action === "remove") {
           removeNode(node.id);
+          closeEditor();
           return;
         }
       });
 
-      // ✅ En móvil: NO re-render por cada tecla (evita que “salte”)
-el.addEventListener("input", (e) => {
-  const input = e.target;
-  if (!(input instanceof HTMLInputElement)) return;
+      // Inputs: NO re-render en cada tecla (soluciona “se salta”)
+      el.addEventListener("input", (e) => {
+        const input = e.target;
+        if (!(input instanceof HTMLInputElement)) return;
 
-  const ownerCard = input.closest(".person");
-  if (ownerCard !== el) return;
+        const field = input.dataset.field;
+        if (!field) return;
 
-  const field = input.dataset.field;
-  if (!field) return;
+        patchNode(node.id, { [field]: input.value }, { render:false });
+        scheduleSave();
+      });
 
-  // Actualiza el nodo en memoria (sin renderAll)
-  node[field] = input.value;
+      return el;
+    }
 
-  // Actualiza el mini-resumen en móvil (sin re-render)
-  if (field === "name") {
-    const miniNameEl = el.querySelector(".mini-name");
-    if (miniNameEl) miniNameEl.textContent = (node.name && node.name.trim()) ? node.name.trim() : "Sin nombre";
-  }
-  if (field === "birth" || field === "death") {
-    const miniYearsEl = el.querySelector(".mini-years");
-    if (miniYearsEl) miniYearsEl.textContent = yearRange(node.birth, node.death);
-  }
+    // ======= VISTA: tile + bubbles =======
+    function renderRootTile(node){
+      const el = document.createElement("div");
+      el.className = "rootTile";
+      el.dataset.id = node.id;
 
-  // Guardado automático (debounce)
-  scheduleSave();
-});
+      const name = (node.name && node.name.trim()) ? node.name.trim() : "Sin nombre";
+      const yrs  = yearRange(node.birth, node.death);
 
-      if (Array.isArray(node.children) && node.children.length > 0) {
-        const kids = document.createElement("div");
-        kids.className = "kids";
-        node.children.forEach(child => {
-          const wrap = document.createElement("div");
-          wrap.className = "kidwrap";
-          wrap.appendChild(renderNode(child, { levelCompact:true }));
-          kids.appendChild(wrap);
-        });
-        el.appendChild(kids);
+      el.innerHTML = `
+        <div class="rootTop" data-action="open">
+          <div class="rootPhoto"><img alt="Foto" src="${escapeAttr(node.photo_url || placeholderImg)}"></div>
+          <div class="rootName">${escapeHtml(name)}</div>
+          <div class="rootYears">${escapeHtml(yrs)}</div>
+        </div>
+        <div class="bubbleBlock" data-bubbles="1"></div>
+      `;
+
+      // abrir editor tocando foto/nombre
+      el.querySelector('[data-action="open"]').addEventListener("click", () => openEditor(node.id));
+
+      // bubbles (nietos/bisnietos)
+      const bubbleHost = el.querySelector('[data-bubbles="1"]');
+      if (Array.isArray(node.children) && node.children.length){
+        bubbleHost.appendChild(renderBubbleRow(node.children, 1));
+      } else {
+        // si no hay hijos, deja limpio (sin texto)
       }
 
       return el;
     }
 
-    function renderNode(node, { levelCompact=false } = {}) {
-      return personCard(node, { removable:true, compact: levelCompact });
-    }
+    function renderBubbleRow(children, level){
+      const row = document.createElement("div");
+      row.className = `bubbleRow lvl${Math.min(level,3)}`;
 
-    function renderAll(){
-      const f = captureFocus();
+      children.forEach(ch => {
+        const b = document.createElement("div");
+        b.className = "bubble";
+        b.dataset.id = ch.id;
 
-      renderCover();
+        const nm = (ch.name && ch.name.trim()) ? ch.name.trim() : "Sin nombre";
+        const yrs = yearRange(ch.birth, ch.death);
 
-      parentsGen.innerHTML = "";
-      childrenGen.innerHTML = "";
+        b.innerHTML = `
+          <div class="bubbleCircle"><img alt="Foto" src="${escapeAttr(ch.photo_url || placeholderImg)}"></div>
+          <div class="bubbleName">${escapeHtml(nm)}</div>
+          <div class="bubbleYears">${escapeHtml(yrs)}</div>
+        `;
 
-      // ✅ Crear el contenedor de pareja (antes te faltaba y rompía todo)
-      const coupleWrap = document.createElement("div");
-      coupleWrap.className = "coupleWrap";
-      parentsGen.appendChild(coupleWrap);
+        // tocar círculo abre editor
+        b.addEventListener("click", () => openEditor(ch.id));
+        row.appendChild(b);
 
-      const p1 = personCard(state.parents[0], { removable:false, compact:false });
-      const p2 = personCard(state.parents[1], { removable:false, compact:false });
-      p1.classList.add("parent-card");
-      p2.classList.add("parent-card");
-      coupleWrap.appendChild(p1);
-      coupleWrap.appendChild(p2);
-
-      // Hijos
-      state.children.forEach(c => {
-        childrenGen.appendChild(renderNode(c, { levelCompact:false }));
+        // bisnietos debajo (hasta 3 niveles visuales)
+        if (Array.isArray(ch.children) && ch.children.length && level < 3){
+          const sub = renderBubbleRow(ch.children, level + 1);
+          sub.style.marginTop = "6px";
+          sub.style.width = "100%";
+          sub.style.justifyContent = "center";
+          row.appendChild(sub);
+        }
       });
 
-      restoreFocus(f);
+      return row;
     }
 
+    // ======= Render general =======
+    function renderAll(){
+      renderCover();
+
+      // Padres como pareja
+      parentsGen.innerHTML = "";
+      const cw = document.createElement("div");
+      cw.className = "coupleWrap";
+      parentsGen.appendChild(cw);
+
+      const p1 = editorPersonCard(state.parents[0], { removable:false });
+      const p2 = editorPersonCard(state.parents[1], { removable:false });
+      p1.classList.add("parent-card");
+      p2.classList.add("parent-card");
+      // En el árbol principal NO queremos editar aquí (solo desde modal):
+      // entonces convertimos los cards en “botón” que abre editor
+      p1.querySelector(".avatar").addEventListener("click", () => openEditor("p1"));
+      p2.querySelector(".avatar").addEventListener("click", () => openEditor("p2"));
+      // y anulamos inputs visibles en esos cards (porque están aquí solo como referencia visual)
+      // Mejor: reemplazamos por tiles simples para padres
+      // (para no romper textos, mostramos como tiles padre)
+      cw.innerHTML = "";
+      const parentTile = (node, id) => {
+        const t = document.createElement("div");
+        t.className = "rootTile";
+        t.style.maxWidth = "340px";
+        t.style.width = "340px";
+        const name = (node.name && node.name.trim()) ? node.name.trim() : "Sin nombre";
+        const yrs = yearRange(node.birth, node.death);
+        t.innerHTML = `
+          <div class="rootTop" data-action="open">
+            <div class="rootPhoto"><img alt="Foto" src="${escapeAttr(node.photo_url || placeholderImg)}"></div>
+            <div class="rootName">${escapeHtml(name)}</div>
+            <div class="rootYears">${escapeHtml(yrs)}</div>
+          </div>
+        `;
+        t.querySelector('[data-action="open"]').addEventListener("click", () => openEditor(id));
+        return t;
+      };
+      cw.appendChild(parentTile(state.parents[0], "p1"));
+      cw.appendChild(parentTile(state.parents[1], "p2"));
+
+      // Hijos
+      childrenGen.innerHTML = "";
+      const grid = document.createElement("div");
+      grid.className = "rootGrid";
+      childrenGen.appendChild(grid);
+
+      // 11 originales como tiles (alineados)
+      const kids = state.children || [];
+      kids.slice(0, 11).forEach(k => grid.appendChild(renderRootTile(k)));
+
+      // Si alguien agrega más hijos de 1ª gen (12,13...), los ponemos también como tiles
+      kids.slice(11).forEach(k => grid.appendChild(renderRootTile(k)));
+    }
+
+    // ======= Busqueda y cambios =======
     function findInChildren(parentNode, id){
       if (!parentNode?.children?.length) return null;
       for (const child of parentNode.children) {
@@ -802,12 +1002,11 @@ el.addEventListener("input", (e) => {
       return null;
     }
 
-    function patchNode(id, patch){
+    function patchNode(id, patch, { render=true } = {}){
       const hit = findNodeById(id);
       if (!hit?.node) return;
       Object.assign(hit.node, patch);
-      renderAll();
-      scheduleSave();
+      if (render) renderAll();
     }
 
     function addChildTo(parentId){
@@ -840,7 +1039,7 @@ el.addEventListener("input", (e) => {
       }
     }
 
-    // ✅ Botón: agregar hijo raíz (1ª generación)
+    // Botón: agregar hijo raíz
     addRootChildBtn.addEventListener("click", () => {
       const n = state.children.length + 1;
       state.children.push(makePerson({ role: `Hijo/a ${n}` }));
@@ -861,7 +1060,7 @@ el.addEventListener("input", (e) => {
       scheduleSave();
     });
 
-    // Subir fotos
+    // Subir fotos (cover o persona)
     filePicker.addEventListener("change", async () => {
       const file = filePicker.files?.[0];
       if (!file || !pendingPhotoTarget) return;
@@ -890,7 +1089,14 @@ el.addEventListener("input", (e) => {
           renderAll();
           scheduleSave();
         } else {
-          patchNode(pendingPhotoTarget.id, { photo_url: publicUrl, photo_path: path });
+          patchNode(pendingPhotoTarget.id, { photo_url: publicUrl, photo_path: path }, { render:false });
+          scheduleSave();
+          // refresca modal si está abierto
+          if (editorModal.classList.contains("show")) {
+            openEditor(pendingPhotoTarget.id);
+          } else {
+            renderAll();
+          }
         }
 
         pendingPhotoTarget = null;
@@ -924,6 +1130,7 @@ el.addEventListener("input", (e) => {
       });
     }
 
+    // Guardado “debounced”
     function scheduleSave(){
       if (!supabase) return;
       if (applyingRemote) return;
@@ -999,6 +1206,9 @@ el.addEventListener("input", (e) => {
             const newData = payload?.new?.data;
             if (!newData) return;
 
+            // ✅ Pausar updates mientras escriben
+            if (isEditing) { queuedRemote = newData; return; }
+
             applyingRemote = true;
             state = normalizeState(newData);
             renderAll();
@@ -1027,6 +1237,3 @@ el.addEventListener("input", (e) => {
   </script>
 </body>
 </html>
-
-
-
