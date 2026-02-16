@@ -447,7 +447,7 @@
       </div>
 
       <div class="hint" id="hintBox">
-        La portada muestra una foto grupal y abajo se listan los primeros 11 hermanitos (automático).
+        Foto familiar.
       </div>
     </div>
   </header>
@@ -463,7 +463,7 @@
           <div class="cover-side">
             <div>
               <h2>Portada familiar</h2>
-              <p>Sube una foto donde estén los primeros 11 hermanitos (o la foto que quieras usar como portada).</p>
+              <p>Foto familiar.</p>
             </div>
             <div class="cover-actions">
               <button class="btn-primary" id="coverChangeBtn">Cambiar portada</button>
@@ -558,7 +558,7 @@
           </defs>
           <rect width="100%" height="100%" fill="url(#g)"/>
           <text x="50%" y="48%" text-anchor="middle" font-size="44" fill="rgba(0,0,0,0.35)" font-family="Arial">Portada familiar</text>
-          <text x="50%" y="56%" text-anchor="middle" font-size="22" fill="rgba(0,0,0,0.28)" font-family="Arial">Foto de los 11 hermanitos</text>
+          <text x="50%" y="56%" text-anchor="middle" font-size="22" fill="rgba(0,0,0,0.28)" font-family="Arial">Foto de los 11 Arango Originales</text>
         </svg>`;
       return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
     })();
@@ -667,9 +667,9 @@
         chip.className = "sib";
         const img = document.createElement("img");
         img.src = p.photo_url || placeholderImg;
-        img.alt = `Hermanito ${idx+1}`;
+        img.alt = `Hijo ${idx+1}`;
         const name = document.createElement("span");
-        const label = (p.name && p.name.trim()) ? p.name.trim() : `Hermanito ${idx+1}`;
+        const label = (p.name && p.name.trim()) ? p.name.trim() : `Hijo ${idx+1}`;
         name.textContent = label;
 
         chip.appendChild(img);
@@ -1115,3 +1115,4 @@
   </script>
 </body>
 </html>
+
