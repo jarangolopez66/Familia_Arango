@@ -1101,18 +1101,36 @@
       hintBox.textContent = "Listo: cambios de nombres/fotos se guardan automáticamente. Si alguien no ve cambios, que recargue la página.";
     }
 
-    // Init
-    const cfg = loadCfg();
-    applyCfgToUI(cfg);
-    state = normalizeState(state);
-    renderAll();
+// ================== DEFAULT CFG (para que la familia NO configure nada) ==================
+const DEFAULT_CFG = {
+  url: "PEGA_AQUI_TU_PROJECT_URL",
+  key: "PEGA_AQUI_TU_ANON_KEY",
+  treeId: "familia-arango",
+  bucket: "family-photos"
+};
 
-    if (cfg?.url && cfg?.key) {
-      await boot(cfg);
-    } else {
-      setConn(false, "Sin configurar");
-    }
+// ================== Init ==================
+let cfg = loadCfg();
+
+// Si no hay cfg guardada en este dispositivo, usa la DEFAULT del código
+if (!cfg?.url || !cfg?.key) cfg = DEFAULT_CFG;
+
+// (Opcional) Mostrar en el formulario lo que se está usando
+applyCfgToUI(cfg);
+
+// Render inicial
+state = normalizeState(state);
+renderAll();
+
+// Conectar automáticamente
+if (cfg?.url && cfg?.key) {
+  await boot(cfg);
+} else {
+  setConn(false, "Sin configurar");
+}
+
   </script>
 </body>
 </html>
+
 
