@@ -398,6 +398,73 @@
       .kids .kidwrap::before{left:-12px; width:12px;}
       .avatar{width:92px; height:92px;}
     }
+
+    /* Ocultar opciones avanzadas para la familia */
+#cfgDetails, #exportBtn, #importBtn { 
+  display: none !important; 
+}
+
+/* Vista móvil compacta: solo foto + mini resumen. Toca para expandir */
+.mini { display:none; }
+
+@media (max-width: 560px){
+  /* Oculta lo grande por defecto */
+  .person .role,
+  .person .photo-actions,
+  .person .fields,
+  .person .footer,
+  .person .kids { display:none; }
+
+  .person{
+    width: 160px;
+    padding: 10px;
+  }
+
+  .avatar{
+    width: 120px;
+    height: 120px;
+    border-radius: 18px;
+    margin: 0 auto;
+  }
+
+  .row{ justify-content:center; }
+
+  .mini{
+    display:block;
+    text-align:center;
+    margin-top:10px;
+  }
+  .mini-name{
+    font-weight: 800;
+    font-size: 13px;
+    line-height: 1.1;
+  }
+  .mini-years{
+    font-size: 12px;
+    opacity: .75;
+    margin-top: 4px;
+  }
+  .mini-tap{
+    font-size: 11px;
+    opacity: .60;
+    margin-top: 6px;
+  }
+
+  /* Cuando se expande, muestra todo y ocupa ancho completo */
+  .person.expanded{
+    width: 100%;
+  }
+  .person.expanded .role,
+  .person.expanded .photo-actions,
+  .person.expanded .fields,
+  .person.expanded .footer,
+  .person.expanded .kids{
+    display:block;
+  }
+  .person.expanded .photo-actions{ display:flex; }
+  .person.expanded .kids{ display:flex; }
+}
+    
   </style>
 </head>
 
@@ -655,6 +722,14 @@
         .replaceAll("'","&#039;");
     }
     function escapeAttr(str) { return escapeHtml(str).replaceAll("\n"," "); }
+    function yearRange(birth, death){
+  const y = (d) => (d && String(d).length >= 4 ? String(d).slice(0,4) : "");
+  const b = y(birth), dth = y(death);
+  if (b && dth) return `${b}–${dth}`;
+  if (b && !dth) return `${b}–`;
+  if (!b && dth) return `–${dth}`;
+  return "";
+}
 
     function renderCover(){
       coverImg.src = state.cover_photo_url || placeholderCover;
@@ -702,6 +777,12 @@
           </div>
         </div>
 
+        <div class="mini">
+          <div class="mini-name">${escapeHtml((node.name || "").trim() || "Sin nombre")}</div>
+          <div class="mini-years">${escapeHtml(yearRange(node.birth, node.death))}</div>
+          <div class="mini-tap">Toca para editar</div>
+        </div>
+
         <div class="fields">
           <label>
             Nombre
@@ -730,36 +811,57 @@
         </div>
       `;
 
-      el.addEventListener("input", (e) => {
-        const input = e.target;
-        if (!(input instanceof HTMLInputElement)) return;
-        const field = input.dataset.field;
-        if (!field) return;
-        patchNode(node.id, { [field]: input.value });
-      });
+     el.addEventListener("input", (e) => {
+  const input = e.target;
+  if (!(input instanceof HTMLInputElement)) return;
+
+  // ✅ IMPORTANTE: evita que el input de un nieto/bisnieto actualice al padre
+  const ownerCard = input.closest(".person");
+  if (ownerCard !== el) return;
+
+  const field = input.dataset.field;
+  if (!field) return;
+
+  patchNode(node.id, { [field]: input.value });
+});
 
       el.addEventListener("click", (e) => {
-        const btn = e.target.closest("button");
-        if (!btn) return;
-        const action = btn.dataset.action;
-        if (!action) return;
+  // ✅ Si estás en celular y tocas la foto o el resumen, expandir/contraer tarjeta
+  const isMobile = window.matchMedia("(max-width: 560px)").matches;
+  const toggleHit = e.target.closest(".avatar, .mini");
+  if (isMobile && toggleHit) {
+    const ownerCard = toggleHit.closest(".person");
+    if (ownerCard !== el) return; // no tocar el padre
+    el.classList.toggle("expanded");
+    return;
+  }
 
-        if (action === "photo") {
-          pendingPhotoTarget = { type:"person", id: node.id };
-          filePicker.value = "";
-          filePicker.click();
-        }
-        if (action === "clearPhoto") {
-          patchNode(node.id, { photo_url: placeholderImg, photo_path: "" });
-          scheduleSave();
-        }
-        if (action === "addChild") {
-          addChildTo(node.id);
-        }
-        if (action === "remove") {
-          removeNode(node.id);
-        }
-      });
+  const btn = e.target.closest("button");
+  if (!btn) return;
+
+  // ✅ Evita que clicks en botones de un nieto activen acciones del padre
+  const ownerCard = btn.closest(".person");
+  if (ownerCard !== el) return;
+
+  const action = btn.dataset.action;
+  if (!action) return;
+
+  if (action === "photo") {
+    pendingPhotoTargetId = node.id;     // <- si tu código usa pendingPhotoTarget (objeto), dime y te lo ajusto
+    filePicker.value = "";
+    filePicker.click();
+  }
+  if (action === "clearPhoto") {
+    patchNode(node.id, { photo_url: placeholderImg, photo_path: "" });
+    scheduleSave();
+  }
+  if (action === "addChild") {
+    addChildTo(node.id);
+  }
+  if (action === "remove") {
+    removeNode(node.id);
+  }
+});
 
       if (Array.isArray(node.children) && node.children.length > 0) {
         const kids = document.createElement("div");
@@ -1132,6 +1234,7 @@ if (cfg?.url && cfg?.key) {
   </script>
 </body>
 </html>
+
 
 
 
