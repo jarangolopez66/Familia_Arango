@@ -856,7 +856,7 @@ filePicker.value = "";
 if (typeof filePicker.showPicker === "function") filePicker.showPicker();
 else filePicker.click();
 }
-
+        
   if (action === "clearPhoto") {
     patchNode(node.id, { photo_url: placeholderImg, photo_path: "" });
     scheduleSave();
@@ -1240,6 +1240,7 @@ if (cfg?.url && cfg?.key) {
   </script>
 </body>
 </html>
+
 
 
 
