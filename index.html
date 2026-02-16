@@ -24,6 +24,8 @@
 
       --danger:#b6463f;
       --ok:#2f8f6b;
+
+      --treeLine: rgba(0,0,0,.10);
     }
 
     *{box-sizing:border-box}
@@ -164,6 +166,8 @@
       border-radius: 999px;
       border:1px solid rgba(0,0,0,.10);
       background: rgba(255,255,255,.55);
+      cursor:pointer;
+      user-select:none;
     }
     .sib img{
       width:34px; height:34px;
@@ -193,7 +197,7 @@
       align-items:stretch;
       justify-content:center;
       position:relative;
-      padding-bottom: 6px;
+      padding-bottom: 10px;
       width:100%;
       flex-wrap:wrap;
     }
@@ -202,14 +206,199 @@
       position:absolute;
       left:50%;
       transform:translateX(-50%);
-      bottom:-10px;
-      width: min(520px, 80%);
+      bottom:-6px;
+      width: min(520px, 84%);
       height: 3px;
       background: rgba(198,162,74,.55);
       border-radius: 99px;
     }
 
-    /* Tarjetas (solo se usan en el editor modal) */
+    /* =========================
+       NUEVO LAYOUT tipo “4 generaciones”
+       ========================= */
+    .treeScroll{
+      overflow-x:auto;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 10px;
+    }
+    .treeGrid{
+      display:grid;
+      grid-template-columns: repeat(11, 180px);
+      gap: 14px;
+      align-items:start;
+      justify-content:center;
+      padding: 6px 4px 2px;
+      min-width: calc(11 * 180px + 10 * 14px);
+    }
+    /* si agregas más de 11 hijos raíz, se extiende */
+    .treeGrid.moreCols{
+      grid-auto-flow: column;
+      grid-auto-columns: 180px;
+      grid-template-columns: repeat(11, 180px);
+    }
+
+    .subtree{
+      position:relative;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap: 10px;
+      padding: 6px 4px 2px;
+    }
+
+    .node{
+      position:relative;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap: 6px;
+      cursor:pointer;
+      user-select:none;
+      max-width: 180px;
+    }
+
+    .circle{
+      border-radius: 999px;
+      overflow:hidden;
+      background: rgba(0,0,0,.04);
+      border: 2px solid rgba(0,0,0,.12);
+      box-shadow: 0 8px 18px rgba(0,0,0,.10);
+    }
+    .circle img{width:100%; height:100%; object-fit:cover; display:block;}
+
+    .labelName{
+      font-size: 12px;
+      font-weight: 900;
+      text-align:center;
+      max-width: 170px;
+      overflow:hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .labelYears{
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: -4px;
+      text-align:center;
+    }
+
+    /* tamaños y diferencia por nivel */
+    .lvl-parent .circle{ width:110px; height:110px; border-width: 4px; border-color: rgba(198,162,74,.78); box-shadow: 0 0 0 6px rgba(198,162,74,.14), 0 10px 22px rgba(0,0,0,.10); }
+    .lvl-original .circle{ width:98px;  height:98px;  border-width: 3px; border-color: rgba(198,162,74,.62); box-shadow: 0 0 0 5px rgba(198,162,74,.10), 0 9px 18px rgba(0,0,0,.10); }
+    .lvl-1 .circle{       width:66px;  height:66px;  border-width: 2px; border-color: rgba(0,0,0,.16); }
+    .lvl-2 .circle{       width:56px;  height:56px;  border-width: 2px; border-color: rgba(0,0,0,.14); opacity:.98; }
+    .lvl-3 .circle{       width:48px;  height:48px;  border-width: 2px; border-color: rgba(0,0,0,.12); opacity:.96; }
+
+    /* Conectores */
+    .childrenGroup{
+      position:relative;
+      width: 100%;
+      padding-top: 10px;
+    }
+    /* línea horizontal para “ramas” del mismo padre */
+    .childrenGroup::before{
+      content:"";
+      position:absolute;
+      top: 0px;
+      left: 12px;
+      right: 12px;
+      height:2px;
+      background: var(--treeLine);
+      border-radius: 99px;
+    }
+    /* línea vertical desde el padre hacia la línea horizontal */
+    .childrenGroup::after{
+      content:"";
+      position:absolute;
+      top: -12px;
+      left: 50%;
+      width: 2px;
+      height: 12px;
+      background: var(--treeLine);
+      transform: translateX(-50%);
+      border-radius: 99px;
+    }
+
+    .childrenRow{
+      display:flex;
+      flex-wrap:wrap;
+      gap: 10px;
+      justify-content:center;
+      align-items:flex-start;
+      margin-top: 8px;
+    }
+
+    /* cada hijo tiene su “bajante” hacia la línea horizontal */
+    .childWrap{
+      position:relative;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap: 8px;
+      padding-top: 10px;
+    }
+    .childWrap::before{
+      content:"";
+      position:absolute;
+      top: 0px;
+      left: 50%;
+      width:2px;
+      height:10px;
+      background: var(--treeLine);
+      transform: translateX(-50%);
+      border-radius: 99px;
+    }
+
+    @media (max-width: 860px){
+      .cover-top{grid-template-columns: 1fr;}
+      .cover-imgwrap{min-height: 210px;}
+      .treeGrid{grid-template-columns: repeat(11, 170px); min-width: calc(11 * 170px + 10 * 14px);}
+    }
+    @media (max-width: 560px){
+      .treeGrid{grid-template-columns: repeat(11, 160px); min-width: calc(11 * 160px + 10 * 14px);}
+      .lvl-parent .circle{ width:106px; height:106px; }
+      .lvl-original .circle{ width:92px; height:92px; }
+      .lvl-1 .circle{ width:62px; height:62px; }
+      .lvl-2 .circle{ width:54px; height:54px; }
+      .lvl-3 .circle{ width:46px; height:46px; }
+    }
+
+    /* =========================
+       MODAL EDITOR
+       ========================= */
+    .modal{
+      position:fixed; inset:0;
+      background: rgba(0,0,0,.45);
+      display:none;
+      z-index: 9999;
+      padding: 18px;
+    }
+    .modal.show{display:flex;}
+    .modalPanel{
+      margin:auto;
+      width: min(760px, 100%);
+      max-height: min(92vh, 900px);
+      overflow:auto;
+      background: rgba(246,239,227,.98);
+      border:1px solid rgba(0,0,0,.12);
+      border-radius: 18px;
+      box-shadow: 0 18px 55px rgba(0,0,0,.25);
+      padding: 14px;
+    }
+    .modalHead{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:10px;
+      margin-bottom: 10px;
+    }
+    .modalHead b{font-size:14px;}
+    .modalClose{
+      background: rgba(0,0,0,.06);
+      border:1px solid rgba(0,0,0,.12);
+      color: var(--text);
+      box-shadow:none;
+    }
+
+    /* Tarjeta (solo en modal) */
     .person{
       width: 320px; max-width: calc(100vw - 32px);
       background: linear-gradient(180deg, var(--card), var(--card2));
@@ -218,9 +407,8 @@
       box-shadow: var(--shadow);
       padding: 14px;
       position:relative;
+      margin: 0 auto;
     }
-
-    /* Color especial para padres (P1/P2) */
     .person.parent-card{
       background: linear-gradient(180deg, #fff2d9, #f4e3bf);
       border-color: rgba(198,162,74,.55);
@@ -306,161 +494,11 @@
       font-size:12px;
     }
 
-    /* =========================
-       NUEVA VISTA: 11 originales alineados + bubbles
-       ========================= */
-    .rootGrid{
-      width:100%;
-      display:grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-      gap:14px;
-      align-items:start;
-    }
-
-    .rootTile{
-      background: linear-gradient(180deg, rgba(255,255,255,.55), rgba(255,255,255,.35));
-      border:1px solid rgba(0,0,0,.10);
-      border-radius: 16px;
-      padding: 12px;
-      box-shadow: 0 8px 18px rgba(0,0,0,.08);
-    }
-
-    .rootTop{
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      gap:10px;
-      cursor:pointer;
-      user-select:none;
-    }
-
-    .rootPhoto{
-      width:110px; height:110px;
-      border-radius: 18px;
-      overflow:hidden;
-      border:1px solid rgba(0,0,0,.12);
-      background: rgba(0,0,0,.04);
-    }
-    .rootPhoto img{width:100%; height:100%; object-fit:cover; display:block;}
-
-    .rootName{
-      font-weight: 900;
-      font-size: 13px;
-      text-align:center;
-      line-height:1.1;
-      max-width: 100%;
-      overflow:hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-    .rootYears{
-      font-size: 12px;
-      color: var(--muted);
-      margin-top: -2px;
-    }
-
-    .bubbleBlock{
-      margin-top: 10px;
-      padding-top: 10px;
-      border-top: 1px solid rgba(0,0,0,.08);
-    }
-
-    .bubbleRow{
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
-      align-items:flex-start;
-      justify-content:center;
-      margin-top: 8px;
-    }
-
-    .bubble{
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      gap:6px;
-      cursor:pointer;
-      user-select:none;
-      max-width: 88px;
-    }
-
-    .bubbleCircle{
-      border-radius: 999px;
-      overflow:hidden;
-      border:1px solid rgba(0,0,0,.12);
-      background: rgba(0,0,0,.04);
-      box-shadow: 0 6px 14px rgba(0,0,0,.08);
-    }
-    .bubbleCircle img{width:100%; height:100%; object-fit:cover; display:block;}
-
-    .bubbleName{
-      font-size: 11px;
-      text-align:center;
-      line-height:1.1;
-      max-width: 88px;
-      overflow:hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      color: var(--text);
-    }
-
-    .bubbleYears{
-      font-size: 10px;
-      color: var(--muted);
-      margin-top: -4px;
-    }
-
-    /* tamaños por nivel */
-    .lvl1 .bubbleCircle{ width:60px; height:60px; }
-    .lvl2 .bubbleCircle{ width:48px; height:48px; opacity:.95; }
-    .lvl3 .bubbleCircle{ width:40px; height:40px; opacity:.92; }
-
-    @media (max-width: 860px){
-      .cover-top{grid-template-columns: 1fr;}
-      .cover-imgwrap{min-height: 210px;}
-    }
-
     @media (max-width: 560px){
-      .rootGrid{grid-template-columns: repeat(2, minmax(140px, 1fr));}
-      .rootPhoto{width:104px; height:104px;}
-      .lvl1 .bubbleCircle{ width:56px; height:56px; }
-      .lvl2 .bubbleCircle{ width:46px; height:46px; }
-      .lvl3 .bubbleCircle{ width:38px; height:38px; }
-    }
-
-    /* =========================
-       MODAL EDITOR
-       ========================= */
-    .modal{
-      position:fixed; inset:0;
-      background: rgba(0,0,0,.45);
-      display:none;
-      z-index: 9999;
-      padding: 18px;
-    }
-    .modal.show{display:flex;}
-    .modalPanel{
-      margin:auto;
-      width: min(760px, 100%);
-      max-height: min(92vh, 900px);
-      overflow:auto;
-      background: rgba(246,239,227,.98);
-      border:1px solid rgba(0,0,0,.12);
-      border-radius: 18px;
-      box-shadow: 0 18px 55px rgba(0,0,0,.25);
-      padding: 14px;
-    }
-    .modalHead{
-      display:flex; align-items:center; justify-content:space-between;
-      gap:10px;
-      margin-bottom: 10px;
-    }
-    .modalHead b{font-size:14px;}
-    .modalClose{
-      background: rgba(0,0,0,.06);
-      border:1px solid rgba(0,0,0,.12);
-      color: var(--text);
-      box-shadow:none;
+      .fields{grid-template-columns:1fr;}
+      .avatar{width:120px; height:120px; margin:0 auto;}
+      .row{justify-content:center;}
+      .person{width: 100%;}
     }
   </style>
 </head>
@@ -514,11 +552,9 @@
     </div>
   </main>
 
-  <!-- Picker único para cover y personas -->
   <input type="file" id="filePicker" accept="image/*"
          style="position:fixed; left:-9999px; top:-9999px; width:1px; height:1px; opacity:0;" />
 
-  <!-- Modal editor -->
   <div class="modal" id="editorModal" role="dialog" aria-modal="true">
     <div class="modalPanel">
       <div class="modalHead">
@@ -566,22 +602,18 @@
     let applyingRemote = false;
     let channel = null;
 
-    // target upload
     let pendingPhotoTarget = null; // {type:"cover"} o {type:"person",id}
 
-    // ======= Realtime “pausado” mientras editan =======
+    // ======= Realtime pausado mientras escriben =======
     let isEditing = false;
     let queuedRemote = null;
 
     document.addEventListener("focusin", (e) => {
-      if (e.target instanceof HTMLInputElement && e.target.dataset.field) {
-        isEditing = true;
-      }
+      if (e.target instanceof HTMLInputElement && e.target.dataset.field) isEditing = true;
     });
 
     document.addEventListener("focusout", (e) => {
       if (!(e.target instanceof HTMLInputElement) || !e.target.dataset.field) return;
-
       setTimeout(() => {
         const a = document.activeElement;
         const stillEditing = (a instanceof HTMLInputElement && a.dataset.field);
@@ -728,7 +760,7 @@
     function closeEditor(){
       editorModal.classList.remove("show");
       editorBody.innerHTML = "";
-      renderAll(); // refresca tiles/bubbles (y mini nombres)
+      renderAll();
     }
 
     editorCloseBtn.addEventListener("click", closeEditor);
@@ -736,7 +768,7 @@
       if (e.target === editorModal) closeEditor();
     });
 
-    // ======= Render portada =======
+    // ======= Portada =======
     function renderCover(){
       coverImg.src = state.cover_photo_url || placeholderCover;
 
@@ -752,11 +784,12 @@
         name.textContent = (p.name && p.name.trim()) ? p.name.trim() : `Hijo ${idx+1}`;
         chip.appendChild(img);
         chip.appendChild(name);
+        chip.addEventListener("click", () => openEditor(p.id));
         first11Strip.appendChild(chip);
       });
     }
 
-    // ======= Tarjeta SOLO para editor modal =======
+    // ======= Tarjeta (solo modal) =======
     function editorPersonCard(node, { removable=false } = {}){
       const el = document.createElement("article");
       el.className = "person";
@@ -802,7 +835,7 @@
         </div>
       `;
 
-      // Antes de abrir picker, define target (para que NO se confunda con cover)
+      // target upload
       el.addEventListener("pointerdown", (e) => {
         const lab = e.target.closest('label[data-action="photo"]');
         if (!lab) return;
@@ -810,7 +843,7 @@
         filePicker.value = "";
       });
 
-      // Botones
+      // botones
       el.addEventListener("click", (e) => {
         const btn = e.target.closest("button");
         if (!btn) return;
@@ -821,14 +854,12 @@
         if (action === "clearPhoto") {
           patchNode(node.id, { photo_url: placeholderImg, photo_path: "" }, { render:false });
           scheduleSave();
-          // refresca solo la imagen del editor
           const img = el.querySelector(".avatar img");
           if (img) img.src = placeholderImg;
           return;
         }
         if (action === "addChild") {
           addChildTo(node.id);
-          // refresca el editor (para que aparezca la nueva persona como bubble después)
           openEditor(node.id);
           return;
         }
@@ -839,11 +870,10 @@
         }
       });
 
-      // Inputs: NO re-render en cada tecla (soluciona “se salta”)
+      // ✅ NO re-render por tecla (evita “se salta” en celular)
       el.addEventListener("input", (e) => {
         const input = e.target;
         if (!(input instanceof HTMLInputElement)) return;
-
         const field = input.dataset.field;
         if (!field) return;
 
@@ -854,130 +884,92 @@
       return el;
     }
 
-    // ======= VISTA: tile + bubbles =======
-    function renderRootTile(node){
+    // ======= NODO círculo (para el layout tipo ejemplo) =======
+    function renderNodeCircle(node, cls){
       const el = document.createElement("div");
-      el.className = "rootTile";
+      el.className = `node ${cls}`;
       el.dataset.id = node.id;
 
       const name = (node.name && node.name.trim()) ? node.name.trim() : "Sin nombre";
       const yrs  = yearRange(node.birth, node.death);
 
       el.innerHTML = `
-        <div class="rootTop" data-action="open">
-          <div class="rootPhoto"><img alt="Foto" src="${escapeAttr(node.photo_url || placeholderImg)}"></div>
-          <div class="rootName">${escapeHtml(name)}</div>
-          <div class="rootYears">${escapeHtml(yrs)}</div>
-        </div>
-        <div class="bubbleBlock" data-bubbles="1"></div>
+        <div class="circle"><img alt="Foto" src="${escapeAttr(node.photo_url || placeholderImg)}"></div>
+        <div class="labelName">${escapeHtml(name)}</div>
+        <div class="labelYears">${escapeHtml(yrs)}</div>
       `;
-
-      // abrir editor tocando foto/nombre
-      el.querySelector('[data-action="open"]').addEventListener("click", () => openEditor(node.id));
-
-      // bubbles (nietos/bisnietos)
-      const bubbleHost = el.querySelector('[data-bubbles="1"]');
-      if (Array.isArray(node.children) && node.children.length){
-        bubbleHost.appendChild(renderBubbleRow(node.children, 1));
-      } else {
-        // si no hay hijos, deja limpio (sin texto)
-      }
-
+      el.addEventListener("click", () => openEditor(node.id));
       return el;
     }
 
-    function renderBubbleRow(children, level){
-      const row = document.createElement("div");
-      row.className = `bubbleRow lvl${Math.min(level,3)}`;
+    // ======= SUBÁRBOL (hasta 4 niveles visuales) =======
+    function renderSubtree(node, depth, { isOriginal=false } = {}){
+      const wrap = document.createElement("div");
+      wrap.className = "subtree";
 
-      children.forEach(ch => {
-        const b = document.createElement("div");
-        b.className = "bubble";
-        b.dataset.id = ch.id;
+      const lvlCls = (depth === 0)
+        ? (isOriginal ? "lvl-original" : "lvl-1")  // raíz de columna (hijo original) o hijo extra
+        : (depth === 1 ? "lvl-1" : depth === 2 ? "lvl-2" : "lvl-3");
 
-        const nm = (ch.name && ch.name.trim()) ? ch.name.trim() : "Sin nombre";
-        const yrs = yearRange(ch.birth, ch.death);
+      wrap.appendChild(renderNodeCircle(node, lvlCls));
 
-        b.innerHTML = `
-          <div class="bubbleCircle"><img alt="Foto" src="${escapeAttr(ch.photo_url || placeholderImg)}"></div>
-          <div class="bubbleName">${escapeHtml(nm)}</div>
-          <div class="bubbleYears">${escapeHtml(yrs)}</div>
-        `;
+      if (Array.isArray(node.children) && node.children.length > 0 && depth < 3){
+        const group = document.createElement("div");
+        group.className = "childrenGroup";
 
-        // tocar círculo abre editor
-        b.addEventListener("click", () => openEditor(ch.id));
-        row.appendChild(b);
+        const row = document.createElement("div");
+        row.className = "childrenRow";
 
-        // bisnietos debajo (hasta 3 niveles visuales)
-        if (Array.isArray(ch.children) && ch.children.length && level < 3){
-          const sub = renderBubbleRow(ch.children, level + 1);
-          sub.style.marginTop = "6px";
-          sub.style.width = "100%";
-          sub.style.justifyContent = "center";
-          row.appendChild(sub);
-        }
-      });
+        node.children.forEach(ch => {
+          const cw = document.createElement("div");
+          cw.className = "childWrap";
+          cw.appendChild(renderSubtree(ch, depth + 1, { isOriginal:false }));
+          row.appendChild(cw);
+        });
 
-      return row;
+        group.appendChild(row);
+        wrap.appendChild(group);
+      }
+
+      return wrap;
     }
 
     // ======= Render general =======
     function renderAll(){
       renderCover();
 
-      // Padres como pareja
+      // Padres
       parentsGen.innerHTML = "";
       const cw = document.createElement("div");
       cw.className = "coupleWrap";
       parentsGen.appendChild(cw);
 
-      const p1 = editorPersonCard(state.parents[0], { removable:false });
-      const p2 = editorPersonCard(state.parents[1], { removable:false });
-      p1.classList.add("parent-card");
-      p2.classList.add("parent-card");
-      // En el árbol principal NO queremos editar aquí (solo desde modal):
-      // entonces convertimos los cards en “botón” que abre editor
-      p1.querySelector(".avatar").addEventListener("click", () => openEditor("p1"));
-      p2.querySelector(".avatar").addEventListener("click", () => openEditor("p2"));
-      // y anulamos inputs visibles en esos cards (porque están aquí solo como referencia visual)
-      // Mejor: reemplazamos por tiles simples para padres
-      // (para no romper textos, mostramos como tiles padre)
-      cw.innerHTML = "";
-      const parentTile = (node, id) => {
-        const t = document.createElement("div");
-        t.className = "rootTile";
-        t.style.maxWidth = "340px";
-        t.style.width = "340px";
-        const name = (node.name && node.name.trim()) ? node.name.trim() : "Sin nombre";
-        const yrs = yearRange(node.birth, node.death);
-        t.innerHTML = `
-          <div class="rootTop" data-action="open">
-            <div class="rootPhoto"><img alt="Foto" src="${escapeAttr(node.photo_url || placeholderImg)}"></div>
-            <div class="rootName">${escapeHtml(name)}</div>
-            <div class="rootYears">${escapeHtml(yrs)}</div>
-          </div>
-        `;
-        t.querySelector('[data-action="open"]').addEventListener("click", () => openEditor(id));
-        return t;
-      };
-      cw.appendChild(parentTile(state.parents[0], "p1"));
-      cw.appendChild(parentTile(state.parents[1], "p2"));
+      cw.appendChild(renderNodeCircle(state.parents[0], "lvl-parent"));
+      cw.appendChild(renderNodeCircle(state.parents[1], "lvl-parent"));
 
-      // Hijos
+      // Hijos (11 columnas tipo ejemplo)
       childrenGen.innerHTML = "";
+
+      const scroll = document.createElement("div");
+      scroll.className = "treeScroll";
+
       const grid = document.createElement("div");
-      grid.className = "rootGrid";
-      childrenGen.appendChild(grid);
+      grid.className = "treeGrid";
 
-      // 11 originales como tiles (alineados)
       const kids = state.children || [];
-      kids.slice(0, 11).forEach(k => grid.appendChild(renderRootTile(k)));
+      if (kids.length > 11) grid.classList.add("moreCols");
 
-      // Si alguien agrega más hijos de 1ª gen (12,13...), los ponemos también como tiles
-      kids.slice(11).forEach(k => grid.appendChild(renderRootTile(k)));
+      kids.forEach((k, idx) => {
+        const col = document.createElement("div");
+        col.appendChild(renderSubtree(k, 0, { isOriginal: idx < 11 }));
+        grid.appendChild(col);
+      });
+
+      scroll.appendChild(grid);
+      childrenGen.appendChild(scroll);
     }
 
-    // ======= Busqueda y cambios =======
+    // ======= Buscar y cambiar =======
     function findInChildren(parentNode, id){
       if (!parentNode?.children?.length) return null;
       for (const child of parentNode.children) {
@@ -1039,7 +1031,7 @@
       }
     }
 
-    // Botón: agregar hijo raíz
+    // Agregar hijo raíz (1ª generación)
     addRootChildBtn.addEventListener("click", () => {
       const n = state.children.length + 1;
       state.children.push(makePerson({ role: `Hijo/a ${n}` }));
@@ -1091,12 +1083,8 @@
         } else {
           patchNode(pendingPhotoTarget.id, { photo_url: publicUrl, photo_path: path }, { render:false });
           scheduleSave();
-          // refresca modal si está abierto
-          if (editorModal.classList.contains("show")) {
-            openEditor(pendingPhotoTarget.id);
-          } else {
-            renderAll();
-          }
+          if (editorModal.classList.contains("show")) openEditor(pendingPhotoTarget.id);
+          else renderAll();
         }
 
         pendingPhotoTarget = null;
@@ -1206,7 +1194,6 @@
             const newData = payload?.new?.data;
             if (!newData) return;
 
-            // ✅ Pausar updates mientras escriben
             if (isEditing) { queuedRemote = newData; return; }
 
             applyingRemote = true;
