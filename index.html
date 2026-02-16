@@ -750,28 +750,27 @@ waBtn.href =
     }
 
     function renderAll(){
-      const f = captureFocus();
+  const f = captureFocus();
 
-      renderCover();
+  renderCover();
 
-      // Padres como bloque "pareja"
-      parentsGen.innerHTML = "";
-      const coupleWrap = document.createElement("div");
-      coupleWrap.className = "coupleWrap";
-      const p1 = personCard(state.parents[0], { removable:false, compact:false });
-      p1.classList.add("parent-card");
-      coupleWrap.appendChild(p1);
-      
-      const p2 = personCard(state.parents[1], { removable:false, compact:false });
-      p2.classList.add("parent-card");
-      coupleWrap.appendChild(p2);
-      parentsGen.appendChild(coupleWrap);
+  parentsGen.innerHTML = "";
+  childrenGen.innerHTML = "";
 
-      childrenGen.innerHTML = "";
-      state.children.forEach(c => childrenGen.appendChild(renderNode(c, { levelCompact:false })));
+  // Padres (P1 y P2) con color distinto sin depender de coupleWrap
+  state.parents.forEach(p => {
+    const card = personCard(p, { removable:false, compact:false });
+    card.classList.add("parent-card");
+    parentsGen.appendChild(card);
+  });
 
-      restoreFocus(f);
-    }
+  // Hijos
+  state.children.forEach(c => {
+    childrenGen.appendChild(renderNode(c, { levelCompact:false }));
+  });
+
+  restoreFocus(f);
+}
 
     function findInChildren(parentNode, id){
       if (!parentNode?.children?.length) return null;
@@ -1022,6 +1021,7 @@ waBtn.href =
   </script>
 </body>
 </html>
+
 
 
 
