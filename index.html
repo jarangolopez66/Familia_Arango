@@ -4,24 +4,24 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Árbol genealógico — Familia Arango</title>
+
   <style>
     :root{
       /* Paleta cálida */
-      --bg: #f6efe3;         /* beige claro */
-      --card: #fff7ea;       /* beige crema */
+      --bg:#f6efe3;
+      --card:#fff7ea;
       --card2:#fbf1df;
-      --text:#151515;        /* negro suave */
-      --muted:#6b5f4a;       /* café/gris cálido */
-      --gold:#c6a24a;        /* dorado */
+      --text:#151515;
+      --muted:#6b5f4a;
+      --gold:#c6a24a;
       --gold2:#e2c77c;
-      --line:#dcc9a5;        /* líneas cálidas */
-      --shadow: 0 10px 25px rgba(0,0,0,.12);
-      --radius: 18px;
+      --line:#dcc9a5;
+      --shadow:0 10px 25px rgba(0,0,0,.12);
+      --radius:18px;
 
-      /* Botones */
       --btn-bg:#151515;
       --btn-text:#f6efe3;
-      --btn-border: rgba(0,0,0,.18);
+      --btn-border:rgba(0,0,0,.18);
 
       --danger:#b6463f;
       --ok:#2f8f6b;
@@ -35,14 +35,14 @@
         radial-gradient(900px 500px at 20% 10%, rgba(198,162,74,.18), transparent 60%),
         radial-gradient(800px 500px at 85% 15%, rgba(0,0,0,.08), transparent 60%),
         var(--bg);
-      color: var(--text);
+      color:var(--text);
     }
 
     header{
       position:sticky; top:0; z-index:10;
-      background: rgba(246,239,227,.85);
+      background: rgba(246,239,227,.88);
       backdrop-filter: blur(10px);
-      border-bottom: 1px solid rgba(0,0,0,.08);
+      border-bottom:1px solid rgba(0,0,0,.08);
     }
 
     .wrap{max-width:1200px; margin:0 auto; padding:18px 16px;}
@@ -55,15 +55,12 @@
       align-items:baseline;
       flex-wrap:wrap;
     }
-    .brand{
-      color: var(--gold);
-      font-weight: 800;
-    }
+    .brand{color:var(--gold); font-weight:900;}
     .sub{
       margin-top:8px;
-      color: var(--muted);
+      color:var(--muted);
       font-size:13px;
-      line-height:1.35;
+      line-height:1.4;
     }
 
     .toolbar{
@@ -73,40 +70,6 @@
       gap:10px;
       align-items:center;
       justify-content:space-between;
-    }
-    .btns{display:flex; gap:10px; flex-wrap:wrap;}
-
-    button{
-      cursor:pointer;
-      border:1px solid var(--btn-border);
-      background: var(--btn-bg);
-      color: var(--btn-text);
-      padding:8px 10px;           /* botones más pequeños */
-      border-radius: 12px;
-      transition: transform .05s ease, opacity .15s ease;
-      font-weight:700;
-      font-size:12px;             /* letra un poco menor */
-      box-shadow: 0 6px 16px rgba(0,0,0,.10);
-    }
-    button:hover{opacity:.92}
-    button:active{transform: translateY(1px);}
-
-    .btn-primary{
-      background: linear-gradient(180deg, var(--gold2), var(--gold));
-      color:#201a10;
-      border-color: rgba(0,0,0,.14);
-    }
-    .btn-soft{
-      background: rgba(0,0,0,.06);
-      color: var(--text);
-      border-color: rgba(0,0,0,.10);
-      box-shadow:none;
-    }
-    .btn-danger{
-      background: rgba(182,70,63,.14);
-      color: #4a1411;
-      border-color: rgba(182,70,63,.30);
-      box-shadow:none;
     }
 
     .pill{
@@ -122,14 +85,7 @@
     .dot.ok{background: var(--ok); box-shadow: 0 0 0 4px rgba(47,143,107,.12);}
     .dot.bad{background: var(--danger); box-shadow: 0 0 0 4px rgba(182,70,63,.12);}
 
-    .hint{
-      color: var(--muted);
-      font-size:12px;
-      margin-top:10px;
-      line-height:1.4;
-    }
-
-    main{padding: 18px 16px 34px;}
+    main{padding:18px 16px 34px;}
     .container{max-width:1200px; margin:0 auto;}
 
     /* Portada */
@@ -155,36 +111,47 @@
       background: rgba(0,0,0,.04);
       min-height: 230px;
     }
-    .cover-imgwrap img{
-      width:100%;
-      height:100%;
-      object-fit: cover;
-      display:block;
-    }
+    .cover-imgwrap img{width:100%; height:100%; object-fit:cover; display:block;}
     .cover-side{
-      display:flex;
-      flex-direction:column;
-      gap:10px;
+      display:flex; flex-direction:column; gap:10px;
       justify-content:space-between;
-      padding: 2px 2px 2px 0;
     }
-    .cover-side h2{
-      margin:0;
-      font-size:16px;
-      letter-spacing:.2px;
-    }
-    .cover-side p{
-      margin:6px 0 0 0;
-      color: var(--muted);
+    .cover-side h2{margin:0; font-size:16px; letter-spacing:.2px;}
+    .cover-side p{margin:6px 0 0 0; color:var(--muted); font-size:12px; line-height:1.35;}
+
+    .cover-actions{display:flex; flex-wrap:wrap; gap:10px; margin-top:10px;}
+
+    .btn{
+      cursor:pointer;
+      border:1px solid var(--btn-border);
+      background: var(--btn-bg);
+      color: var(--btn-text);
+      padding:8px 10px;
+      border-radius: 12px;
+      transition: transform .05s ease, opacity .15s ease;
+      font-weight:900;
       font-size:12px;
-      line-height:1.35;
+      box-shadow: 0 6px 16px rgba(0,0,0,.10);
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      user-select:none;
+      text-decoration:none;
     }
-    .cover-actions{
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-      margin-top: 10px;
+    .btn:hover{opacity:.92}
+    .btn:active{transform: translateY(1px);}
+    .btn-primary{
+      background: linear-gradient(180deg, var(--gold2), var(--gold));
+      color:#201a10;
+      border-color: rgba(0,0,0,.14);
     }
+    .btn-danger{
+      background: rgba(182,70,63,.14);
+      color:#4a1411;
+      border-color: rgba(182,70,63,.30);
+      box-shadow:none;
+    }
+
     .strip{
       padding: 0 14px 14px 14px;
       display:flex;
@@ -193,17 +160,14 @@
       align-items:center;
     }
     .sib{
-      display:flex;
-      align-items:center;
-      gap:8px;
+      display:flex; align-items:center; gap:8px;
       padding:8px 10px;
       border-radius: 999px;
       border:1px solid rgba(0,0,0,.10);
       background: rgba(255,255,255,.55);
     }
     .sib img{
-      width:34px;
-      height:34px;
+      width:34px; height:34px;
       border-radius: 999px;
       object-fit: cover;
       border:1px solid rgba(0,0,0,.12);
@@ -212,24 +176,15 @@
     .sib span{
       font-size:12px;
       color: var(--text);
-      max-width: 140px;
+      max-width: 150px;
       overflow:hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
 
     /* Árbol */
-    .divider{
-      height:1px;
-      background: rgba(0,0,0,.10);
-      margin: 16px 0;
-    }
-    .gen{
-      display:flex;
-      justify-content:center;
-      gap:18px;
-      flex-wrap:wrap;
-    }
+    .divider{height:1px; background: rgba(0,0,0,.10); margin: 16px 0;}
+    .gen{display:flex; justify-content:center; gap:18px; flex-wrap:wrap;}
 
     .person{
       width: 300px; max-width: calc(100vw - 32px);
@@ -242,7 +197,7 @@
     }
     .person.sub{width: 280px;}
 
-    .person .role{
+    .role{
       font-size:12px;
       color: var(--muted);
       display:flex;
@@ -250,23 +205,19 @@
       justify-content:space-between;
       margin-bottom:10px;
     }
-    .person .role b{
-      color: var(--text);
-      font-size:12px;
-      letter-spacing:.2px;
-    }
+    .role b{color: var(--text); font-size:12px; letter-spacing:.2px;}
 
     .row{display:flex; gap:12px; align-items:center;}
 
-    /* Fotos más grandes */
     .avatar{
-      width:98px;
-      height:98px;
-      border-radius: 18px;
+      width:98px; height:98px;
+      border-radius:18px;
       border: 1px solid rgba(0,0,0,.12);
       overflow:hidden;
       background: rgba(0,0,0,.04);
       flex: 0 0 auto;
+      cursor:pointer;
+      user-select:none;
     }
     .avatar img{width:100%; height:100%; object-fit:cover; display:block;}
 
@@ -276,26 +227,25 @@
       gap:8px;
       flex: 1 1 auto;
     }
+
     .smallbtn{
-      padding:7px 9px;      /* botones pequeños */
+      padding:7px 9px;
       border-radius: 12px;
       font-size:12px;
       border:1px solid rgba(0,0,0,.12);
       background: rgba(255,255,255,.55);
       color: var(--text);
       box-shadow:none;
-      font-weight:800;
+      font-weight:900;
+      cursor:pointer;
+      user-select:none;
+      text-align:center;
     }
     .smallbtn:hover{opacity:.92}
-    .smallbtn.addkid{
-      background: rgba(198,162,74,.20);
-      border-color: rgba(198,162,74,.35);
-    }
-    .smallbtn.remove{
-      background: rgba(182,70,63,.12);
-      border-color: rgba(182,70,63,.28);
-      color: #4a1411;
-    }
+    .smallbtn.addkid{background: rgba(198,162,74,.20); border-color: rgba(198,162,74,.35);}
+    .smallbtn.remove{background: rgba(182,70,63,.12); border-color: rgba(182,70,63,.28); color:#4a1411;}
+
+    .mini{display:none;}
 
     .fields{
       margin-top:12px;
@@ -303,13 +253,7 @@
       grid-template-columns: 1fr 1fr;
       gap:10px;
     }
-    label{
-      display:flex;
-      flex-direction:column;
-      gap:6px;
-      font-size:12px;
-      color: var(--muted);
-    }
+    label{display:flex; flex-direction:column; gap:6px; font-size:12px; color: var(--muted);}
     input[type="text"], input[type="date"]{
       width:100%;
       padding:10px 10px;
@@ -325,7 +269,7 @@
       box-shadow: 0 0 0 4px rgba(198,162,74,.16);
     }
 
-    .person .footer{
+    .footer{
       margin-top:12px;
       display:flex;
       justify-content:space-between;
@@ -344,10 +288,7 @@
       flex-wrap:wrap;
       gap:12px;
     }
-    .kids .kidwrap{
-      position:relative;
-      padding-left:10px;
-    }
+    .kids .kidwrap{position:relative; padding-left:10px;}
     .kids .kidwrap::before{
       content:"";
       position:absolute;
@@ -359,115 +300,40 @@
       border-radius:2px;
     }
 
-    details.config{
-      margin-top:12px;
-      border:1px solid rgba(0,0,0,.10);
-      background: rgba(255,255,255,.55);
-      border-radius: 14px;
-      padding: 10px 12px;
-    }
-    details.config summary{
-      cursor:pointer;
-      color: var(--text);
-      font-weight:900;
-      font-size:13px;
-    }
-    .cfggrid{
-      margin-top:10px;
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:10px;
-    }
-    .cfggrid .full{grid-column: 1 / -1;}
-    .cfgnote{
-      margin-top:8px;
-      font-size:12px;
-      color: var(--muted);
-      line-height:1.35;
-    }
-
     @media (max-width: 860px){
       .cover-top{grid-template-columns: 1fr;}
       .cover-imgwrap{min-height: 210px;}
     }
+
+    /* Móvil: compacto y “toca para editar” */
     @media (max-width: 560px){
-      .person{width: 100%;}
-      .fields, .cfggrid{grid-template-columns: 1fr;}
-      .kids{padding-left:12px;}
-      .kids .kidwrap{padding-left:8px;}
-      .kids .kidwrap::before{left:-12px; width:12px;}
-      .avatar{width:92px; height:92px;}
+      .fields{grid-template-columns:1fr;}
+      .avatar{width:120px; height:120px; margin:0 auto;}
+      .row{justify-content:center;}
+      .person{width: 170px; padding: 10px;}
+      .person.expanded{width: 100%;}
+
+      .mini{
+        display:block;
+        text-align:center;
+        margin-top:10px;
+        cursor:pointer;
+        user-select:none;
+      }
+      .mini-name{font-weight: 900; font-size: 13px; line-height: 1.1;}
+      .mini-years{font-size: 12px; opacity: .75; margin-top:4px;}
+      .mini-tap{font-size: 11px; opacity: .60; margin-top:6px;}
+
+      /* por defecto ocultamos edición */
+      .role, .photo-actions, .fields, .footer, .kids{display:none;}
+      .person.expanded .role,
+      .person.expanded .photo-actions,
+      .person.expanded .fields,
+      .person.expanded .footer,
+      .person.expanded .kids{display:block;}
+      .person.expanded .photo-actions{display:flex;}
+      .person.expanded .kids{display:flex;}
     }
-
-    /* Ocultar opciones avanzadas para la familia */
-#cfgDetails, #exportBtn, #importBtn { 
-  display: none !important; 
-}
-
-/* Vista móvil compacta: solo foto + mini resumen. Toca para expandir */
-.mini { display:none; }
-
-@media (max-width: 560px){
-  /* Oculta lo grande por defecto */
-  .person .role,
-  .person .photo-actions,
-  .person .fields,
-  .person .footer,
-  .person .kids { display:none; }
-
-  .person{
-    width: 160px;
-    padding: 10px;
-  }
-
-  .avatar{
-    width: 120px;
-    height: 120px;
-    border-radius: 18px;
-    margin: 0 auto;
-  }
-
-  .row{ justify-content:center; }
-
-  .mini{
-    display:block;
-    text-align:center;
-    margin-top:10px;
-  }
-  .mini-name{
-    font-weight: 800;
-    font-size: 13px;
-    line-height: 1.1;
-  }
-  .mini-years{
-    font-size: 12px;
-    opacity: .75;
-    margin-top: 4px;
-  }
-  .mini-tap{
-    font-size: 11px;
-    opacity: .60;
-    margin-top: 6px;
-  }
-
-  /* Cuando se expande, muestra todo y ocupa ancho completo */
-  .person.expanded{
-    width: 100%;
-  }
-  .person.expanded .role,
-  .person.expanded .photo-actions,
-  .person.expanded .fields,
-  .person.expanded .footer,
-  .person.expanded .kids{
-    display:block;
-  }
-  .person.expanded .photo-actions{ display:flex; }
-  .person.expanded .kids{ display:flex; }
-}
-
-label.smallbtn.filelabel,
-label.avatar.tappable { cursor:pointer; user-select:none; }
-    
   </style>
 </head>
 
@@ -476,56 +342,24 @@ label.avatar.tappable { cursor:pointer; user-select:none; }
     <div class="wrap">
       <h1>Árbol genealógico — <span class="brand">Familia Arango</span></h1>
       <div class="sub">
-        Familia Arango, vamos a reconstruir juntos nuestro árbol genealógico, con algo de paciencia tú puedes editar nombres, fechas, fotos y agregar descendientes (nietos/bisnietos) desde cada tarjeta. Desde computador o celular, esta es una prueba piloto puede ser algo lenta, pero obtendremos un resultado bonito que vale la pena compartir, solo la familia tendrá el link en esta fase.
+        Toca una foto para cambiarla. En celular, toca el nombre para editar (se abre la tarjeta).
+        Los cambios se guardan en vivo para todos.
       </div>
-
-      <details class="config" id="cfgDetails">
-        <summary>⚙ Configuración de guardado (Supabase)</summary>
-        <div class="cfggrid">
-          <label class="full">Project URL
-            <input id="cfgUrl" type="text" placeholder="https://xxxx.supabase.co" />
-          </label>
-          <label class="full">Anon / Publishable Key
-            <input id="cfgKey" type="text" placeholder="eyJhbGciOi..." />
-          </label>
-          <label>Tree ID
-            <input id="cfgTree" type="text" placeholder="familia-arango" />
-          </label>
-          <label>Bucket fotos
-            <input id="cfgBucket" type="text" placeholder="family-photos" />
-          </label>
-          <div class="full" style="display:flex; gap:10px; flex-wrap:wrap; margin-top:4px;">
-            <button id="saveCfgBtn" class="btn-primary">Guardar</button>
-            <button id="clearCfgBtn" class="btn-danger">Borrar</button>
-          </div>
-          <div class="cfgnote full">
-            Si la página no guarda, revisa que ya creaste la tabla <b>family_trees</b> y el bucket <b>family-photos</b> con policies.
-          </div>
-        </div>
-      </details>
 
       <div class="toolbar">
-        <div class="btns">
-          <button class="btn-primary" id="addChildBtn">+ Agregar hijo (1ª generación)</button>
-          <button class="btn-soft" id="exportBtn">Exportar JSON</button>
-          <button class="btn-soft" id="importBtn">Importar JSON</button>
-        </div>
-        <div class="pill" title="Estado de conexión">
+        <div class="pill" title="Estado de guardado">
           <span class="dot bad" id="connDot"></span>
-          <span id="connText">Sin configurar</span>
+          <span id="connText">Conectando…</span>
         </div>
-      </div>
-
-      <div class="hint" id="hintBox">
-        Foto familiar.
       </div>
     </div>
   </header>
 
   <main>
     <div class="container">
+
       <!-- Portada -->
-      <section class="cover" id="coverSection">
+      <section class="cover">
         <div class="cover-top">
           <div class="cover-imgwrap">
             <img id="coverImg" alt="Portada familiar" />
@@ -533,11 +367,12 @@ label.avatar.tappable { cursor:pointer; user-select:none; }
           <div class="cover-side">
             <div>
               <h2>Portada familiar</h2>
-              <p>Foto familiar.</p>
+              <p>Foto general (por ejemplo: los 11 hermanitos).</p>
             </div>
             <div class="cover-actions">
-              <button class="btn-primary" id="coverChangeBtn">Cambiar portada</button>
-              <button class="btn-danger" id="coverClearBtn">Quitar portada</button>
+              <!-- label nativo: funciona mejor en móvil -->
+              <label class="btn btn-primary" for="filePicker" id="coverPickLabel">Cambiar portada</label>
+              <button class="btn btn-danger" id="coverClearBtn" type="button">Quitar portada</button>
             </div>
           </div>
         </div>
@@ -546,43 +381,52 @@ label.avatar.tappable { cursor:pointer; user-select:none; }
 
       <div class="divider"></div>
 
-      <!-- Árbol -->
       <section class="gen" id="parentsGen" aria-label="Padres"></section>
       <div class="divider"></div>
       <section class="gen" id="childrenGen" aria-label="Hijos"></section>
     </div>
   </main>
 
+  <!-- Un solo filePicker para TODO (portada y personas). Sin capture: permite galería -->
   <input type="file" id="filePicker" accept="image/*"
-       style="position:fixed; left:-9999px; top:-9999px; width:1px; height:1px; opacity:0;" />
+         style="position:fixed; left:-9999px; top:-9999px; width:1px; height:1px; opacity:0;" />
 
   <script type="module">
     import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.94.1/+esm";
 
-    const CFG_KEY = "arango_supabase_cfg_v3_warm";
+    // ================== CONFIG EMBEBIDA (nadie tiene que pegar nada) ==================
+    const DEFAULT_CFG = {
+      url: "https://rgsgdycllmixpdoivize.supabase.co",
+  key: "sb_publishable__opz94nN9f8XFTmprITCCw_FWBB5Muu",
+      treeId: "familia-arango",
+      bucket: "family-photos"
+    };
+    // IMPORTANTE: pega la key COMPLETA tal como sale en Supabase.
 
-    const cfgUrl    = document.getElementById("cfgUrl");
-    const cfgKey    = document.getElementById("cfgKey");
-    const cfgTree   = document.getElementById("cfgTree");
-    const cfgBucket = document.getElementById("cfgBucket");
-    const saveCfgBtn  = document.getElementById("saveCfgBtn");
-    const clearCfgBtn = document.getElementById("clearCfgBtn");
-
+    // ================== UI refs ==================
     const connDot  = document.getElementById("connDot");
     const connText = document.getElementById("connText");
-    const hintBox  = document.getElementById("hintBox");
 
     const parentsGen  = document.getElementById("parentsGen");
     const childrenGen = document.getElementById("childrenGen");
 
     const coverImg = document.getElementById("coverImg");
-    const coverChangeBtn = document.getElementById("coverChangeBtn");
+    const coverPickLabel = document.getElementById("coverPickLabel");
     const coverClearBtn  = document.getElementById("coverClearBtn");
     const first11Strip   = document.getElementById("first11Strip");
 
-    const filePicker  = document.getElementById("filePicker");
+    const filePicker = document.getElementById("filePicker");
 
-    // Target para uploads: { type:"person", id } o { type:"cover" }
+    // ================== Supabase / Estado ==================
+    let supabase = null;
+    let TREE_ID = DEFAULT_CFG.treeId;
+    let BUCKET  = DEFAULT_CFG.bucket;
+
+    let savingTimer = null;
+    let applyingRemote = false;
+    let channel = null;
+
+    // Target uploads: { type:"cover" } o { type:"person", id }
     let pendingPhotoTarget = null;
 
     function setConn(ok, text){
@@ -590,16 +434,7 @@ label.avatar.tappable { cursor:pointer; user-select:none; }
       connText.textContent = text;
     }
 
-    function loadCfg(){
-      try { return JSON.parse(localStorage.getItem(CFG_KEY) || "null"); } catch { return null; }
-    }
-    function applyCfgToUI(cfg){
-      cfgUrl.value = cfg?.url || "";
-      cfgKey.value = cfg?.key || "";
-      cfgTree.value = cfg?.treeId || "familia-arango";
-      cfgBucket.value = cfg?.bucket || "family-photos";
-    }
-
+    // ================== Placeholders ==================
     const placeholderImg = (() => {
       const svg =
         `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300">
@@ -629,29 +464,47 @@ label.avatar.tappable { cursor:pointer; user-select:none; }
           </defs>
           <rect width="100%" height="100%" fill="url(#g)"/>
           <text x="50%" y="48%" text-anchor="middle" font-size="44" fill="rgba(0,0,0,0.35)" font-family="Arial">Portada familiar</text>
-          <text x="50%" y="56%" text-anchor="middle" font-size="22" fill="rgba(0,0,0,0.28)" font-family="Arial">Foto de los 11 Arango Originales</text>
+          <text x="50%" y="56%" text-anchor="middle" font-size="22" fill="rgba(0,0,0,0.28)" font-family="Arial">Foto general</text>
         </svg>`;
       return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
     })();
 
+    // ================== Helpers ==================
+    function escapeHtml(str) {
+      return String(str)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+    function escapeAttr(str) { return escapeHtml(str).replaceAll("\n"," "); }
+    function yearRange(birth, death){
+      const y = (d) => (d && String(d).length >= 4 ? String(d).slice(0,4) : "");
+      const b = y(birth), dth = y(death);
+      if (b && dth) return `${b}–${dth}`;
+      if (b && !dth) return `${b}–`;
+      if (!b && dth) return `–${dth}`;
+      return "";
+    }
     function makeId(prefix="n"){
       if (crypto?.randomUUID) return `${prefix}_${crypto.randomUUID()}`;
       return `${prefix}_${Date.now()}_${Math.random().toString(16).slice(2)}`;
     }
-
     function makePerson({ role="", id=null } = {}){
       return {
         id: id || makeId("p"),
         role,
-        name: "",
-        birth: "",
-        death: "",
+        name:"",
+        birth:"",
+        death:"",
         photo_url: placeholderImg,
-        photo_path: "",
-        children: []
+        photo_path:"",
+        children:[]
       };
     }
 
+    // ================== Estado inicial ==================
     const defaultState = {
       familyName: "Arango",
       cover_photo_url: placeholderCover,
@@ -663,16 +516,8 @@ label.avatar.tappable { cursor:pointer; user-select:none; }
       children: Array.from({ length: 11 }, (_, i) => makePerson({ id:`c${i+1}`, role:`Hijo/a ${i+1}` }))
     };
 
-    // Estado + Supabase
     let state = structuredClone(defaultState);
-    let supabase = null;
-    let TREE_ID = "familia-arango";
-    let BUCKET  = "family-photos";
-    let savingTimer = null;
-    let applyingRemote = false;
-    let channel = null;
 
-    // -------- Normalización (para datos viejos) --------
     function normalizeNode(node){
       if (!node) return;
       if (!Array.isArray(node.children)) node.children = [];
@@ -694,7 +539,7 @@ label.avatar.tappable { cursor:pointer; user-select:none; }
       return s;
     }
 
-    // -------- Render (conservar foco/cursores) --------
+    // ================== Focus fix (para que no “salte” al escribir) ==================
     function captureFocus(){
       const el = document.activeElement;
       if (!(el instanceof HTMLInputElement)) return null;
@@ -707,40 +552,21 @@ label.avatar.tappable { cursor:pointer; user-select:none; }
         end: el.selectionEnd ?? 0
       };
     }
-
     function restoreFocus(f){
       if (!f?.id || !f?.field) return;
       const q = `.person[data-id="${CSS.escape(f.id)}"] input[data-field="${CSS.escape(f.field)}"]`;
       const input = document.querySelector(q);
       if (!(input instanceof HTMLInputElement)) return;
-      input.focus({ preventScroll: true });
+      input.focus({ preventScroll:true });
       try { input.setSelectionRange(f.start, f.end); } catch {}
     }
 
-    function escapeHtml(str) {
-      return String(str)
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;")
-        .replaceAll("'","&#039;");
-    }
-    function escapeAttr(str) { return escapeHtml(str).replaceAll("\n"," "); }
-    function yearRange(birth, death){
-  const y = (d) => (d && String(d).length >= 4 ? String(d).slice(0,4) : "");
-  const b = y(birth), dth = y(death);
-  if (b && dth) return `${b}–${dth}`;
-  if (b && !dth) return `${b}–`;
-  if (!b && dth) return `–${dth}`;
-  return "";
-}
-
+    // ================== Render ==================
     function renderCover(){
       coverImg.src = state.cover_photo_url || placeholderCover;
 
       first11Strip.innerHTML = "";
       const first11 = (state.children || []).slice(0, 11);
-
       first11.forEach((p, idx) => {
         const chip = document.createElement("div");
         chip.className = "sib";
@@ -748,9 +574,7 @@ label.avatar.tappable { cursor:pointer; user-select:none; }
         img.src = p.photo_url || placeholderImg;
         img.alt = `Hijo ${idx+1}`;
         const name = document.createElement("span");
-        const label = (p.name && p.name.trim()) ? p.name.trim() : `Hijo ${idx+1}`;
-        name.textContent = label;
-
+        name.textContent = (p.name && p.name.trim()) ? p.name.trim() : `Hijo ${idx+1}`;
         chip.appendChild(img);
         chip.appendChild(name);
         first11Strip.appendChild(chip);
@@ -758,126 +582,135 @@ label.avatar.tappable { cursor:pointer; user-select:none; }
     }
 
     function personCard(node, { removable=false, compact=false } = {}) {
-  const el = document.createElement("article");
-  el.className = "person" + (compact ? " sub" : "");
-  el.dataset.id = node.id;
+      const el = document.createElement("article");
+      el.className = "person" + (compact ? " sub" : "");
+      el.dataset.id = node.id;
 
-  const imgSrc = node.photo_url || placeholderImg;
+      const imgSrc = node.photo_url || placeholderImg;
+      const miniName = (node.name && node.name.trim()) ? node.name.trim() : "Sin nombre";
+      const miniYears = yearRange(node.birth, node.death);
 
-  el.innerHTML = `
-    <div class="role">
-      <b>${escapeHtml(node.role || "")}</b>
-      ${removable ? `<button class="smallbtn remove" data-action="remove" type="button">Eliminar</button>` : `<span></span>`}
-    </div>
+      el.innerHTML = `
+        <div class="role">
+          <b>${escapeHtml(node.role || "")}</b>
+          ${removable ? `<button class="smallbtn remove" data-action="remove" type="button">Eliminar</button>` : `<span></span>`}
+        </div>
 
-    <div class="row">
-      <!-- ✅ Tocar la foto cambia la foto (abre filePicker nativo) -->
-      <label class="avatar tappable" for="filePicker" data-action="photo" title="Toca para cambiar la foto">
-        <img alt="Foto de ${escapeHtml(node.role || "persona")}" src="${imgSrc}">
-      </label>
+        <div class="row">
+          <!-- Foto: tocar abre selector (label nativo) -->
+          <label class="avatar" for="filePicker" data-action="photo" title="Toca para cambiar la foto">
+            <img alt="Foto" src="${imgSrc}">
+          </label>
 
-      <div class="photo-actions">
-        <!-- ✅ También dejo el botón por si lo prefieren -->
-        <label class="smallbtn filelabel" for="filePicker" data-action="photo">Cambiar foto</label>
-        <button class="smallbtn" data-action="clearPhoto" type="button">Quitar foto</button>
-        <button class="smallbtn addkid" data-action="addChild" type="button">+ Agregar hijo/a</button>
-      </div>
-    </div>
+          <div class="photo-actions">
+            <button class="smallbtn addkid" data-action="addChild" type="button">+ Agregar hijo/a</button>
+            <button class="smallbtn" data-action="clearPhoto" type="button">Quitar foto</button>
+          </div>
+        </div>
 
-    <div class="fields">
-      <label>
-        Nombre
-        <input type="text" data-field="name" placeholder="Escribe el nombre" value="${escapeAttr(node.name || "")}">
-      </label>
+        <div class="mini" data-action="toggle">
+          <div class="mini-name">${escapeHtml(miniName)}</div>
+          <div class="mini-years">${escapeHtml(miniYears)}</div>
+          <div class="mini-tap">Toca aquí para editar</div>
+        </div>
 
-      <label>
-        Nacimiento
-        <input type="date" data-field="birth" value="${escapeAttr(node.birth || "")}">
-      </label>
+        <div class="fields">
+          <label>Nombre
+            <input type="text" data-field="name" placeholder="Escribe el nombre" value="${escapeAttr(node.name || "")}">
+          </label>
+          <label>Nacimiento
+            <input type="date" data-field="birth" value="${escapeAttr(node.birth || "")}">
+          </label>
+          <label>Fallecimiento (opcional)
+            <input type="date" data-field="death" value="${escapeAttr(node.death || "")}">
+          </label>
+          <label>Cariñosamente
+            <input type="text" data-field="role" placeholder="Apodo en casa" value="${escapeAttr(node.role || "")}">
+          </label>
+        </div>
 
-      <label>
-        Fallecimiento (opcional)
-        <input type="date" data-field="death" value="${escapeAttr(node.death || "")}">
-      </label>
+        <div class="footer">
+          <span>${escapeHtml(node.id)}</span>
+          <span>Familia Arango</span>
+        </div>
+      `;
 
-      <label>
-        Cariñosamente
-        <input type="text" data-field="role" placeholder="Ej: El apodo en casa" value="${escapeAttr(node.role || "")}">
-      </label>
-    </div>
+      // ✅ Antes de que abra el selector, guardamos a quién le toca la foto
+      el.addEventListener("pointerdown", (e) => {
+        const lab = e.target.closest('label[data-action="photo"]');
+        if (!lab) return;
+        const ownerCard = lab.closest(".person");
+        if (ownerCard !== el) return;
 
-    <div class="footer">
-      <span>ID: <code style="color:#cfe2ff">${escapeHtml(node.id)}</code></span>
-      <span style="opacity:.9">Arango • Árbol</span>
-    </div>
-  `;
+        pendingPhotoTarget = { type:"person", id: node.id };
+        filePicker.value = "";
+      });
 
-  // ✅ FIX 1: Evita que inputs de nietos/bisnietos actualicen al padre (bubbling)
-  el.addEventListener("input", (e) => {
-    const input = e.target;
-    if (!(input instanceof HTMLInputElement)) return;
+      // ✅ Móvil: tocar mini abre/cierra edición
+      el.addEventListener("click", (e) => {
+        const isMobile = window.matchMedia("(max-width: 560px)").matches;
 
-    const ownerCard = input.closest(".person");
-    if (ownerCard !== el) return;
+        const mini = e.target.closest('.mini[data-action="toggle"]');
+        if (isMobile && mini) {
+          const ownerCard = mini.closest(".person");
+          if (ownerCard !== el) return;
+          el.classList.toggle("expanded");
+          return;
+        }
 
-    const field = input.dataset.field;
-    if (!field) return;
+        const actionEl = e.target.closest("button");
+        if (!actionEl) return;
 
-    patchNode(node.id, { [field]: input.value });
-  });
+        const ownerCard = actionEl.closest(".person");
+        if (ownerCard !== el) return;
 
-  // ✅ FIX 2: Soporta botones + labels(data-action) y evita acciones “heredadas” del padre
-  el.addEventListener("click", (e) => {
-    const actionEl = e.target.closest("button, label[data-action]");
-    if (!actionEl) return;
+        const action = actionEl.dataset.action;
+        if (!action) return;
 
-    const ownerCard = actionEl.closest(".person");
-    if (ownerCard !== el) return;
+        if (action === "clearPhoto") {
+          patchNode(node.id, { photo_url: placeholderImg, photo_path: "" });
+          scheduleSave();
+          return;
+        }
+        if (action === "addChild") {
+          addChildTo(node.id);
+          return;
+        }
+        if (action === "remove") {
+          removeNode(node.id);
+          return;
+        }
+      });
 
-    const action = actionEl.dataset.action;
-    if (!action) return;
+      // ✅ FIX: evita que inputs de nietos/bisnietos actualicen al padre (bubbling)
+      el.addEventListener("input", (e) => {
+        const input = e.target;
+        if (!(input instanceof HTMLInputElement)) return;
 
-    if (action === "photo") {
-      // No hacemos click() aquí: el <label for="filePicker"> abre nativamente el selector
-      pendingPhotoTargetId = node.id;
-      filePicker.value = ""; // permite elegir la misma foto otra vez
-      return;
+        const ownerCard = input.closest(".person");
+        if (ownerCard !== el) return;
+
+        const field = input.dataset.field;
+        if (!field) return;
+
+        patchNode(node.id, { [field]: input.value });
+      });
+
+      // Descendientes
+      if (Array.isArray(node.children) && node.children.length > 0) {
+        const kids = document.createElement("div");
+        kids.className = "kids";
+        node.children.forEach(child => {
+          const wrap = document.createElement("div");
+          wrap.className = "kidwrap";
+          wrap.appendChild(renderNode(child, { levelCompact:true }));
+          kids.appendChild(wrap);
+        });
+        el.appendChild(kids);
+      }
+
+      return el;
     }
-
-    if (action === "clearPhoto") {
-      patchNode(node.id, { photo_url: placeholderImg, photo_path: "" });
-      scheduleSave();
-      return;
-    }
-
-    if (action === "addChild") {
-      addChildTo(node.id);
-      return;
-    }
-
-    if (action === "remove") {
-      removeNode(node.id);
-      return;
-    }
-  });
-
-  // Render descendientes (nietos/bisnietos...)
-  if (Array.isArray(node.children) && node.children.length > 0) {
-    const kids = document.createElement("div");
-    kids.className = "kids";
-
-    node.children.forEach(child => {
-      const wrap = document.createElement("div");
-      wrap.className = "kidwrap";
-      wrap.appendChild(renderNode(child, { levelCompact:true }));
-      kids.appendChild(wrap);
-    });
-
-    el.appendChild(kids);
-  }
-
-  return el;
-}
 
     function renderNode(node, { levelCompact=false } = {}) {
       return personCard(node, { removable:true, compact: levelCompact });
@@ -887,7 +720,6 @@ label.avatar.tappable { cursor:pointer; user-select:none; }
       const f = captureFocus();
 
       renderCover();
-
       parentsGen.innerHTML = "";
       childrenGen.innerHTML = "";
 
@@ -897,7 +729,17 @@ label.avatar.tappable { cursor:pointer; user-select:none; }
       restoreFocus(f);
     }
 
-    // --------- Búsqueda / Edición / Eliminación ---------
+    // ================== Buscar / actualizar ==================
+    function findInChildren(parentNode, id){
+      if (!parentNode?.children?.length) return null;
+      for (const child of parentNode.children) {
+        if (child.id === id) return { node:child, parent: parentNode, parentChildrenArray: parentNode.children };
+        const deeper = findInChildren(child, id);
+        if (deeper) return deeper;
+      }
+      return null;
+    }
+
     function findNodeById(id){
       for (const p of state.parents) {
         if (p.id === id) return { node:p, parent:null, parentChildrenArray:null };
@@ -908,16 +750,6 @@ label.avatar.tappable { cursor:pointer; user-select:none; }
         if (c.id === id) return { node:c, parent:null, parentChildrenArray: state.children };
         const hit = findInChildren(c, id);
         if (hit) return hit;
-      }
-      return null;
-    }
-
-    function findInChildren(parentNode, id){
-      if (!parentNode?.children?.length) return null;
-      for (const child of parentNode.children) {
-        if (child.id === id) return { node:child, parent: parentNode, parentChildrenArray: parentNode.children };
-        const deeper = findInChildren(child, id);
-        if (deeper) return deeper;
       }
       return null;
     }
@@ -933,81 +765,38 @@ label.avatar.tappable { cursor:pointer; user-select:none; }
     function addChildTo(parentId){
       const hit = findNodeById(parentId);
       if (!hit?.node) return;
+
       const parent = hit.node;
       if (!Array.isArray(parent.children)) parent.children = [];
+
       const nextIndex = parent.children.length + 1;
       const child = makePerson({ role: `Hijo/a ${nextIndex}` });
       parent.children.push(child);
+
       renderAll();
       scheduleSave();
     }
 
     function removeNode(id){
+      // Bloquear borrar padres y los 11 hijos raíz (para evitar accidentes)
       if (id === "p1" || id === "p2") return alert("No se pueden eliminar los padres.");
-
-      const idxRoot = state.children.findIndex(x => x.id === id);
-      if (idxRoot >= 0) {
-        state.children.splice(idxRoot, 1);
-        state.children.forEach((c, i) => { if (/^Hijo\/a\s+\d+$/.test(c.role || "")) c.role = `Hijo/a ${i+1}`; });
-        renderAll();
-        scheduleSave();
-        return;
-      }
+      if (/^c([1-9]|10|11)$/.test(id)) return alert("Estos 11 hijos no se eliminan (solo edita nombre/foto).");
 
       const hit = findNodeById(id);
       if (!hit?.parentChildrenArray) return;
-      const i = hit.parentChildrenArray.findIndex(x => x.id === id);
-      if (i >= 0) {
-        hit.parentChildrenArray.splice(i, 1);
+
+      const idx = hit.parentChildrenArray.findIndex(x => x.id === id);
+      if (idx >= 0) {
+        hit.parentChildrenArray.splice(idx, 1);
         renderAll();
         scheduleSave();
       }
     }
 
-    // --------- Acciones generales ---------
-    document.getElementById("addChildBtn").addEventListener("click", () => {
-      const nextIndex = state.children.length + 1;
-      state.children.push(makePerson({ role:`Hijo/a ${nextIndex}` }));
-      renderAll();
-      scheduleSave();
-    });
-
-    document.getElementById("exportBtn").addEventListener("click", () => {
-      const json = JSON.stringify(state, null, 2);
-      const blob = new Blob([json], { type: "application/json" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "familia_arango_arbol.json";
-      a.click();
-      URL.revokeObjectURL(url);
-    });
-
-    document.getElementById("importBtn").addEventListener("click", async () => {
-      const input = document.createElement("input");
-      input.type = "file";
-      input.accept = "application/json";
-      input.onchange = async () => {
-        const file = input.files?.[0];
-        if (!file) return;
-        const text = await file.text();
-        try {
-          const parsed = JSON.parse(text);
-          state = normalizeState(parsed);
-          renderAll();
-          scheduleSave();
-        } catch {
-          alert("No se pudo importar. Verifica que sea un JSON exportado desde esta página.");
-        }
-      };
-      input.click();
-    });
-
-    // --------- Portada: subir/quitar ---------
-    coverChangeBtn.addEventListener("click", () => {
+    // ================== Portada ==================
+    coverPickLabel.addEventListener("pointerdown", () => {
       pendingPhotoTarget = { type:"cover" };
       filePicker.value = "";
-      filePicker.click();
     });
 
     coverClearBtn.addEventListener("click", () => {
@@ -1017,53 +806,46 @@ label.avatar.tappable { cursor:pointer; user-select:none; }
       scheduleSave();
     });
 
-    // --------- Fotos: subir a Supabase Storage ---------
+    // ================== Subir fotos (personas / portada) ==================
     filePicker.addEventListener("change", async () => {
       const file = filePicker.files?.[0];
       if (!file || !pendingPhotoTarget) return;
-      if (!supabase) return alert("Configura Supabase primero.");
+      if (!supabase) return alert("No hay conexión con Supabase (revisa URL/Key en el código).");
 
       try {
-        const jpgBlob = await compressImageToJpeg(file, 1400, 0.85);
-        const ts = Date.now();
+        const maxSide = (pendingPhotoTarget.type === "cover") ? 1400 : 900;
+        const jpgBlob = await compressImageToJpeg(file, maxSide, 0.85);
 
-        let path = "";
-        if (pendingPhotoTarget.type === "cover") {
-          path = `${TREE_ID}/cover_${ts}.jpg`;
-        } else {
-          path = `${TREE_ID}/${pendingPhotoTarget.id}_${ts}.jpg`;
-        }
+        const ts = Date.now();
+        const path = (pendingPhotoTarget.type === "cover")
+          ? `${TREE_ID}/cover_${ts}.jpg`
+          : `${TREE_ID}/${pendingPhotoTarget.id}_${ts}.jpg`;
 
         const { error: upErr } = await supabase.storage
           .from(BUCKET)
           .upload(path, jpgBlob, { contentType: "image/jpeg" });
-
         if (upErr) throw upErr;
 
-        const { data: pub } = supabase.storage
-          .from(BUCKET)
-          .getPublicUrl(path);
-
+        const { data: pub } = supabase.storage.from(BUCKET).getPublicUrl(path);
         const publicUrl = pub?.publicUrl || placeholderImg;
 
         if (pendingPhotoTarget.type === "cover") {
           state.cover_photo_url = publicUrl;
           state.cover_photo_path = path;
+          renderAll();
+          scheduleSave();
         } else {
           patchNode(pendingPhotoTarget.id, { photo_url: publicUrl, photo_path: path });
         }
 
         pendingPhotoTarget = null;
-        renderAll();
-        scheduleSave();
-
       } catch (e) {
         console.error(e);
-        alert("No se pudo subir la foto. Revisa el bucket y las policies (insert/select) para anon.");
+        alert("No se pudo subir la foto. Revisa bucket/policies (insert/select) y que el bucket sea público.");
       }
     });
 
-    async function compressImageToJpeg(file, maxSide=1400, quality=0.85){
+    async function compressImageToJpeg(file, maxSide=900, quality=0.85){
       const img = await fileToImage(file);
       const { w, h } = fitBox(img.width, img.height, maxSide);
       const canvas = document.createElement("canvas");
@@ -1086,7 +868,7 @@ label.avatar.tappable { cursor:pointer; user-select:none; }
       });
     }
 
-    // --------- Supabase: guardado ---------
+    // ================== Guardado (debounce) ==================
     function scheduleSave(){
       if (!supabase) return;
       if (applyingRemote) return;
@@ -1110,9 +892,9 @@ label.avatar.tappable { cursor:pointer; user-select:none; }
 
       if (error) {
         console.error(error);
-        setConn(false, "Error guardando (revisa RLS/tabla)");
+        setConn(false, "Error guardando");
       } else {
-        setConn(true, "Conectado y guardando");
+        setConn(true, "Guardado en vivo");
       }
     }
 
@@ -1125,7 +907,7 @@ label.avatar.tappable { cursor:pointer; user-select:none; }
 
       if (error) {
         console.error(error);
-        setConn(false, "No puedo leer (revisa RLS)");
+        setConn(false, "No puedo leer (RLS)");
         return;
       }
 
@@ -1136,7 +918,7 @@ label.avatar.tappable { cursor:pointer; user-select:none; }
 
         if (insErr) {
           console.error(insErr);
-          setConn(false, "No puedo crear (revisa RLS)");
+          setConn(false, "No puedo crear (RLS)");
           return;
         }
         state = structuredClone(defaultState);
@@ -1149,100 +931,46 @@ label.avatar.tappable { cursor:pointer; user-select:none; }
     }
 
     function subscribeRealtime(){
-      if (!supabase) return;
       if (channel) {
         try { supabase.removeChannel(channel); } catch {}
       }
+
       channel = supabase
         .channel(`tree:${TREE_ID}`)
         .on(
           "postgres_changes",
-          { event: "*", schema: "public", table: "family_trees", filter: `id=eq.${TREE_ID}` },
+          { event:"*", schema:"public", table:"family_trees", filter:`id=eq.${TREE_ID}` },
           (payload) => {
             const newData = payload?.new?.data;
             if (!newData) return;
+
             applyingRemote = true;
             state = normalizeState(newData);
             renderAll();
             applyingRemote = false;
+
             setConn(true, "Actualizado en vivo");
           }
         )
         .subscribe();
     }
 
-    // --------- Config UI ---------
-    saveCfgBtn.addEventListener("click", async () => {
-      const url = cfgUrl.value.trim();
-      const key = cfgKey.value.trim();
-      const treeId = (cfgTree.value.trim() || "familia-arango").trim();
-      const bucket = (cfgBucket.value.trim() || "family-photos").trim();
+    // ================== Boot ==================
+    async function boot(){
+      TREE_ID = DEFAULT_CFG.treeId;
+      BUCKET  = DEFAULT_CFG.bucket;
 
-      if (!url || !key) return alert("Pega Project URL y Anon Key.");
+      supabase = createClient(DEFAULT_CFG.url, DEFAULT_CFG.key);
 
-      const cfg = { url, key, treeId, bucket };
-      localStorage.setItem(CFG_KEY, JSON.stringify(cfg));
-      await boot(cfg);
-      alert("Configuración guardada.");
-    });
-
-    clearCfgBtn.addEventListener("click", () => {
-      localStorage.removeItem(CFG_KEY);
-      applyCfgToUI(null);
-      supabase = null;
-      setConn(false, "Sin configurar");
-      alert("Listo. Se borró la configuración.");
-    });
-
-    async function boot(cfg){
-      TREE_ID = cfg.treeId;
-      BUCKET  = cfg.bucket;
-      supabase = createClient(cfg.url, cfg.key);
-      setConn(true, "Conectando...");
+      setConn(true, "Conectando…");
       await ensureRow();
       subscribeRealtime();
-      hintBox.textContent = "Los cambios de nombres/fotos se guardan automáticamente con una espera de algunos segundos. Si no ves los cambios, puedes recargar la página.";
     }
 
-// ================== DEFAULT CFG (para que la familia NO configure nada) ==================
-const DEFAULT_CFG = {
-  url: "https://rgsgdycllmixpdoivize.supabase.co",
-  key: "sb_publishable__opz94nN9f8XFTmprITCCw_FWBB5Muu",
-  treeId: "familia-arango",
-  bucket: "family-photos"
-};
-
-// ================== Init ==================
-let cfg = loadCfg();
-
-// Si no hay cfg guardada en este dispositivo, usa la DEFAULT del código
-if (!cfg?.url || !cfg?.key) cfg = DEFAULT_CFG;
-
-// (Opcional) Mostrar en el formulario lo que se está usando
-applyCfgToUI(cfg);
-
-// Render inicial
-state = normalizeState(state);
-renderAll();
-
-// Conectar automáticamente
-if (cfg?.url && cfg?.key) {
-  await boot(cfg);
-} else {
-  setConn(false, "Sin configurar");
-}
-
+    // Init
+    state = normalizeState(state);
+    renderAll();
+    await boot();
   </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
