@@ -441,16 +441,6 @@
 
     const waBtn = document.getElementById("waBtn");
 
-// ✅ Cambia aquí tu número (formato internacional, sin +, sin espacios)
-// Colombia: 57 + número. Ej: 573001112233
-const WHATSAPP_NUMBER = "573004525134";
-
-const WA_MESSAGE = "Hola Gaby, te escribo sobre una corrección/recuerdo del Árbol Familiar Arango.";
-
-waBtn.href =
-  `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WA_MESSAGE)}`;
-
-
     let supabase = null;
     let TREE_ID = DEFAULT_CFG.treeId;
     let BUCKET  = DEFAULT_CFG.bucket;
@@ -1021,6 +1011,7 @@ waBtn.href =
   </script>
 </body>
 </html>
+
 
 
 
