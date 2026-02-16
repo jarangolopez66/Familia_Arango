@@ -406,7 +406,7 @@
     <div class="wrap">
       <h1>Árbol genealógico — <span class="brand">Familia Arango</span></h1>
       <div class="sub">
-        Puedes editar nombres, fechas, fotos y agregar descendientes (nietos/bisnietos) desde cada tarjeta.
+        Familia Arango, vamos a reconstruir juntos nuestro árbol genealógico, con algo de paciencia tú puedes editar nombres, fechas, fotos y agregar descendientes (nietos/bisnietos) desde cada tarjeta. Desde computador o celular, esta es una prueba piloto puede ser algo lenta, pero obtendremos un resultado bonito que vale la pena compartir, solo la familia tendrá el link en esta fase.
       </div>
 
       <details class="config" id="cfgDetails">
@@ -1098,7 +1098,7 @@
       setConn(true, "Conectando...");
       await ensureRow();
       subscribeRealtime();
-      hintBox.textContent = "Listo: cambios de nombres/fotos se guardan automáticamente. Si alguien no ve cambios, que recargue la página.";
+      hintBox.textContent = "Los cambios de nombres/fotos se guardan automáticamente con una espera de algunos segundos. Si alguien no ve cambios, puede recargar la página.";
     }
 
 // ================== DEFAULT CFG (para que la familia NO configure nada) ==================
@@ -1132,6 +1132,7 @@ if (cfg?.url && cfg?.key) {
   </script>
 </body>
 </html>
+
 
 
 
