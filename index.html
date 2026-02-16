@@ -830,12 +830,15 @@
   // ✅ Si estás en celular y tocas la foto o el resumen, expandir/contraer tarjeta
   const isMobile = window.matchMedia("(max-width: 560px)").matches;
   const toggleHit = e.target.closest(".avatar, .mini");
-  if (isMobile && toggleHit) {
-    const ownerCard = toggleHit.closest(".person");
-    if (ownerCard !== el) return; // no tocar el padre
-    el.classList.toggle("expanded");
-    return;
-  }
+const clickedButton = e.target.closest("button");
+
+// Solo hace toggle si NO estás tocando un botón
+if (isMobile && toggleHit && !clickedButton) {
+  const ownerCard = toggleHit.closest(".person");
+  if (ownerCard !== el) return;
+  el.classList.toggle("expanded");
+  return;
+}
 
   const btn = e.target.closest("button");
   if (!btn) return;
@@ -849,9 +852,9 @@
 
  if (action === "photo") {
   pendingPhotoTargetId = node.id;
-  filePicker.value = "";
-  if (typeof filePicker.showPicker === "function") filePicker.showPicker();
-  else filePicker.click();
+filePicker.value = "";
+if (typeof filePicker.showPicker === "function") filePicker.showPicker();
+else filePicker.click();
 }
 
   if (action === "clearPhoto") {
@@ -1237,6 +1240,7 @@ if (cfg?.url && cfg?.key) {
   </script>
 </body>
 </html>
+
 
 
 
