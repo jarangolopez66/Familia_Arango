@@ -283,12 +283,45 @@
     }
 
     /* tamaños y diferencia por nivel */
-    .lvl-parent .circle{ width:110px; height:110px; border-width: 4px; border-color: rgba(198,162,74,.78); box-shadow: 0 0 0 6px rgba(198,162,74,.14), 0 10px 22px rgba(0,0,0,.10); }
-    .lvl-original .circle{ width:98px;  height:98px;  border-width: 3px; border-color: rgba(198,162,74,.62); box-shadow: 0 0 0 5px rgba(198,162,74,.10), 0 9px 18px rgba(0,0,0,.10); }
-    .lvl-1 .circle{       width:66px;  height:66px;  border-width: 2px; border-color: rgba(0,0,0,.16); }
-    .lvl-2 .circle{       width:56px;  height:56px;  border-width: 2px; border-color: rgba(0,0,0,.14); opacity:.98; }
-    .lvl-3 .circle{       width:48px;  height:48px;  border-width: 2px; border-color: rgba(0,0,0,.12); opacity:.96; }
+    /* tamaños y diferencia por nivel */
+.lvl-parent .circle{
+  width:110px; height:110px;
+  border-width: 4px;
+  border-color: rgba(198,162,74,.78);
+  box-shadow: 0 0 0 6px rgba(198,162,74,.14), 0 10px 22px rgba(0,0,0,.10);
+}
+.lvl-original .circle{
+  width:98px; height:98px;
+  border-width: 3px;
+  border-color: rgba(198,162,74,.60);
+  box-shadow: 0 0 0 5px rgba(198,162,74,.10), 0 9px 18px rgba(0,0,0,.10);
+}
 
+/* Nietos (plateado) */
+.lvl-1 .circle{
+  width:66px; height:66px;
+  border-width: 2px;
+  border-color: rgba(185,193,206,.95);
+  box-shadow: 0 0 0 3px rgba(185,193,206,.16);
+}
+
+/* Bisnietos (azul) */
+.lvl-2 .circle{
+  width:56px; height:56px;
+  border-width: 2px;
+  border-color: rgba(79,134,198,.95);
+  box-shadow: 0 0 0 3px rgba(79,134,198,.14);
+  opacity:.98;
+}
+
+/* Hijos de bisnietos y más (azul muy claro) */
+.lvl-3 .circle{
+  width:48px; height:48px;
+  border-width: 2px;
+  border-color: rgba(207,225,246,.95);
+  box-shadow: 0 0 0 3px rgba(207,225,246,.16);
+  opacity:.96;
+}
     /* Conectores */
     .childrenGroup{
       position:relative;
@@ -930,37 +963,48 @@
       return el;
     }
 
-    // ======= SUBÁRBOL (hasta 4 niveles visuales) =======
-    function renderSubtree(node, depth, { isOriginal=false } = {}){
-      const wrap = document.createElement("div");
-      wrap.className = "subtree";
+   // ======= SUBÁRBOL (hasta 4+ niveles visuales) =======
+const MAX_DEPTH = 8; // si nacen más generaciones, sube este número
 
-      const lvlCls = (depth === 0)
-        ? (isOriginal ? "lvl-original" : "lvl-1")  // raíz de columna (hijo original) o hijo extra
-        : (depth === 1 ? "lvl-1" : depth === 2 ? "lvl-2" : "lvl-3");
+function depthClass(depth){
+  // depth 0 = hijo original (protagonista)
+  // depth 1 = nieto
+  // depth 2 = bisnieto
+  // depth >=3 = tataranietos y más (más claro)
+  if (depth === 0) return "gen1";
+  if (depth === 1) return "gen2";
+  if (depth === 2) return "gen3";
+  if (depth === 3) return "gen4";
+  return "gen5plus";
+}
 
-      wrap.appendChild(renderNodeCircle(node, lvlCls));
+function renderSubtree(node, depth = 0, { isOriginal = false } = {}) {
+  const wrap = document.createElement("div");
+  wrap.className = "subtreeWrap";
 
-      if (Array.isArray(node.children) && node.children.length > 0 && depth < 3){
-        const group = document.createElement("div");
-        group.className = "childrenGroup";
+  const lvlCls = depthClass(depth) + (isOriginal ? " original" : "");
+  wrap.appendChild(renderNodeCircle(node, lvlCls));
 
-        const row = document.createElement("div");
-        row.className = "childrenRow";
+  if (Array.isArray(node.children) && node.children.length > 0 && depth < MAX_DEPTH) {
+    const group = document.createElement("div");
+    group.className = "childrenGroup";
 
-        node.children.forEach(ch => {
-          const cw = document.createElement("div");
-          cw.className = "childWrap";
-          cw.appendChild(renderSubtree(ch, depth + 1, { isOriginal:false }));
-          row.appendChild(cw);
-        });
+    const row = document.createElement("div");
+    row.className = "childrenRow";
 
-        group.appendChild(row);
-        wrap.appendChild(group);
-      }
+    node.children.forEach(ch => {
+      const cw = document.createElement("div");
+      cw.className = "childWrap";
+      cw.appendChild(renderSubtree(ch, depth + 1, { isOriginal: false }));
+      row.appendChild(cw);
+    });
 
-      return wrap;
-    }
+    group.appendChild(row);
+    wrap.appendChild(group);
+  }
+
+  return wrap;
+}
 
     // ======= Render general =======
     function renderAll(){
@@ -1258,6 +1302,7 @@ function findNodeById(id){
   </script>
 </body>
 </html>
+
 
 
 
