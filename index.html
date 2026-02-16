@@ -464,6 +464,9 @@
   .person.expanded .photo-actions{ display:flex; }
   .person.expanded .kids{ display:flex; }
 }
+
+label.smallbtn.filelabel,
+label.avatar.tappable { cursor:pointer; user-select:none; }
     
   </style>
 </head>
@@ -550,7 +553,7 @@
     </div>
   </main>
 
-  <input type="file" id="filePicker" accept="image/*" capture="environment"
+  <input type="file" id="filePicker" accept="image/*"
        style="position:fixed; left:-9999px; top:-9999px; width:1px; height:1px; opacity:0;" />
 
   <script type="module">
@@ -755,134 +758,126 @@
     }
 
     function personCard(node, { removable=false, compact=false } = {}) {
-      const el = document.createElement("article");
-      el.className = "person" + (compact ? " sub" : "");
-      el.dataset.id = node.id;
+  const el = document.createElement("article");
+  el.className = "person" + (compact ? " sub" : "");
+  el.dataset.id = node.id;
 
-      const imgSrc = node.photo_url || placeholderImg;
+  const imgSrc = node.photo_url || placeholderImg;
 
-      el.innerHTML = `
-        <div class="role">
-          <b>${escapeHtml(node.role || "")}</b>
-          ${removable ? `<button class="smallbtn remove" data-action="remove">Eliminar</button>` : `<span></span>`}
-        </div>
+  el.innerHTML = `
+    <div class="role">
+      <b>${escapeHtml(node.role || "")}</b>
+      ${removable ? `<button class="smallbtn remove" data-action="remove" type="button">Eliminar</button>` : `<span></span>`}
+    </div>
 
-        <div class="row">
-          <div class="avatar">
-            <img alt="Foto de ${escapeHtml(node.role || "persona")}" src="${imgSrc}">
-          </div>
-          <div class="photo-actions">
-            <button class="smallbtn" data-action="photo">Cambiar foto</button>
-            <button class="smallbtn" data-action="clearPhoto">Quitar foto</button>
-            <button class="smallbtn addkid" data-action="addChild">+ Agregar hijo/a</button>
-          </div>
-        </div>
+    <div class="row">
+      <!-- ✅ Tocar la foto cambia la foto (abre filePicker nativo) -->
+      <label class="avatar tappable" for="filePicker" data-action="photo" title="Toca para cambiar la foto">
+        <img alt="Foto de ${escapeHtml(node.role || "persona")}" src="${imgSrc}">
+      </label>
 
-        <div class="mini">
-          <div class="mini-name">${escapeHtml((node.name || "").trim() || "Sin nombre")}</div>
-          <div class="mini-years">${escapeHtml(yearRange(node.birth, node.death))}</div>
-          <div class="mini-tap">Toca para editar</div>
-        </div>
+      <div class="photo-actions">
+        <!-- ✅ También dejo el botón por si lo prefieren -->
+        <label class="smallbtn filelabel" for="filePicker" data-action="photo">Cambiar foto</label>
+        <button class="smallbtn" data-action="clearPhoto" type="button">Quitar foto</button>
+        <button class="smallbtn addkid" data-action="addChild" type="button">+ Agregar hijo/a</button>
+      </div>
+    </div>
 
-        <div class="fields">
-          <label>
-            Nombre
-            <input type="text" data-field="name" placeholder="Escribe el nombre" value="${escapeAttr(node.name || "")}">
-          </label>
+    <div class="fields">
+      <label>
+        Nombre
+        <input type="text" data-field="name" placeholder="Escribe el nombre" value="${escapeAttr(node.name || "")}">
+      </label>
 
-          <label>
-            Nacimiento
-            <input type="date" data-field="birth" value="${escapeAttr(node.birth || "")}">
-          </label>
+      <label>
+        Nacimiento
+        <input type="date" data-field="birth" value="${escapeAttr(node.birth || "")}">
+      </label>
 
-          <label>
-            Fallecimiento
-            <input type="date" data-field="death" value="${escapeAttr(node.death || "")}">
-          </label>
+      <label>
+        Fallecimiento (opcional)
+        <input type="date" data-field="death" value="${escapeAttr(node.death || "")}">
+      </label>
 
-          <label>
-            Cariñosamente
-            <input type="text" data-field="role" placeholder="Ej: Nieto/a 1" value="${escapeAttr(node.role || "")}">
-          </label>
-        </div>
+      <label>
+        Cariñosamente
+        <input type="text" data-field="role" placeholder="Ej: El apodo en casa" value="${escapeAttr(node.role || "")}">
+      </label>
+    </div>
 
-        <div class="footer">
-          <span>ID: <code style="color:rgba(0,0,0,.55)">${escapeHtml(node.id)}</code></span>
-          <span style="opacity:.85">Familia Arango</span>
-        </div>
-      `;
+    <div class="footer">
+      <span>ID: <code style="color:#cfe2ff">${escapeHtml(node.id)}</code></span>
+      <span style="opacity:.9">Arango • Árbol</span>
+    </div>
+  `;
 
-     el.addEventListener("input", (e) => {
-  const input = e.target;
-  if (!(input instanceof HTMLInputElement)) return;
+  // ✅ FIX 1: Evita que inputs de nietos/bisnietos actualicen al padre (bubbling)
+  el.addEventListener("input", (e) => {
+    const input = e.target;
+    if (!(input instanceof HTMLInputElement)) return;
 
-  // ✅ IMPORTANTE: evita que el input de un nieto/bisnieto actualice al padre
-  const ownerCard = input.closest(".person");
-  if (ownerCard !== el) return;
+    const ownerCard = input.closest(".person");
+    if (ownerCard !== el) return;
 
-  const field = input.dataset.field;
-  if (!field) return;
+    const field = input.dataset.field;
+    if (!field) return;
 
-  patchNode(node.id, { [field]: input.value });
-});
+    patchNode(node.id, { [field]: input.value });
+  });
 
-      el.addEventListener("click", (e) => {
-  // ✅ Si estás en celular y tocas la foto o el resumen, expandir/contraer tarjeta
-  const isMobile = window.matchMedia("(max-width: 560px)").matches;
-  const toggleHit = e.target.closest(".avatar, .mini");
-const clickedButton = e.target.closest("button");
+  // ✅ FIX 2: Soporta botones + labels(data-action) y evita acciones “heredadas” del padre
+  el.addEventListener("click", (e) => {
+    const actionEl = e.target.closest("button, label[data-action]");
+    if (!actionEl) return;
 
-// Solo hace toggle si NO estás tocando un botón
-if (isMobile && toggleHit && !clickedButton) {
-  const ownerCard = toggleHit.closest(".person");
-  if (ownerCard !== el) return;
-  el.classList.toggle("expanded");
-  return;
-}
+    const ownerCard = actionEl.closest(".person");
+    if (ownerCard !== el) return;
 
-  const btn = e.target.closest("button");
-  if (!btn) return;
+    const action = actionEl.dataset.action;
+    if (!action) return;
 
-  // ✅ Evita que clicks en botones de un nieto activen acciones del padre
-  const ownerCard = btn.closest(".person");
-  if (ownerCard !== el) return;
-
-  const action = btn.dataset.action;
-  if (!action) return;
-
- if (action === "photo") {
-  pendingPhotoTargetId = node.id;
-filePicker.value = "";
-if (typeof filePicker.showPicker === "function") filePicker.showPicker();
-else filePicker.click();
-}
-        
-  if (action === "clearPhoto") {
-    patchNode(node.id, { photo_url: placeholderImg, photo_path: "" });
-    scheduleSave();
-  }
-  if (action === "addChild") {
-    addChildTo(node.id);
-  }
-  if (action === "remove") {
-    removeNode(node.id);
-  }
-});
-
-      if (Array.isArray(node.children) && node.children.length > 0) {
-        const kids = document.createElement("div");
-        kids.className = "kids";
-        node.children.forEach(child => {
-          const wrap = document.createElement("div");
-          wrap.className = "kidwrap";
-          wrap.appendChild(renderNode(child, { levelCompact:true }));
-          kids.appendChild(wrap);
-        });
-        el.appendChild(kids);
-      }
-
-      return el;
+    if (action === "photo") {
+      // No hacemos click() aquí: el <label for="filePicker"> abre nativamente el selector
+      pendingPhotoTargetId = node.id;
+      filePicker.value = ""; // permite elegir la misma foto otra vez
+      return;
     }
+
+    if (action === "clearPhoto") {
+      patchNode(node.id, { photo_url: placeholderImg, photo_path: "" });
+      scheduleSave();
+      return;
+    }
+
+    if (action === "addChild") {
+      addChildTo(node.id);
+      return;
+    }
+
+    if (action === "remove") {
+      removeNode(node.id);
+      return;
+    }
+  });
+
+  // Render descendientes (nietos/bisnietos...)
+  if (Array.isArray(node.children) && node.children.length > 0) {
+    const kids = document.createElement("div");
+    kids.className = "kids";
+
+    node.children.forEach(child => {
+      const wrap = document.createElement("div");
+      wrap.className = "kidwrap";
+      wrap.appendChild(renderNode(child, { levelCompact:true }));
+      kids.appendChild(wrap);
+    });
+
+    el.appendChild(kids);
+  }
+
+  return el;
+}
 
     function renderNode(node, { levelCompact=false } = {}) {
       return personCard(node, { removable:true, compact: levelCompact });
@@ -1240,6 +1235,7 @@ if (cfg?.url && cfg?.key) {
   </script>
 </body>
 </html>
+
 
 
 
