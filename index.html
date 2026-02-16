@@ -747,12 +747,8 @@
   parentsGen.innerHTML = "";
   childrenGen.innerHTML = "";
 
-  // Padres (P1 y P2) con color distinto sin depender de coupleWrap
-  state.parents.forEach(p => {
-    const card = personCard(p, { removable:false, compact:false });
-    card.classList.add("parent-card");
-    parentsGen.appendChild(card);
-  });
+coupleWrap.appendChild(personCard(state.parents[0], { removable:false, compact:false }));
+coupleWrap.appendChild(personCard(state.parents[1], { removable:false, compact:false }));
 
   // Hijos
   state.children.forEach(c => {
@@ -1011,6 +1007,7 @@
   </script>
 </body>
 </html>
+
 
 
 
