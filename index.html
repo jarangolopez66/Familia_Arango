@@ -7,7 +7,6 @@
 
   <style>
     :root{
-      /* Paleta cálida */
       --bg:#f6efe3;
       --card:#fff7ea;
       --card2:#fbf1df;
@@ -72,6 +71,38 @@
       justify-content:space-between;
     }
 
+    .btn{
+      cursor:pointer;
+      border:1px solid var(--btn-border);
+      background: var(--btn-bg);
+      color: var(--btn-text);
+      padding:8px 10px;
+      border-radius: 12px;
+      transition: transform .05s ease, opacity .15s ease;
+      font-weight:900;
+      font-size:12px;
+      box-shadow: 0 6px 16px rgba(0,0,0,.10);
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      user-select:none;
+      text-decoration:none;
+      white-space:nowrap;
+    }
+    .btn:hover{opacity:.92}
+    .btn:active{transform: translateY(1px);}
+    .btn-primary{
+      background: linear-gradient(180deg, var(--gold2), var(--gold));
+      color:#201a10;
+      border-color: rgba(0,0,0,.14);
+    }
+    .btn-danger{
+      background: rgba(182,70,63,.14);
+      color:#4a1411;
+      border-color: rgba(182,70,63,.30);
+      box-shadow:none;
+    }
+
     .pill{
       display:inline-flex; align-items:center; gap:8px;
       padding:8px 10px; border-radius:999px;
@@ -118,39 +149,7 @@
     }
     .cover-side h2{margin:0; font-size:16px; letter-spacing:.2px;}
     .cover-side p{margin:6px 0 0 0; color:var(--muted); font-size:12px; line-height:1.35;}
-
     .cover-actions{display:flex; flex-wrap:wrap; gap:10px; margin-top:10px;}
-
-    .btn{
-      cursor:pointer;
-      border:1px solid var(--btn-border);
-      background: var(--btn-bg);
-      color: var(--btn-text);
-      padding:8px 10px;
-      border-radius: 12px;
-      transition: transform .05s ease, opacity .15s ease;
-      font-weight:900;
-      font-size:12px;
-      box-shadow: 0 6px 16px rgba(0,0,0,.10);
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      user-select:none;
-      text-decoration:none;
-    }
-    .btn:hover{opacity:.92}
-    .btn:active{transform: translateY(1px);}
-    .btn-primary{
-      background: linear-gradient(180deg, var(--gold2), var(--gold));
-      color:#201a10;
-      border-color: rgba(0,0,0,.14);
-    }
-    .btn-danger{
-      background: rgba(182,70,63,.14);
-      color:#4a1411;
-      border-color: rgba(182,70,63,.30);
-      box-shadow:none;
-    }
 
     .strip{
       padding: 0 14px 14px 14px;
@@ -184,7 +183,32 @@
 
     /* Árbol */
     .divider{height:1px; background: rgba(0,0,0,.10); margin: 16px 0;}
-    .gen{display:flex; justify-content:center; gap:18px; flex-wrap:wrap;}
+    .gen{display:flex; justify-content:center; gap:18px; flex-wrap:wrap; position:relative;}
+
+    /* Padres como PAREJA (unidos) */
+    .couple{
+      justify-content:center;
+      align-items:stretch;
+    }
+    .coupleWrap{
+      display:flex;
+      gap:18px;
+      align-items:stretch;
+      justify-content:center;
+      position:relative;
+      padding-bottom: 6px;
+    }
+    .coupleWrap::after{
+      content:"";
+      position:absolute;
+      left:50%;
+      transform:translateX(-50%);
+      bottom:-10px;
+      width: 60%;
+      height: 3px;
+      background: rgba(198,162,74,.55);
+      border-radius: 99px;
+    }
 
     .person{
       width: 300px; max-width: calc(100vw - 32px);
@@ -279,7 +303,6 @@
       font-size:12px;
     }
 
-    /* Descendientes */
     .kids{
       margin-top:12px;
       padding-left:14px;
@@ -305,7 +328,6 @@
       .cover-imgwrap{min-height: 210px;}
     }
 
-    /* Móvil: compacto y “toca para editar” */
     @media (max-width: 560px){
       .fields{grid-template-columns:1fr;}
       .avatar{width:120px; height:120px; margin:0 auto;}
@@ -324,7 +346,6 @@
       .mini-years{font-size: 12px; opacity: .75; margin-top:4px;}
       .mini-tap{font-size: 11px; opacity: .60; margin-top:6px;}
 
-      /* por defecto ocultamos edición */
       .role, .photo-actions, .fields, .footer, .kids{display:none;}
       .person.expanded .role,
       .person.expanded .photo-actions,
@@ -333,6 +354,9 @@
       .person.expanded .kids{display:block;}
       .person.expanded .photo-actions{display:flex;}
       .person.expanded .kids{display:flex;}
+
+      .coupleWrap{flex-wrap:wrap;}
+      .coupleWrap::after{width: 80%;}
     }
   </style>
 </head>
@@ -342,11 +366,12 @@
     <div class="wrap">
       <h1>Árbol genealógico — <span class="brand">Familia Arango</span></h1>
       <div class="sub">
-        Familia Arango, vamos a reconstruir juntos nuestro árbol genealógico, con algo de paciencia puedes editar nombres, fechas, fotos y agregar descendientes (hijos/nietos/bisnietos) desde cada tarjeta. Desde computador o celular, esta es una prueba piloto puede ser algo lenta, pero obtendremos un resultado bonito que vale la pena compartir, solo la familia tendrá el link en esta fase. Toca una foto para cambiarla. En celular, toca el nombre para editar (se abre la tarjeta).
-        Los cambios se guardan en vivo para todos.
+        Familia Arango, vamos a reconstruir juntos nuestro árbol genealógico, con algo de paciencia puedes editar nombres, fechas, fotos y agregar descendientes (hijos/nietos/bisnietos) desde cada tarjeta. Desde computador o celular, esta es una prueba piloto puede ser algo lenta, pero obtendremos un resultado bonito que vale la pena compartir, solo la familia tendrá el link en esta fase. Toca una foto para cambiarla. En celular, toca el nombre para editar (se abre la tarjeta). Los cambios se guardan en vivo para todos.
       </div>
 
       <div class="toolbar">
+        <button class="btn btn-primary" id="addRootChildBtn" type="button">+ Agregar hijo (1ª generación)</button>
+
         <div class="pill" title="Estado de guardado">
           <span class="dot bad" id="connDot"></span>
           <span id="connText">Conectando…</span>
@@ -358,7 +383,6 @@
   <main>
     <div class="container">
 
-      <!-- Portada -->
       <section class="cover">
         <div class="cover-top">
           <div class="cover-imgwrap">
@@ -367,10 +391,9 @@
           <div class="cover-side">
             <div>
               <h2>Portada familiar</h2>
-              <p>Foto general (por ejemplo: los 11 Arango Originales).</p>
+              <p>Foto general (por ejemplo: los 11/13 Arango Originales).</p>
             </div>
             <div class="cover-actions">
-              <!-- label nativo: funciona mejor en móvil -->
               <label class="btn btn-primary" for="filePicker" id="coverPickLabel">Cambiar portada</label>
               <button class="btn btn-danger" id="coverClearBtn" type="button">Quitar portada</button>
             </div>
@@ -381,29 +404,25 @@
 
       <div class="divider"></div>
 
-      <section class="gen" id="parentsGen" aria-label="Padres"></section>
+      <section class="gen couple" id="parentsGen" aria-label="Padres"></section>
       <div class="divider"></div>
       <section class="gen" id="childrenGen" aria-label="Hijos"></section>
     </div>
   </main>
 
-  <!-- Un solo filePicker para TODO (portada y personas). Sin capture: permite galería -->
   <input type="file" id="filePicker" accept="image/*"
          style="position:fixed; left:-9999px; top:-9999px; width:1px; height:1px; opacity:0;" />
 
   <script type="module">
     import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.94.1/+esm";
 
-    // ================== CONFIG EMBEBIDA (nadie tiene que pegar nada) ==================
     const DEFAULT_CFG = {
       url: "https://rgsgdycllmixpdoivize.supabase.co",
-  key: "sb_publishable__opz94nN9f8XFTmprITCCw_FWBB5Muu",
+      key: "sb_publishable__opz94nN9f8XFTmprITCCw_FWBB5Muu",
       treeId: "familia-arango",
       bucket: "family-photos"
     };
-    // IMPORTANTE: pega la key COMPLETA tal como sale en Supabase.
 
-    // ================== UI refs ==================
     const connDot  = document.getElementById("connDot");
     const connText = document.getElementById("connText");
 
@@ -415,9 +434,10 @@
     const coverClearBtn  = document.getElementById("coverClearBtn");
     const first11Strip   = document.getElementById("first11Strip");
 
+    const addRootChildBtn = document.getElementById("addRootChildBtn");
+
     const filePicker = document.getElementById("filePicker");
 
-    // ================== Supabase / Estado ==================
     let supabase = null;
     let TREE_ID = DEFAULT_CFG.treeId;
     let BUCKET  = DEFAULT_CFG.bucket;
@@ -426,15 +446,13 @@
     let applyingRemote = false;
     let channel = null;
 
-    // Target uploads: { type:"cover" } o { type:"person", id }
-    let pendingPhotoTarget = null;
+    let pendingPhotoTarget = null; // {type:"cover"} o {type:"person",id}
 
     function setConn(ok, text){
       connDot.className = "dot " + (ok ? "ok" : "bad");
       connText.textContent = text;
     }
 
-    // ================== Placeholders ==================
     const placeholderImg = (() => {
       const svg =
         `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300">
@@ -469,7 +487,6 @@
       return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
     })();
 
-    // ================== Helpers ==================
     function escapeHtml(str) {
       return String(str)
         .replaceAll("&","&amp;")
@@ -504,7 +521,6 @@
       };
     }
 
-    // ================== Estado inicial ==================
     const defaultState = {
       familyName: "Arango",
       cover_photo_url: placeholderCover,
@@ -539,7 +555,6 @@
       return s;
     }
 
-    // ================== Focus fix (para que no “salte” al escribir) ==================
     function captureFocus(){
       const el = document.activeElement;
       if (!(el instanceof HTMLInputElement)) return null;
@@ -561,7 +576,6 @@
       try { input.setSelectionRange(f.start, f.end); } catch {}
     }
 
-    // ================== Render ==================
     function renderCover(){
       coverImg.src = state.cover_photo_url || placeholderCover;
 
@@ -597,7 +611,6 @@
         </div>
 
         <div class="row">
-          <!-- Foto: tocar abre selector (label nativo) -->
           <label class="avatar" for="filePicker" data-action="photo" title="Toca para cambiar la foto">
             <img alt="Foto" src="${imgSrc}">
           </label>
@@ -635,7 +648,7 @@
         </div>
       `;
 
-      // ✅ Antes de que abra el selector, guardamos a quién le toca la foto
+      // Guarda target antes de abrir selector
       el.addEventListener("pointerdown", (e) => {
         const lab = e.target.closest('label[data-action="photo"]');
         if (!lab) return;
@@ -646,7 +659,6 @@
         filePicker.value = "";
       });
 
-      // ✅ Móvil: tocar mini abre/cierra edición
       el.addEventListener("click", (e) => {
         const isMobile = window.matchMedia("(max-width: 560px)").matches;
 
@@ -682,7 +694,7 @@
         }
       });
 
-      // ✅ FIX: evita que inputs de nietos/bisnietos actualicen al padre (bubbling)
+      // FIX anti-bubbling: inputs del nieto NO actualizan padre
       el.addEventListener("input", (e) => {
         const input = e.target;
         if (!(input instanceof HTMLInputElement)) return;
@@ -696,7 +708,6 @@
         patchNode(node.id, { [field]: input.value });
       });
 
-      // Descendientes
       if (Array.isArray(node.children) && node.children.length > 0) {
         const kids = document.createElement("div");
         kids.className = "kids";
@@ -720,16 +731,21 @@
       const f = captureFocus();
 
       renderCover();
-      parentsGen.innerHTML = "";
-      childrenGen.innerHTML = "";
 
-      state.parents.forEach(p => parentsGen.appendChild(personCard(p, { removable:false, compact:false })));
+      // Padres como bloque "pareja"
+      parentsGen.innerHTML = "";
+      const coupleWrap = document.createElement("div");
+      coupleWrap.className = "coupleWrap";
+      coupleWrap.appendChild(personCard(state.parents[0], { removable:false, compact:false }));
+      coupleWrap.appendChild(personCard(state.parents[1], { removable:false, compact:false }));
+      parentsGen.appendChild(coupleWrap);
+
+      childrenGen.innerHTML = "";
       state.children.forEach(c => childrenGen.appendChild(renderNode(c, { levelCompact:false })));
 
       restoreFocus(f);
     }
 
-    // ================== Buscar / actualizar ==================
     function findInChildren(parentNode, id){
       if (!parentNode?.children?.length) return null;
       for (const child of parentNode.children) {
@@ -778,7 +794,6 @@
     }
 
     function removeNode(id){
-      // Bloquear borrar padres y los 11 hijos raíz (para evitar accidentes)
       if (id === "p1" || id === "p2") return alert("No se pueden eliminar los padres.");
       if (/^c([1-9]|10|11)$/.test(id)) return alert("Estos 11 hijos no se eliminan (solo edita nombre/foto).");
 
@@ -793,7 +808,15 @@
       }
     }
 
-    // ================== Portada ==================
+    // ✅ Botón: agregar hijo raíz (1ª generación)
+    addRootChildBtn.addEventListener("click", () => {
+      const n = state.children.length + 1;
+      state.children.push(makePerson({ role: `Hijo/a ${n}` }));
+      renderAll();
+      scheduleSave();
+    });
+
+    // Portada
     coverPickLabel.addEventListener("pointerdown", () => {
       pendingPhotoTarget = { type:"cover" };
       filePicker.value = "";
@@ -806,11 +829,11 @@
       scheduleSave();
     });
 
-    // ================== Subir fotos (personas / portada) ==================
+    // Subir fotos
     filePicker.addEventListener("change", async () => {
       const file = filePicker.files?.[0];
       if (!file || !pendingPhotoTarget) return;
-      if (!supabase) return alert("No hay conexión con Supabase (revisa URL/Key en el código).");
+      if (!supabase) return alert("No hay conexión con Supabase.");
 
       try {
         const maxSide = (pendingPhotoTarget.type === "cover") ? 1400 : 900;
@@ -839,6 +862,7 @@
         }
 
         pendingPhotoTarget = null;
+
       } catch (e) {
         console.error(e);
         alert("No se pudo subir la foto. Revisa bucket/policies (insert/select) y que el bucket sea público.");
@@ -868,7 +892,6 @@
       });
     }
 
-    // ================== Guardado (debounce) ==================
     function scheduleSave(){
       if (!supabase) return;
       if (applyingRemote) return;
@@ -955,11 +978,9 @@
         .subscribe();
     }
 
-    // ================== Boot ==================
     async function boot(){
       TREE_ID = DEFAULT_CFG.treeId;
       BUCKET  = DEFAULT_CFG.bucket;
-
       supabase = createClient(DEFAULT_CFG.url, DEFAULT_CFG.key);
 
       setConn(true, "Conectando…");
@@ -974,4 +995,5 @@
   </script>
 </body>
 </html>
+
 
