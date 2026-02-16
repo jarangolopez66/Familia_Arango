@@ -1,4 +1,4 @@
-<!doctype html>
+<!doctype html> 
 <html lang="es">
 <head>
   <meta charset="utf-8" />
@@ -323,6 +323,15 @@
       border-radius:2px;
     }
 
+    /* ✅ Estilo especial solo para los padres (P1 y P2) */
+    .person.parent-card{
+      background: linear-gradient(180deg, #fff2d9, #f4e3bf);
+      border-color: rgba(198,162,74,.55);
+    }
+    .person.parent-card .role b{
+      color: #201a10;
+    }
+
     @media (max-width: 860px){
       .cover-top{grid-template-columns: 1fr;}
       .cover-imgwrap{min-height: 210px;}
@@ -437,8 +446,6 @@
     const addRootChildBtn = document.getElementById("addRootChildBtn");
 
     const filePicker = document.getElementById("filePicker");
-
-    const waBtn = document.getElementById("waBtn");
 
     let supabase = null;
     let TREE_ID = DEFAULT_CFG.treeId;
@@ -597,15 +604,6 @@
       });
     }
 
-/* ✅ Estilo especial solo para los padres (P1 y P2) */
-.person.parent-card{
-  background: linear-gradient(180deg, #fff2d9, #f4e3bf);
-  border-color: rgba(198,162,74,.55);
-}
-.person.parent-card .role b{
-  color: #201a10;
-}
-    
     function personCard(node, { removable=false, compact=false } = {}) {
       const el = document.createElement("article");
       el.className = "person" + (compact ? " sub" : "");
@@ -739,23 +737,32 @@
     }
 
     function renderAll(){
-  const f = captureFocus();
+      const f = captureFocus();
 
-  renderCover();
+      renderCover();
 
-  parentsGen.innerHTML = "";
-  childrenGen.innerHTML = "";
+      parentsGen.innerHTML = "";
+      childrenGen.innerHTML = "";
 
-coupleWrap.appendChild(personCard(state.parents[0], { removable:false, compact:false }));
-coupleWrap.appendChild(personCard(state.parents[1], { removable:false, compact:false }));
+      // ✅ Crear el contenedor de pareja (antes te faltaba y rompía todo)
+      const coupleWrap = document.createElement("div");
+      coupleWrap.className = "coupleWrap";
+      parentsGen.appendChild(coupleWrap);
 
-  // Hijos
-  state.children.forEach(c => {
-    childrenGen.appendChild(renderNode(c, { levelCompact:false }));
-  });
+      const p1 = personCard(state.parents[0], { removable:false, compact:false });
+      const p2 = personCard(state.parents[1], { removable:false, compact:false });
+      p1.classList.add("parent-card");
+      p2.classList.add("parent-card");
+      coupleWrap.appendChild(p1);
+      coupleWrap.appendChild(p2);
 
-  restoreFocus(f);
-}
+      // Hijos
+      state.children.forEach(c => {
+        childrenGen.appendChild(renderNode(c, { levelCompact:false }));
+      });
+
+      restoreFocus(f);
+    }
 
     function findInChildren(parentNode, id){
       if (!parentNode?.children?.length) return null;
@@ -1006,15 +1013,3 @@ coupleWrap.appendChild(personCard(state.parents[1], { removable:false, compact:f
   </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
