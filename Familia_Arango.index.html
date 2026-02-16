@@ -1,0 +1,799 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Árbol genealógico — Familia Arango (Supabase)</title>
+  <style>
+    :root{
+      --bg:#0b1220; --muted:#9fb0d0; --text:#e8eefc;
+      --line:#2b3b63; --accent:#6aa7ff; --danger:#ff6a6a; --ok:#43d19e;
+      --shadow: 0 10px 30px rgba(0,0,0,.25); --radius:16px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Helvetica Neue", sans-serif;
+      background: radial-gradient(1200px 700px at 20% 10%, #142040 0%, transparent 60%),
+                  radial-gradient(900px 600px at 90% 20%, #1a2c58 0%, transparent 55%),
+                  var(--bg);
+      color:var(--text);
+    }
+    header{
+      position:sticky; top:0; z-index:10;
+      backdrop-filter: blur(10px);
+      background: linear-gradient(to bottom, rgba(11,18,32,.92), rgba(11,18,32,.65));
+      border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+    .wrap{max-width:1200px; margin:0 auto; padding:18px 16px;}
+    h1{margin:0; font-size:20px; letter-spacing:.2px}
+    .sub{margin-top:6px; color:var(--muted); font-size:13px; line-height:1.35}
+    .toolbar{margin-top:14px; display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:space-between;}
+    .btns{display:flex; gap:10px; flex-wrap:wrap;}
+    button{
+      cursor:pointer;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      color:var(--text);
+      padding:10px 12px;
+      border-radius: 12px;
+      transition: transform .05s ease, background .15s ease, border-color .15s ease;
+      box-shadow: 0 6px 18px rgba(0,0,0,.18);
+      font-weight:600;
+      font-size:13px;
+    }
+    button:hover{background: rgba(255,255,255,.09); border-color: rgba(255,255,255,.2);}
+    button:active{transform: translateY(1px);}
+    .btn-primary{background: rgba(106,167,255,.18); border-color: rgba(106,167,255,.35);}
+    .btn-primary:hover{background: rgba(106,167,255,.24);}
+    .btn-danger{background: rgba(255,106,106,.14); border-color: rgba(255,106,106,.30);}
+    .btn-danger:hover{background: rgba(255,106,106,.18);}
+
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 10px; border-radius:999px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+      color:var(--muted); font-size:12px; white-space:nowrap;
+    }
+    .dot{width:9px; height:9px; border-radius:50%;}
+    .dot.ok{background: var(--ok); box-shadow: 0 0 0 4px rgba(67,209,158,.12);}
+    .dot.bad{background: var(--danger); box-shadow: 0 0 0 4px rgba(255,106,106,.12);}
+    .hint{color: var(--muted); font-size:12px; margin-top:10px; line-height:1.4;}
+
+    main{padding: 18px 16px 34px;}
+    .tree-area{max-width:1200px; margin:0 auto; position:relative; padding: 18px 0 30px;}
+    .gen{display:flex; justify-content:center; gap:18px; flex-wrap:wrap; position:relative;}
+    .gen.parents{margin-top:8px;}
+    .divider{height:1px; background: rgba(255,255,255,.08); margin: 14px 0 0;}
+
+    .person{
+      width: 270px; max-width: calc(100vw - 32px);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 14px; position:relative;
+    }
+    .person.sub{width:250px;}
+    .person .role{
+      font-size:12px; color: var(--muted);
+      display:flex; align-items:center; justify-content:space-between;
+      margin-bottom:10px;
+    }
+    .person .role b{color: var(--text); font-size:12px; letter-spacing:.2px}
+    .row{display:flex; gap:12px; align-items:center;}
+    .avatar{
+      width:72px; height:72px; border-radius:18px;
+      border:1px solid rgba(255,255,255,.14);
+      overflow:hidden; background: rgba(255,255,255,.06);
+      flex: 0 0 auto;
+    }
+    .avatar img{width:100%; height:100%; object-fit:cover; display:block;}
+    .photo-actions{display:flex; flex-direction:column; gap:8px; flex: 1 1 auto;}
+    .smallbtn{
+      padding:8px 10px; border-radius: 12px; font-size:12px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+    }
+    .smallbtn:hover{background: rgba(255,255,255,.09);}
+    .smallbtn.addkid{
+      background: rgba(67,209,158,.14);
+      border-color: rgba(67,209,158,.28);
+    }
+    .smallbtn.addkid:hover{background: rgba(67,209,158,.18);}
+    .remove{color: var(--danger); border-color: rgba(255,106,106,.28); background: rgba(255,106,106,.10);}
+    .remove:hover{background: rgba(255,106,106,.14);}
+
+    .fields{margin-top:12px; display:grid; grid-template-columns: 1fr 1fr; gap:10px;}
+    label{display:flex; flex-direction:column; gap:6px; font-size:12px; color: var(--muted);}
+    input[type="text"], input[type="date"]{
+      width:100%; padding:10px 10px; border-radius:12px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(10,14,25,.45);
+      color: var(--text); outline:none;
+    }
+    input[type="text"]::placeholder{color: rgba(159,176,208,.65)}
+    input[type="text"]:focus, input[type="date"]:focus{
+      border-color: rgba(106,167,255,.45);
+      box-shadow: 0 0 0 4px rgba(106,167,255,.12);
+    }
+    .person .footer{
+      margin-top:12px; display:flex; justify-content:space-between; align-items:center; gap:10px;
+      color: var(--muted); font-size:12px;
+    }
+
+    /* Descendientes (nietos/bisnietos...) */
+    .kids{
+      margin-top:12px;
+      padding-left:14px;
+      border-left:2px solid rgba(43,59,99,.9);
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+    }
+    .kids .kidwrap{
+      position:relative;
+      padding-left:10px;
+    }
+    .kids .kidwrap::before{
+      content:"";
+      position:absolute;
+      left:-14px;
+      top:26px;
+      width:14px;
+      height:2px;
+      background: rgba(43,59,99,.9);
+      border-radius:2px;
+    }
+
+    details.config{
+      margin-top:12px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+      border-radius: 14px;
+      padding: 10px 12px;
+    }
+    details.config summary{cursor:pointer; color: var(--text); font-weight:700; font-size:13px;}
+    .cfggrid{margin-top:10px; display:grid; grid-template-columns: 1fr 1fr; gap:10px;}
+    .cfggrid .full{grid-column: 1 / -1;}
+    .cfgnote{margin-top:8px; font-size:12px; color: var(--muted); line-height:1.35;}
+    @media (max-width: 560px){
+      .person{width: 100%;}
+      .fields, .cfggrid{grid-template-columns: 1fr;}
+      .kids{padding-left:12px;}
+      .kids .kidwrap{padding-left:8px;}
+      .kids .kidwrap::before{left:-12px; width:12px;}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <h1>Árbol genealógico — <span style="color:var(--accent)">Familia Arango</span> (Supabase)</h1>
+      <div class="sub">
+        Puedes agregar descendientes (nietos/bisnietos) desde el botón <b>“+ Agregar hijo/a”</b> en cada persona.
+      </div>
+
+      <details class="config" id="cfgDetails">
+        <summary>⚙ Configuración Supabase (solo una vez por dispositivo)</summary>
+        <div class="cfggrid">
+          <label class="full">Project URL
+            <input id="cfgUrl" type="text" placeholder="https://xxxx.supabase.co" />
+          </label>
+          <label class="full">Anon / Publishable Key
+            <input id="cfgKey" type="text" placeholder="eyJhbGciOi..." />
+          </label>
+          <label>Tree ID
+            <input id="cfgTree" type="text" placeholder="familia-arango" />
+          </label>
+          <label>Bucket fotos
+            <input id="cfgBucket" type="text" placeholder="family-photos" />
+          </label>
+          <div class="full" style="display:flex; gap:10px; flex-wrap:wrap; margin-top:4px;">
+            <button id="saveCfgBtn" class="btn-primary">Guardar configuración</button>
+            <button id="clearCfgBtn" class="btn-danger">Borrar configuración</button>
+          </div>
+          <div class="cfgnote full">
+            Si abres el archivo con doble clic y no carga, usa servidor local: <b>python -m http.server 8000</b> y abre <b>http://localhost:8000/</b>
+          </div>
+        </div>
+      </details>
+
+      <div class="toolbar">
+        <div class="btns">
+          <button class="btn-primary" id="addChildBtn">+ Agregar hijo (1ª generación)</button>
+          <button id="exportBtn">Exportar JSON</button>
+          <button id="importBtn">Importar JSON</button>
+        </div>
+        <div class="pill" id="connPill" title="Estado de conexión">
+          <span class="dot bad" id="connDot"></span>
+          <span id="connText">Sin configurar</span>
+        </div>
+      </div>
+
+      <div class="hint" id="hintBox">
+        Tip: El botón dentro de cada tarjeta de un hermano Arango agrega sus hijos/nietos y bisnietos.
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="tree-area" id="treeArea">
+      <section class="gen parents" id="parentsGen" aria-label="Padres"></section>
+      <div class="divider"></div>
+      <section class="gen" id="childrenGen" aria-label="Hijos"></section>
+    </div>
+  </main>
+
+  <input type="file" id="filePicker" accept="image/*" style="display:none" />
+
+  <script type="module">
+    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.94.1/+esm";
+
+    const CFG_KEY = "arango_supabase_cfg_v2";
+    const cfgUrl    = document.getElementById("cfgUrl");
+    const cfgKey    = document.getElementById("cfgKey");
+    const cfgTree   = document.getElementById("cfgTree");
+    const cfgBucket = document.getElementById("cfgBucket");
+    const saveCfgBtn  = document.getElementById("saveCfgBtn");
+    const clearCfgBtn = document.getElementById("clearCfgBtn");
+
+    const connDot  = document.getElementById("connDot");
+    const connText = document.getElementById("connText");
+    const hintBox  = document.getElementById("hintBox");
+
+    const parentsGen  = document.getElementById("parentsGen");
+    const childrenGen = document.getElementById("childrenGen");
+    const filePicker  = document.getElementById("filePicker");
+
+    let pendingPhotoTargetId = null;
+
+    function setConn(ok, text){
+      connDot.className = "dot " + (ok ? "ok" : "bad");
+      connText.textContent = text;
+    }
+
+    function loadCfg(){
+      try { return JSON.parse(localStorage.getItem(CFG_KEY) || "null"); } catch { return null; }
+    }
+    function applyCfgToUI(cfg){
+      cfgUrl.value = cfg?.url || "";
+      cfgKey.value = cfg?.key || "";
+      cfgTree.value = cfg?.treeId || "familia-arango";
+      cfgBucket.value = cfg?.bucket || "family-photos";
+    }
+
+    const placeholderImg = (() => {
+      const svg =
+        `<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200">
+          <defs>
+            <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#6aa7ff" stop-opacity="0.55"/>
+              <stop offset="1" stop-color="#43d19e" stop-opacity="0.25"/>
+            </linearGradient>
+          </defs>
+          <rect width="100%" height="100%" fill="#0f172a"/>
+          <rect x="18" y="18" width="164" height="164" rx="26" fill="url(#g)" stroke="rgba(255,255,255,0.12)"/>
+          <circle cx="100" cy="86" r="30" fill="rgba(255,255,255,0.18)"/>
+          <rect x="52" y="122" width="96" height="44" rx="22" fill="rgba(255,255,255,0.16)"/>
+          <text x="100" y="28" text-anchor="middle" font-size="14" fill="rgba(255,255,255,0.55)" font-family="Arial">Foto</text>
+        </svg>`;
+      return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
+    })();
+
+    function makeId(prefix="n"){
+      if (crypto?.randomUUID) return `${prefix}_${crypto.randomUUID()}`;
+      return `${prefix}_${Date.now()}_${Math.random().toString(16).slice(2)}`;
+    }
+
+    function makePerson({ role="", id=null } = {}){
+      return {
+        id: id || makeId("p"),
+        role,
+        name: "",
+        birth: "",
+        death: "",
+        photo_url: placeholderImg,
+        photo_path: "",
+        children: []
+      };
+    }
+
+    const defaultState = {
+      familyName: "Arango",
+      parents: [
+        { ...makePerson({ id:"p1", role:"Padre" }) },
+        { ...makePerson({ id:"p2", role:"Madre" }) },
+      ],
+      children: Array.from({ length: 11 }, (_, i) => makePerson({ id:`c${i+1}`, role:`Hijo/a ${i+1}` }))
+    };
+
+    // Estado + Supabase
+    let state = structuredClone(defaultState);
+    let supabase = null;
+    let TREE_ID = "familia-arango";
+    let BUCKET  = "family-photos";
+    let savingTimer = null;
+    let applyingRemote = false;
+    let channel = null;
+
+    // -------- Normalización (para datos viejos) --------
+    function normalizeNode(node){
+      if (!node) return;
+      if (!Array.isArray(node.children)) node.children = [];
+      // Si traías "note" antes, no lo mostramos, pero no lo borramos.
+      if (!node.photo_url) node.photo_url = placeholderImg;
+      if (node.photo_url === "") node.photo_url = placeholderImg;
+      node.children.forEach(normalizeNode);
+    }
+    function normalizeState(s){
+      if (!s) return structuredClone(defaultState);
+      if (!Array.isArray(s.parents) || s.parents.length < 2) s.parents = structuredClone(defaultState.parents);
+      if (!Array.isArray(s.children)) s.children = [];
+      s.parents.forEach(normalizeNode);
+      s.children.forEach(normalizeNode);
+      return s;
+    }
+
+    // -------- Render recursivo --------
+    function escapeHtml(str) {
+      return String(str)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+    function escapeAttr(str) { return escapeHtml(str).replaceAll("\n"," "); }
+
+    function personCard(node, { removable=false, compact=false } = {}) {
+      const el = document.createElement("article");
+      el.className = "person" + (compact ? " sub" : "");
+      el.dataset.id = node.id;
+
+      const imgSrc = node.photo_url || placeholderImg;
+
+      el.innerHTML = `
+        <div class="role">
+          <b>${escapeHtml(node.role || "")}</b>
+          ${removable ? `<button class="smallbtn remove" data-action="remove">Eliminar</button>` : `<span></span>`}
+        </div>
+
+        <div class="row">
+          <div class="avatar">
+            <img alt="Foto de ${escapeHtml(node.role || "persona")}" src="${imgSrc}">
+          </div>
+          <div class="photo-actions">
+            <button class="smallbtn" data-action="photo">Cambiar foto</button>
+            <button class="smallbtn" data-action="clearPhoto">Quitar foto</button>
+            <button class="smallbtn addkid" data-action="addChild">+ Agregar hijo/a</button>
+          </div>
+        </div>
+
+        <div class="fields">
+          <label>
+            Nombre
+            <input type="text" data-field="name" placeholder="Escribe el nombre" value="${escapeAttr(node.name || "")}">
+          </label>
+
+          <label>
+            Nacimiento
+            <input type="date" data-field="birth" value="${escapeAttr(node.birth || "")}">
+          </label>
+
+          <label>
+            Fallecimiento (opcional)
+            <input type="date" data-field="death" value="${escapeAttr(node.death || "")}">
+          </label>
+
+          <label>
+            Parentesco / Rol
+            <input type="text" data-field="role" placeholder="Ej: Nieto/a 1" value="${escapeAttr(node.role || "")}">
+          </label>
+        </div>
+
+        <div class="footer">
+          <span>ID: <code style="color:#cfe2ff">${escapeHtml(node.id)}</code></span>
+          <span style="opacity:.9">Arango • Árbol</span>
+        </div>
+      `;
+
+      el.addEventListener("input", (e) => {
+        const input = e.target;
+        if (!(input instanceof HTMLInputElement)) return;
+        const field = input.dataset.field;
+        if (!field) return;
+        patchNode(node.id, { [field]: input.value });
+      });
+
+      el.addEventListener("click", (e) => {
+        const btn = e.target.closest("button");
+        if (!btn) return;
+        const action = btn.dataset.action;
+        if (!action) return;
+
+        if (action === "photo") {
+          pendingPhotoTargetId = node.id;
+          filePicker.value = "";
+          filePicker.click();
+        }
+        if (action === "clearPhoto") {
+          patchNode(node.id, { photo_url: placeholderImg, photo_path: "" });
+          scheduleSave();
+        }
+        if (action === "addChild") {
+          addChildTo(node.id);
+        }
+        if (action === "remove") {
+          removeNode(node.id);
+        }
+      });
+
+      // Render descendientes
+      if (Array.isArray(node.children) && node.children.length > 0) {
+        const kids = document.createElement("div");
+        kids.className = "kids";
+        node.children.forEach(child => {
+          const wrap = document.createElement("div");
+          wrap.className = "kidwrap";
+          wrap.appendChild(renderNode(child, { levelCompact:true }));
+          kids.appendChild(wrap);
+        });
+        el.appendChild(kids);
+      }
+
+      return el;
+    }
+
+    function renderNode(node, { levelCompact=false } = {}) {
+      // Los descendientes se muestran un poco más compactos
+      return personCard(node, { removable:true, compact: levelCompact });
+    }
+
+function captureFocus(){
+  const el = document.activeElement;
+  if (!(el instanceof HTMLInputElement)) return null;
+
+  const card = el.closest(".person");
+  if (!card) return null;
+
+  return {
+    id: card.dataset.id || null,
+    field: el.dataset.field || null,
+    start: el.selectionStart ?? 0,
+    end: el.selectionEnd ?? 0
+  };
+}
+
+function restoreFocus(f){
+  if (!f?.id || !f?.field) return;
+
+  const q = `.person[data-id="${CSS.escape(f.id)}"] input[data-field="${CSS.escape(f.field)}"]`;
+  const input = document.querySelector(q);
+  if (!(input instanceof HTMLInputElement)) return;
+
+  input.focus({ preventScroll: true });
+  try { input.setSelectionRange(f.start, f.end); } catch {}
+}
+
+function renderAll(){
+  const f = captureFocus();
+
+  parentsGen.innerHTML = "";
+  childrenGen.innerHTML = "";
+
+  state.parents.forEach(p => {
+    parentsGen.appendChild(personCard(p, { removable:false, compact:false }));
+  });
+
+  state.children.forEach(c => {
+    childrenGen.appendChild(renderNode(c, { levelCompact:false }));
+  });
+
+  restoreFocus(f);
+}
+
+    // --------- Búsqueda / Edición / Eliminación ---------
+    function findNodeById(id){
+      // padres
+      for (const p of state.parents) {
+        if (p.id === id) return { node:p, parent:null, parentChildrenArray:null };
+        const hit = findInChildren(p, id);
+        if (hit) return hit;
+      }
+      // hijos raíz
+      for (const c of state.children) {
+        if (c.id === id) return { node:c, parent:null, parentChildrenArray: state.children };
+        const hit = findInChildren(c, id);
+        if (hit) return hit;
+      }
+      return null;
+    }
+
+    function findInChildren(parentNode, id){
+      if (!parentNode?.children?.length) return null;
+      for (const child of parentNode.children) {
+        if (child.id === id) return { node:child, parent: parentNode, parentChildrenArray: parentNode.children };
+        const deeper = findInChildren(child, id);
+        if (deeper) return deeper;
+      }
+      return null;
+    }
+
+    function patchNode(id, patch){
+      const hit = findNodeById(id);
+      if (!hit?.node) return;
+      Object.assign(hit.node, patch);
+      renderAll();
+      scheduleSave();
+    }
+
+    function addChildTo(parentId){
+      const hit = findNodeById(parentId);
+      if (!hit?.node) return;
+
+      const parent = hit.node;
+      if (!Array.isArray(parent.children)) parent.children = [];
+
+      const nextIndex = parent.children.length + 1;
+      const child = makePerson({ role: `Hijo/a ${nextIndex}` });
+      parent.children.push(child);
+
+      renderAll();
+      scheduleSave();
+    }
+
+    function removeNode(id){
+      // Bloquea borrar padres
+      if (id === "p1" || id === "p2") return alert("No se pueden eliminar los padres.");
+
+      // Puede estar en hijos raíz
+      const idxRoot = state.children.findIndex(x => x.id === id);
+      if (idxRoot >= 0) {
+        state.children.splice(idxRoot, 1);
+        // Renombra roles de hijos raíz para mantener Hijo/a 1..n (opcional)
+        state.children.forEach((c, i) => { if (/^Hijo\/a\s+\d+$/.test(c.role || "")) c.role = `Hijo/a ${i+1}`; });
+        renderAll();
+        scheduleSave();
+        return;
+      }
+
+      // O puede ser descendiente
+      const hit = findNodeById(id);
+      if (!hit?.parentChildrenArray) return;
+      const i = hit.parentChildrenArray.findIndex(x => x.id === id);
+      if (i >= 0) {
+        hit.parentChildrenArray.splice(i, 1);
+        renderAll();
+        scheduleSave();
+      }
+    }
+
+    // --------- Botón superior: agregar hijo raíz ---------
+    document.getElementById("addChildBtn").addEventListener("click", () => {
+      const nextIndex = state.children.length + 1;
+      state.children.push(makePerson({ role:`Hijo/a ${nextIndex}` }));
+      renderAll();
+      scheduleSave();
+    });
+
+    // --------- Export/Import JSON ---------
+    document.getElementById("exportBtn").addEventListener("click", () => {
+      const json = JSON.stringify(state, null, 2);
+      const blob = new Blob([json], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "familia_arango_arbol.json";
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    document.getElementById("importBtn").addEventListener("click", async () => {
+      const input = document.createElement("input");
+      input.type = "file";
+      input.accept = "application/json";
+      input.onchange = async () => {
+        const file = input.files?.[0];
+        if (!file) return;
+        const text = await file.text();
+        try {
+          const parsed = JSON.parse(text);
+          state = normalizeState(parsed);
+          renderAll();
+          scheduleSave();
+        } catch {
+          alert("No se pudo importar. Verifica que sea un JSON exportado desde esta página.");
+        }
+      };
+      input.click();
+    });
+
+    // --------- Fotos: subir a Supabase Storage ---------
+    filePicker.addEventListener("change", async () => {
+      const file = filePicker.files?.[0];
+      if (!file || !pendingPhotoTargetId) return;
+      if (!supabase) return alert("Configura Supabase primero.");
+
+      try {
+        const jpgBlob = await compressImageToJpeg(file, 900, 0.85);
+        const path = `${TREE_ID}/${pendingPhotoTargetId}_${Date.now()}.jpg`;
+
+        const { error: upErr } = await supabase.storage
+          .from(BUCKET)
+          .upload(path, jpgBlob, { contentType: "image/jpeg" });
+
+        if (upErr) throw upErr;
+
+        const { data: pub } = supabase.storage
+          .from(BUCKET)
+          .getPublicUrl(path);
+
+        const publicUrl = pub?.publicUrl || placeholderImg;
+        patchNode(pendingPhotoTargetId, { photo_url: publicUrl, photo_path: path });
+
+        pendingPhotoTargetId = null;
+        scheduleSave();
+
+      } catch (e) {
+        console.error(e);
+        alert("No se pudo subir la foto. Revisa el bucket y las policies de Storage (insert/select) para anon.");
+      }
+    });
+
+    async function compressImageToJpeg(file, maxSide=900, quality=0.85){
+      const img = await fileToImage(file);
+      const { w, h } = fitBox(img.width, img.height, maxSide);
+      const canvas = document.createElement("canvas");
+      canvas.width = w; canvas.height = h;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0, w, h);
+      return await new Promise((resolve) => canvas.toBlob(resolve, "image/jpeg", quality));
+    }
+    function fitBox(w, h, maxSide){
+      const scale = Math.min(1, maxSide / Math.max(w,h));
+      return { w: Math.round(w*scale), h: Math.round(h*scale) };
+    }
+    function fileToImage(file){
+      return new Promise((resolve, reject) => {
+        const url = URL.createObjectURL(file);
+        const img = new Image();
+        img.onload = () => { URL.revokeObjectURL(url); resolve(img); };
+        img.onerror = reject;
+        img.src = url;
+      });
+    }
+
+    // --------- Supabase: sync ---------
+    function scheduleSave(){
+      if (!supabase) return;
+      if (applyingRemote) return;
+      clearTimeout(savingTimer);
+      savingTimer = setTimeout(saveRemote, 650);
+    }
+
+    async function saveRemote(){
+      if (!supabase) return;
+      if (applyingRemote) return;
+
+      const payload = {
+        id: TREE_ID,
+        data: state,
+        updated_at: new Date().toISOString()
+      };
+
+      const { error } = await supabase
+        .from("family_trees")
+        .upsert(payload, { onConflict: "id" });
+
+      if (error) {
+        console.error(error);
+        setConn(false, "Error guardando (revisa RLS/tabla)");
+      } else {
+        setConn(true, "Conectado y guardando");
+      }
+    }
+
+    async function ensureRow(){
+      const { data, error } = await supabase
+        .from("family_trees")
+        .select("data")
+        .eq("id", TREE_ID)
+        .maybeSingle();
+
+      if (error) {
+        console.error(error);
+        setConn(false, "No puedo leer (revisa RLS)");
+        return;
+      }
+
+      if (!data) {
+        const { error: insErr } = await supabase
+          .from("family_trees")
+          .insert({ id: TREE_ID, data: defaultState });
+
+        if (insErr) {
+          console.error(insErr);
+          setConn(false, "No puedo crear (revisa RLS)");
+          return;
+        }
+        state = structuredClone(defaultState);
+      } else {
+        state = normalizeState(data.data || structuredClone(defaultState));
+      }
+
+      renderAll();
+      setConn(true, "Conectado");
+    }
+
+    function subscribeRealtime(){
+      if (channel) {
+        try { supabase.removeChannel(channel); } catch {}
+      }
+      channel = supabase
+        .channel(`tree:${TREE_ID}`)
+        .on(
+          "postgres_changes",
+          { event: "*", schema: "public", table: "family_trees", filter: `id=eq.${TREE_ID}` },
+          (payload) => {
+            const newData = payload?.new?.data;
+            if (!newData) return;
+            applyingRemote = true;
+            state = normalizeState(newData);
+            renderAll();
+            applyingRemote = false;
+            setConn(true, "Actualizado en vivo");
+          }
+        )
+        .subscribe();
+    }
+
+    // --------- Config UI ---------
+    saveCfgBtn.addEventListener("click", async () => {
+      const url = cfgUrl.value.trim();
+      const key = cfgKey.value.trim();
+      const treeId = (cfgTree.value.trim() || "familia-arango").trim();
+      const bucket = (cfgBucket.value.trim() || "family-photos").trim();
+
+      if (!url || !key) return alert("Pega Project URL y Anon Key.");
+
+      const cfg = { url, key, treeId, bucket };
+      localStorage.setItem(CFG_KEY, JSON.stringify(cfg));
+      await boot(cfg);
+      alert("Configuración guardada.");
+    });
+
+    clearCfgBtn.addEventListener("click", () => {
+      localStorage.removeItem(CFG_KEY);
+      applyCfgToUI(null);
+      supabase = null;
+      setConn(false, "Sin configurar");
+      alert("Listo. Se borró la configuración.");
+    });
+
+    async function boot(cfg){
+      TREE_ID = cfg.treeId;
+      BUCKET  = cfg.bucket;
+      supabase = createClient(cfg.url, cfg.key);
+
+      setConn(true, "Conectando...");
+      await ensureRow();
+      subscribeRealtime();
+      hintBox.textContent = "Si no ves updates en vivo, habilita Realtime/Postgres Changes para la tabla family_trees en Supabase.";
+    }
+
+    // Init
+    const cfg = loadCfg();
+    applyCfgToUI(cfg);
+    state = normalizeState(state);
+    renderAll();
+
+    if (cfg?.url && cfg?.key) {
+      await boot(cfg);
+    } else {
+      setConn(false, "Sin configurar");
+    }
+  </script>
+</body>
+</html>
