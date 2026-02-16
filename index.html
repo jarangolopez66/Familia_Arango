@@ -550,7 +550,8 @@
     </div>
   </main>
 
-  <input type="file" id="filePicker" accept="image/*" style="display:none" />
+  <input type="file" id="filePicker" accept="image/*" capture="environment"
+       style="position:fixed; left:-9999px; top:-9999px; width:1px; height:1px; opacity:0;" />
 
   <script type="module">
     import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.94.1/+esm";
@@ -846,11 +847,13 @@
   const action = btn.dataset.action;
   if (!action) return;
 
-  if (action === "photo") {
-    pendingPhotoTargetId = node.id;     // <- si tu código usa pendingPhotoTarget (objeto), dime y te lo ajusto
-    filePicker.value = "";
-    filePicker.click();
-  }
+ if (action === "photo") {
+  pendingPhotoTargetId = node.id;
+  filePicker.value = "";
+  if (typeof filePicker.showPicker === "function") filePicker.showPicker();
+  else filePicker.click();
+}
+
   if (action === "clearPhoto") {
     patchNode(node.id, { photo_url: placeholderImg, photo_path: "" });
     scheduleSave();
@@ -1234,6 +1237,7 @@ if (cfg?.url && cfg?.key) {
   </script>
 </body>
 </html>
+
 
 
 
