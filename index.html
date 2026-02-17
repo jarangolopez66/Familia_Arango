@@ -298,12 +298,12 @@
     .lvl-1 .circle{
       width:72px; height:72px;
       border-width: 3px;
-      border-color: rgba(185,196,206,.85);
+      border-color: rgba(150,150,150,.85);
       box-shadow: 0 0 0 3px rgba(185,196,206,.16);
     }
     /* Bisnietos (azul) */
     .lvl-2 .circle{
-      width:64px; height:64px;
+      width:60px; height:60px;
       border-width: 2px;
       border-color: rgba(79,134,170,.95);
       box-shadow: 0 0 0 3px rgba(79,134,170,.14);
@@ -311,7 +311,7 @@
     }
     /* Hijos de bisnietos y más (azul muy claro) */
     .lvl-3 .circle{
-      width:52px; height:52px;
+      width:50px; height:50px;
       border-width: 2px;
       border-color: rgba(207,225,246,.95);
       box-shadow: 0 0 0 3px rgba(207,225,246,.16);
@@ -637,6 +637,25 @@
 
     let pendingPhotoTarget = null; // {type:"cover"} o {type:"person",id}
 
+    // ======= BLOQUEO: P1, P2 y los 11 hijos originales =======
+const MAX_ROOT_CHILDREN = 11;
+const LOCKED_IDS = new Set(["p1", "p2"]);
+for (let i = 1; i <= MAX_ROOT_CHILDREN; i++) LOCKED_IDS.add(`c${i}`);
+
+// Asegura que SIEMPRE existan c1..c11 (si alguien los borra por error, reaparecen)
+function ensureRoot11(s){
+  if (!s.children) s.children = [];
+  const byId = new Map(s.children.map(n => [n.id, n]));
+  const fixed = [];
+  for (let i = 1; i <= MAX_ROOT_CHILDREN; i++){
+    const id = `c${i}`;
+    fixed.push(byId.get(id) || makePerson({ id, role: `Hijo/a ${i}` }));
+  }
+  // Conserva extras (si existieran) al final, pero NO los mostramos en pantalla
+  const extras = s.children.filter(n => !LOCKED_IDS.has(n.id));
+  s.children = [...fixed, ...extras];
+}
+
     // ======= Realtime pausado mientras escriben =======
     let isEditing = false;
     let queuedRemote = null;
@@ -768,6 +787,8 @@
       if (!s.cover_photo_url) s.cover_photo_url = placeholderCover;
       if (s.cover_photo_url === "") s.cover_photo_url = placeholderCover;
       if (!("cover_photo_path" in s)) s.cover_photo_path = "";
+
+      ensureRoot11(s);
 
       return s;
     }
@@ -1276,6 +1297,7 @@
   </script>
 </body>
 </html>
+
 
 
 
