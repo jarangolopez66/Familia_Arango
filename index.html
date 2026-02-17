@@ -533,6 +533,9 @@
       .row{justify-content:center;}
       .person{width: 100%;}
     }
+
+    #addRootChildBtn{ display:none !important; }
+
   </style>
 </head>
 
@@ -1106,11 +1109,9 @@ function ensureRoot11(s){
 
     // Botón: agregar hijo raíz (1ª generación)
     addRootChildBtn.addEventListener("click", () => {
-      const n = state.children.length + 1;
-      state.children.push(makePerson({ role: `Hijo/a ${n}` }));
-      renderAll();
-      scheduleSave();
-    });
+  alert("Los 11 hijos originales están bloqueados. No se pueden agregar más en 1ª generación.");
+});
+
 
     // Portada
     coverPickLabel.addEventListener("pointerdown", () => {
@@ -1297,6 +1298,7 @@ function ensureRoot11(s){
   </script>
 </body>
 </html>
+
 
 
 
