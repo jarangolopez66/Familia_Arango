@@ -26,6 +26,10 @@
       --ok:#2f8f6b;
 
       --treeLine: rgba(0,0,0,.10);
+
+      /* layout */
+      --colW: 180px;
+      --colGap: 14px;
     }
 
     *{box-sizing:border-box}
@@ -104,6 +108,12 @@
       border-color: rgba(182,70,63,.30);
       box-shadow:none;
     }
+    .btn-ghost{
+      background: rgba(255,255,255,.55);
+      color: var(--text);
+      box-shadow:none;
+      border:1px solid rgba(0,0,0,.12);
+    }
 
     .pill{
       display:inline-flex; align-items:center; gap:8px;
@@ -117,6 +127,23 @@
     .dot{width:9px; height:9px; border-radius:50%;}
     .dot.ok{background: var(--ok); box-shadow: 0 0 0 4px rgba(47,143,107,.12);}
     .dot.bad{background: var(--danger); box-shadow: 0 0 0 4px rgba(182,70,63,.12);}
+
+    /* Zoom controls */
+    .zoomWrap{
+      display:flex;
+      gap:8px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+    .zoomLabel{
+      font-weight:900;
+      color: var(--text);
+      background: rgba(255,255,255,.55);
+      border:1px solid rgba(0,0,0,.10);
+      border-radius: 999px;
+      padding:8px 10px;
+      font-size:12px;
+    }
 
     /* Buscador */
     .searchWrap{
@@ -179,39 +206,6 @@
     .srText{ display:flex; flex-direction:column; gap:2px; }
     .srName{ font-weight:900; font-size:12px; }
     .srMeta{ font-size:11px; color: var(--muted); }
-
-    /* ✅ Zoom controls */
-    .zoomWrap{
-      display:flex;
-      align-items:center;
-      gap:8px;
-      flex: 0 0 auto;
-      justify-content:flex-end;
-      white-space:nowrap;
-    }
-    .zbtn{
-      cursor:pointer;
-      border:1px solid rgba(0,0,0,.12);
-      background: rgba(255,255,255,.55);
-      color: var(--text);
-      padding:7px 9px;
-      border-radius: 12px;
-      font-weight:900;
-      font-size:12px;
-      user-select:none;
-    }
-    .zbtn:hover{opacity:.92}
-    .zbtn:active{transform: translateY(1px);}
-    .zrange{
-      width: 150px;
-      accent-color: #c6a24a;
-    }
-    .zread{
-      font-size:12px;
-      color: var(--muted);
-      min-width: 52px;
-      text-align:right;
-    }
 
     main{padding:18px 16px 34px;}
     .container{max-width:1200px; margin:0 auto;}
@@ -308,44 +302,51 @@
       border-radius: 99px;
     }
 
-    /* ✅ Zoom/pan viewport (solo árbol) */
-    .treeViewport{
-      border:1px solid rgba(0,0,0,.10);
+    /* =========================
+       ZOOM VIEWPORT (árbol completo)
+       ========================= */
+    .zoomArea{
+      margin-top: 6px;
+    }
+    .zoomViewport{
+      height: min(72vh, 820px);
+      border: 1px solid rgba(0,0,0,.10);
       border-radius: var(--radius);
-      background: rgba(255,255,255,.30);
-      box-shadow: var(--shadow);
-      overflow:auto;
-      height: min(70vh, 820px);
-      position:relative;
-      touch-action: pan-x pan-y;
+      box-shadow: 0 10px 25px rgba(0,0,0,.10);
+      background: rgba(255,255,255,.35);
+      overflow: auto;
+      position: relative;
+      -webkit-overflow-scrolling: touch;
       cursor: grab;
     }
-    .treeViewport.panning{ cursor: grabbing; }
-    .zoomSpacer{ position:relative; width: 1200px; height: 700px; }
+    .zoomViewport.dragging{ cursor: grabbing; }
+    .zoomSpacer{ position: relative; width: 0px; height: 0px; }
     .zoomContent{
-      position:absolute;
-      top:0; left:0;
+      position: absolute;
+      left: 0; top: 0;
       transform-origin: 0 0;
-      display:inline-block; /* shrink-to-fit al contenido */
-      padding: 14px 14px 24px;
+      padding: 10px 14px 26px;
     }
 
     /* =========================
-       LAYOUT
+       LAYOUT (11 columnas)
        ========================= */
     .treeGrid{
       display:grid;
-      grid-template-columns: repeat(11, 240px);
-      gap: 14px;
+      grid-auto-flow: column;
+      grid-auto-columns: minmax(var(--colW), max-content);
+      grid-template-columns: repeat(11, minmax(var(--colW), max-content));
+      gap: var(--colGap);
       align-items:start;
-      justify-content:center;
+      justify-content:start;
+      width: max-content;
+      margin: 0 auto;
       padding: 6px 4px 2px;
-      min-width: calc(11 * 240px + 10 * 14px);
     }
     .treeGrid.moreCols{
       grid-auto-flow: column;
-      grid-auto-columns: 240px;
-      grid-template-columns: repeat(11, 240px);
+      grid-auto-columns: minmax(var(--colW), max-content);
+      grid-template-columns: repeat(11, minmax(var(--colW), max-content));
     }
 
     .subtree{
@@ -355,13 +356,7 @@
       align-items:center;
       gap: 10px;
       padding: 6px 4px 2px;
-    }
-
-    .pairRow{
-      display:flex;
-      align-items:flex-start;
-      justify-content:center;
-      gap:12px;
+      width: max-content;
     }
 
     .node{
@@ -373,11 +368,6 @@
       cursor:pointer;
       user-select:none;
       max-width: 180px;
-    }
-
-    .node.spouse .circle{
-      border-style:dashed;
-      opacity:.98;
     }
 
     .circle{
@@ -405,7 +395,7 @@
       text-align:center;
     }
 
-    /* Marcos de tamaños y diferencia por nivel */
+    /* Marcos por nivel */
     .lvl-parent .circle{
       width:110px; height:130px;
       border-width: 4px;
@@ -418,14 +408,12 @@
       border-color: rgba(198,162,74,.60);
       box-shadow: 0 0 0 5px rgba(198,162,74,.10), 0 9px 18px rgba(0,0,0,.10);
     }
-    /* Nietos generación 3 (Azul) */
     .lvl-1 .circle{
       width:80px; height:80px;
       border-width: 4px;
       border-color: rgba(79,134,170,.90);
       box-shadow: 0 0 0 3px rgba(79,134,170,.16);
     }
-    /* ✅ Bisnietos Generación 4: CUADRITOS */
     .lvl-2 .circle{
       width:64px; height:64px;
       border-width: 3px;
@@ -434,7 +422,6 @@
       opacity:.98;
       border-radius: 14px;
     }
-    /* Hijos de bisnietos y más */
     .lvl-3 .circle{
       width:52px; height:52px;
       border-width: 2px;
@@ -443,10 +430,28 @@
       opacity:.96;
     }
 
+    /* Parejas */
+    .personUnit{
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+      justify-content:center;
+      flex-wrap:nowrap;
+    }
+    .spouseNode{
+      opacity: .98;
+    }
+    /* un poquito más pequeña la pareja para que “quepa” mejor */
+    .lvl-parent.spouseNode .circle{ width:96px; height:112px; border-width:3px; }
+    .lvl-original.spouseNode .circle{ width:86px; height:96px; border-width:3px; }
+    .lvl-1.spouseNode .circle{ width:70px; height:70px; border-width:3px; }
+    .lvl-2.spouseNode .circle{ width:56px; height:56px; border-width:3px; }
+    .lvl-3.spouseNode .circle{ width:46px; height:46px; border-width:2px; }
+
     /* Conectores */
     .childrenGroup{
       position:relative;
-      width: 100%;
+      width: max-content;
       padding-top: 10px;
     }
     .childrenGroup::before{
@@ -471,13 +476,15 @@
       border-radius: 99px;
     }
 
+    /* ✅ Hijos en 1 fila / 2 filas si hace falta (grid controlado desde JS con --cols) */
     .childrenRow{
-      display:flex;
-      flex-wrap:wrap;
+      display:grid;
       gap: 10px;
       justify-content:center;
-      align-items:flex-start;
+      align-items:start;
       margin-top: 8px;
+      grid-template-columns: repeat(var(--cols, 3), max-content);
+      width: max-content;
     }
 
     .childWrap{
@@ -487,6 +494,7 @@
       align-items:center;
       gap: 8px;
       padding-top: 10px;
+      width: max-content;
     }
     .childWrap::before{
       content:"";
@@ -508,22 +516,21 @@
     }
 
     @media (max-width: 860px){
+      :root{ --colW: 170px; }
       .cover-top{grid-template-columns: 1fr;}
       .cover-imgwrap{min-height: 210px;}
-      .treeGrid{grid-template-columns: repeat(11, 170px); min-width: calc(11 * 170px + 10 * 14px);}
       .searchWrap{ justify-content:flex-start; width:100%; }
       .searchInput{ width:100%; }
-      .zoomWrap{ width:100%; justify-content:flex-start; }
-      .zrange{ width: 180px; }
+      .zoomViewport{ height: min(70vh, 780px); }
     }
     @media (max-width: 560px){
-      .treeGrid{grid-template-columns: repeat(11, 160px); min-width: calc(11 * 160px + 10 * 14px);}
+      :root{ --colW: 160px; }
       .lvl-parent .circle{ width:106px; height:106px; }
       .lvl-original .circle{ width:92px; height:92px; }
       .lvl-1 .circle{ width:62px; height:62px; }
       .lvl-2 .circle{ width:54px; height:54px; }
       .lvl-3 .circle{ width:46px; height:46px; }
-      .zrange{ width: 150px; }
+      .zoomViewport{ height: min(72vh, 760px); }
     }
 
     /* =========================
@@ -561,7 +568,6 @@
       box-shadow:none;
     }
 
-    /* Tarjeta (solo en modal) */
     .person{
       width: 320px; max-width: calc(100vw - 32px);
       background: linear-gradient(180deg, var(--card), var(--card2));
@@ -624,7 +630,7 @@
     .smallbtn:hover{opacity:.92}
     .smallbtn.addkid{background: rgba(198,162,74,.20); border-color: rgba(198,162,74,.35);}
     .smallbtn.remove{background: rgba(182,70,63,.12); border-color: rgba(182,70,63,.28); color:#4a1411;}
-    .smallbtn.spouse{background: rgba(79,134,170,.10); border-color: rgba(79,134,170,.25);}
+    .smallbtn.spouse{background: rgba(79,134,170,.14); border-color: rgba(79,134,170,.26);}
 
     .fields{
       margin-top:12px;
@@ -646,17 +652,6 @@
     input[type="text"]:focus, input[type="date"]:focus{
       border-color: rgba(198,162,74,.55);
       box-shadow: 0 0 0 4px rgba(198,162,74,.16);
-    }
-
-    .note{
-      margin-top:10px;
-      font-size:12px;
-      color: var(--muted);
-      background: rgba(255,255,255,.55);
-      border:1px solid rgba(0,0,0,.10);
-      border-radius: 12px;
-      padding: 10px;
-      line-height:1.35;
     }
 
     .footer{
@@ -683,25 +678,21 @@
     <div class="wrap">
       <h1>Árbol genealógico — <span class="brand">Familia Arango</span></h1>
       <div class="sub">
-        Familia Arango, para construir juntos nuestro árbol genealógico pueden editar nombres, fechas, fotos y agregar parejas y/o descendientes. Desde computador o celular, solo la familia tendrá el link en esta fase. Los cambios se guardan en vivo para todos.
+        Familia Arango, vamos a construir juntos nuestro árbol genealógico, con algo de paciencia pueden editar nombres, fechas, fotos y agregar descendientes (hijos/nietos/bisnietos) desde cada tarjeta. Desde computador o celular, esta es una prueba piloto puede ser algo lenta, pero obtendremos un resultado bonito que vale la pena compartir, solo la familia tendrá el link en esta fase. Toca una foto para cambiarla, para ver a todos los hermanitos Arango es necesario deslizar la pantalla. En celular, toca el nombre para editar (se abre la tarjeta). Los cambios se guardan en vivo para todos.
       </div>
 
       <div class="toolbar">
-        <!-- ✅ Quitado: botón agregar hijo de 1ª generación -->
+        <div class="zoomWrap">
+          <button class="btn btn-ghost" id="zoomOut" type="button">−</button>
+          <button class="btn btn-ghost" id="zoomIn" type="button">+</button>
+          <button class="btn btn-primary" id="zoomFit" type="button">Ver todo</button>
+          <span class="zoomLabel" id="zoomLabel">100%</span>
+        </div>
 
         <div class="searchWrap">
           <input class="searchInput" id="searchInput" type="text" placeholder="Buscar persona (nombre)…" autocomplete="off" />
           <button class="btn btn-primary" id="searchBtn" type="button">Buscar</button>
           <div class="searchResults" id="searchResults"></div>
-        </div>
-
-        <!-- ✅ Zoom -->
-        <div class="zoomWrap" title="Zoom: usa botones/slider o Ctrl/⌘ + rueda">
-          <button class="zbtn" id="zoomOutBtn" type="button">−</button>
-          <input class="zrange" id="zoomRange" type="range" min="50" max="170" value="100" />
-          <button class="zbtn" id="zoomInBtn" type="button">+</button>
-          <button class="zbtn" id="zoomResetBtn" type="button">Reset</button>
-          <div class="zread" id="zoomRead">100%</div>
         </div>
 
         <div class="pill" title="Estado de guardado">
@@ -736,16 +727,18 @@
 
       <div class="divider"></div>
 
-      <!-- ✅ Árbol con zoom + pan -->
-      <div class="treeViewport" id="treeViewport" aria-label="Árbol (zoom y desplazamiento)">
-        <div class="zoomSpacer" id="zoomSpacer">
-          <div class="zoomContent" id="zoomContent">
-            <section class="gen couple" id="parentsGen" aria-label="Padres"></section>
-            <div class="divider"></div>
-            <section class="gen" id="childrenGen" aria-label="Hijos"></section>
+      <!-- ✅ Árbol completo dentro del viewport (zoom+pan+scroll) -->
+      <section class="zoomArea">
+        <div class="zoomViewport" id="zoomViewport" aria-label="Árbol (zoom y desplazamiento)">
+          <div class="zoomSpacer" id="zoomSpacer">
+            <div class="zoomContent" id="zoomContent">
+              <section class="gen couple" id="parentsGen" aria-label="Padres"></section>
+              <div class="divider"></div>
+              <section class="gen" id="childrenGen" aria-label="Hijos"></section>
+            </div>
           </div>
         </div>
-      </div>
+      </section>
 
     </div>
   </main>
@@ -796,15 +789,14 @@
     const searchBtn     = document.getElementById("searchBtn");
     const searchResults = document.getElementById("searchResults");
 
-    // Zoom/Pan
-    const treeViewport  = document.getElementById("treeViewport");
-    const zoomSpacer    = document.getElementById("zoomSpacer");
-    const zoomContent   = document.getElementById("zoomContent");
-    const zoomOutBtn    = document.getElementById("zoomOutBtn");
-    const zoomInBtn     = document.getElementById("zoomInBtn");
-    const zoomResetBtn  = document.getElementById("zoomResetBtn");
-    const zoomRange     = document.getElementById("zoomRange");
-    const zoomRead      = document.getElementById("zoomRead");
+    // Zoom
+    const zoomViewport = document.getElementById("zoomViewport");
+    const zoomSpacer   = document.getElementById("zoomSpacer");
+    const zoomContent  = document.getElementById("zoomContent");
+    const zoomInBtn    = document.getElementById("zoomIn");
+    const zoomOutBtn   = document.getElementById("zoomOut");
+    const zoomFitBtn   = document.getElementById("zoomFit");
+    const zoomLabel    = document.getElementById("zoomLabel");
 
     let supabase = null;
     let TREE_ID = DEFAULT_CFG.treeId;
@@ -904,6 +896,7 @@
       if (crypto?.randomUUID) return `${prefix}_${crypto.randomUUID()}`;
       return `${prefix}_${Date.now()}_${Math.random().toString(16).slice(2)}`;
     }
+
     function makePerson({ role="", id=null } = {}){
       return {
         id: id || makeId("p"),
@@ -913,8 +906,8 @@
         death:"",
         photo_url: placeholderImg,
         photo_path:"",
-        children:[],
-        spouse: null
+        spouse: null,     // ✅ NUEVO: pareja (objeto simple)
+        children:[]
       };
     }
     function makeSpouse(){
@@ -926,7 +919,8 @@
         death:"",
         photo_url: placeholderImg,
         photo_path:"",
-        children:[]
+        spouse: null,
+        children: [] // no se usa, pero lo dejamos para normalizar sin romper
       };
     }
 
@@ -935,8 +929,8 @@
       cover_photo_url: placeholderCover,
       cover_photo_path: "",
       parents: [
-        { ...makePerson({ id:"p1", role:"Padre" }), spouse: null },
-        { ...makePerson({ id:"p2", role:"Madre" }), spouse: null },
+        { ...makePerson({ id:"p1", role:"Padre" }) },
+        { ...makePerson({ id:"p2", role:"Madre" }) },
       ],
       children: Array.from({ length: 11 }, (_, i) => makePerson({ id:`c${i+1}`, role:`Hijo/a ${i+1}` }))
     };
@@ -945,25 +939,24 @@
 
     function normalizeNode(node){
       if (!node) return;
-
       if (!Array.isArray(node.children)) node.children = [];
       if (!node.photo_url) node.photo_url = placeholderImg;
       if (node.photo_url === "") node.photo_url = placeholderImg;
       if (!("photo_path" in node)) node.photo_path = "";
-      if (!("spouse" in node)) node.spouse = null;
 
-      // spouse normalization (sin recursión de hijos por seguridad)
-      if (node.spouse && typeof node.spouse === "object") {
+      // ✅ spouse
+      if (node.spouse) {
         if (!node.spouse.id) node.spouse.id = makeId("s");
         if (!node.spouse.role) node.spouse.role = "Pareja";
         if (!node.spouse.photo_url) node.spouse.photo_url = placeholderImg;
         if (node.spouse.photo_url === "") node.spouse.photo_url = placeholderImg;
         if (!("photo_path" in node.spouse)) node.spouse.photo_path = "";
-        node.spouse.children = []; // no usamos hijos en spouse
+        if (!Array.isArray(node.spouse.children)) node.spouse.children = [];
       }
 
       node.children.forEach(normalizeNode);
     }
+
     function normalizeState(s){
       if (!s) return structuredClone(defaultState);
       if (!Array.isArray(s.parents) || s.parents.length < 2) s.parents = structuredClone(defaultState.parents);
@@ -978,27 +971,19 @@
       return s;
     }
 
-    // ======= Buscar y cambiar (con depth) + spouse =======
+    // ======= Buscar (incluye parejas) =======
     function findInChildren(parentNode, id, depth){
       if (!parentNode) return null;
 
-      // spouse
+      // spouse primero
       if (parentNode.spouse && parentNode.spouse.id === id) {
-        return {
-          node: parentNode.spouse,
-          parent: parentNode,
-          parentChildrenArray: null,
-          depth,
-          isSpouse: true,
-          spouseOwner: parentNode
-        };
+        return { node: parentNode.spouse, parent: parentNode, parentChildrenArray: null, depth, isSpouse:true };
       }
 
-      if (!parentNode?.children?.length) return null;
-
+      if (!parentNode.children?.length) return null;
       for (const child of parentNode.children) {
         if (child.id === id) {
-          return { node: child, parent: parentNode, parentChildrenArray: parentNode.children, depth, isSpouse:false, spouseOwner:null };
+          return { node: child, parent: parentNode, parentChildrenArray: parentNode.children, depth, isSpouse:false };
         }
         const deeper = findInChildren(child, id, depth + 1);
         if (deeper) return deeper;
@@ -1007,16 +992,15 @@
     }
 
     function findNodeById(id){
-      // Padres (abuelos): depth 0
+      // Padres
       for (const p of state.parents) {
-        if (p.id === id) return { node: p, parent: null, parentChildrenArray: null, depth: 0, isSpouse:false, spouseOwner:null };
+        if (p.id === id) return { node: p, parent: null, parentChildrenArray: null, depth: 0, isSpouse:false };
         const hit = findInChildren(p, id, 1);
         if (hit) return hit;
       }
-
-      // Hijos originales: depth 1
+      // Hijos originales
       for (const c of state.children) {
-        if (c.id === id) return { node: c, parent: null, parentChildrenArray: state.children, depth: 1, isSpouse:false, spouseOwner:null };
+        if (c.id === id) return { node: c, parent: null, parentChildrenArray: state.children, depth: 1, isSpouse:false };
         const hit = findInChildren(c, id, 2);
         if (hit) return hit;
       }
@@ -1026,15 +1010,7 @@
     function patchNode(id, patch, { render=true } = {}){
       const hit = findNodeById(id);
       if (!hit?.node) return;
-
       Object.assign(hit.node, patch);
-
-      // si están parchando spouse, asegurar estructura básica
-      if (hit.isSpouse) {
-        if (!hit.node.role) hit.node.role = "Pareja";
-        hit.node.children = [];
-      }
-
       if (render) renderAll();
     }
 
@@ -1042,15 +1018,44 @@
       const hit = findNodeById(parentId);
       if (!hit?.node) return;
 
-      // si intentan agregar hijo desde spouse, lo agregamos al dueño
-      const target = hit.isSpouse ? hit.spouseOwner : hit.node;
-      if (!target) return;
+      // no children on spouse editor
+      if (hit.isSpouse) return;
 
-      if (!Array.isArray(target.children)) target.children = [];
-      const nextIndex = target.children.length + 1;
+      const parent = hit.node;
+      if (!Array.isArray(parent.children)) parent.children = [];
+
+      const nextIndex = parent.children.length + 1;
       const child = makePerson({ role: `Hijo/a ${nextIndex}` });
-      target.children.push(child);
+      parent.children.push(child);
 
+      renderAll();
+      scheduleSave();
+    }
+
+    function addSpouseTo(ownerId){
+      if (ownerId === "p1" || ownerId === "p2") return; // padres ya están como pareja
+      const hit = findNodeById(ownerId);
+      if (!hit?.node || hit.isSpouse) return;
+
+      if (hit.node.spouse) {
+        openEditor(hit.node.spouse.id);
+        return;
+      }
+      hit.node.spouse = makeSpouse();
+      renderAll();
+      scheduleSave();
+      openEditor(hit.node.spouse.id);
+    }
+
+    function removeSpouse(spouseId){
+      const hit = findNodeById(spouseId);
+      if (!hit?.node || !hit.isSpouse || !hit.parent) return;
+
+      const ownerName = (hit.parent.name || hit.parent.role || hit.parent.id);
+      const ok = confirm(`¿Quitar pareja de "${ownerName}"?`);
+      if (!ok) return;
+
+      hit.parent.spouse = null;
       renderAll();
       scheduleSave();
     }
@@ -1059,59 +1064,10 @@
       return /^c([1-9]|10|11)$/.test(id);
     }
 
-    // ======= Pareja =======
-    function canUseSpouse(nodeId){
-      // p1/p2 ya están como pareja entre sí (en la UI), no usamos spouse ahí para no duplicar
-      return !(nodeId === "p1" || nodeId === "p2");
-    }
-
-    function addSpouseTo(nodeId){
-      const hit = findNodeById(nodeId);
-      if (!hit?.node) return;
-
-      const owner = hit.isSpouse ? hit.spouseOwner : hit.node;
-      if (!owner) return;
-
-      if (!canUseSpouse(owner.id)) return;
-
-      if (owner.spouse) {
-        openEditor(owner.spouse.id);
-        return;
-      }
-
-      owner.spouse = makeSpouse();
-      renderAll();
-      scheduleSave();
-      openEditor(owner.spouse.id);
-    }
-
-    function removeSpouseByAnyId(id){
-      const hit = findNodeById(id);
-      if (!hit?.node) return;
-
-      const owner = hit.isSpouse ? hit.spouseOwner : hit.node;
-      if (!owner?.spouse) return;
-
-      const who = (owner.name && owner.name.trim()) ? owner.name.trim() : (owner.role || owner.id);
-
-      const ok1 = confirm(`¿Quitar la pareja de "${who}"?\n\nEsto no elimina a la persona principal ni sus hijos.`);
-      if (!ok1) return;
-
-      const typed = prompt('Para confirmar, escribe exactamente: PAREJA');
-      if (typed !== "PAREJA") return;
-
-      owner.spouse = null;
-      renderAll();
-      scheduleSave();
-    }
-
     // ✅ Eliminar con doble confirmación y bloqueos p1/p2 y c1..c11
     function removeNode(id){
-      // si intentan "eliminar" spouse, quitamos pareja
       const hit = findNodeById(id);
-      if (hit?.isSpouse) {
-        return removeSpouseByAnyId(id);
-      }
+      if (hit?.isSpouse) return removeSpouse(id);
 
       if (id === "p1" || id === "p2") return alert("No se pueden eliminar los padres.");
       if (isOriginal11(id)) return alert("Los 11 hermanos originales (c1–c11) no se eliminan, solo se editan.");
@@ -1143,21 +1099,15 @@
 
       const n = hit.node;
       const title = (n.name && n.name.trim()) ? n.name.trim() : (n.role || "Editar");
-      editorTitle.textContent = `Editar: ${title}`;
+      editorTitle.textContent = hit.isSpouse ? `Editar pareja: ${title}` : `Editar: ${title}`;
 
       editorBody.innerHTML = "";
 
-      const isSpouse = !!hit.isSpouse;
-      const spouseOwner = hit.spouseOwner || null;
-
-      const removable = isSpouse
-        ? true
-        : !(nodeId === "p1" || nodeId === "p2" || isOriginal11(nodeId));
-
+      const removable = !(nodeId === "p1" || nodeId === "p2" || isOriginal11(nodeId)) && !hit.isSpouse;
       const card = editorPersonCard(n, {
         removable,
-        isSpouse,
-        spouseOwner
+        isSpouse: hit.isSpouse,
+        spouseOwner: hit.isSpouse ? hit.parent : null
       });
 
       if (nodeId === "p1" || nodeId === "p2") card.classList.add("parent-card");
@@ -1206,17 +1156,27 @@
 
       const imgSrc = node.photo_url || placeholderImg;
 
-      const allowSpouseActions = (!isSpouse && canUseSpouse(node.id));
-      const hasSpouse = (!isSpouse && !!node.spouse);
+      const canAddSpouse = (!isSpouse) && (node.id !== "p1") && (node.id !== "p2");
+      const hasSpouse = (!!node.spouse);
 
-      const spouseOwnerName = spouseOwner
-        ? ((spouseOwner.name && spouseOwner.name.trim()) ? spouseOwner.name.trim() : (spouseOwner.role || spouseOwner.id))
+      const spouseBtns = canAddSpouse
+        ? (hasSpouse
+            ? `<button class="smallbtn spouse" data-action="editSpouse" type="button">Ver/editar pareja</button>`
+            : `<button class="smallbtn spouse" data-action="addSpouse" type="button">+ Agregar pareja</button>`)
         : "";
+
+      const spouseRemoveBtn = isSpouse
+        ? `<button class="smallbtn remove" data-action="removeSpouse" type="button">Quitar pareja</button>`
+        : (removable ? `<button class="smallbtn remove" data-action="remove" type="button">Eliminar</button>` : `<span></span>`);
+
+      const addKidBtn = (!isSpouse)
+        ? `<button class="smallbtn addkid" data-action="addChild" type="button">+ Agregar hijo/a</button>`
+        : ``;
 
       el.innerHTML = `
         <div class="role">
-          <b>${escapeHtml(node.role || "")}${isSpouse && spouseOwnerName ? ` • Pareja de ${escapeHtml(spouseOwnerName)}` : ""}</b>
-          ${removable ? `<button class="smallbtn remove" data-action="${isSpouse ? "removeSpouse" : "remove"}" type="button">${isSpouse ? "Quitar pareja" : "Eliminar"}</button>` : `<span></span>`}
+          <b>${escapeHtml(node.role || "")}</b>
+          ${spouseRemoveBtn}
         </div>
 
         <div class="row">
@@ -1225,10 +1185,8 @@
           </label>
 
           <div class="photo-actions">
-            ${isSpouse ? `` : `<button class="smallbtn addkid" data-action="addChild" type="button">+ Agregar hijo/a</button>`}
-            ${allowSpouseActions && !hasSpouse ? `<button class="smallbtn spouse" data-action="addSpouse" type="button">+ Agregar pareja</button>` : ``}
-            ${allowSpouseActions && hasSpouse ? `<button class="smallbtn spouse" data-action="editSpouse" type="button">Editar pareja</button>` : ``}
-            ${allowSpouseActions && hasSpouse ? `<button class="smallbtn remove" data-action="removeSpouse" type="button">Quitar pareja</button>` : ``}
+            ${addKidBtn}
+            ${spouseBtns}
             <button class="smallbtn" data-action="clearPhoto" type="button">Quitar foto</button>
           </div>
         </div>
@@ -1244,8 +1202,6 @@
             <input type="date" data-field="death" value="${escapeAttr(node.death || "")}">
           </label>
         </div>
-
-        ${isSpouse ? `<div class="note">Nota: los hijos se agregan desde la persona principal (no desde la tarjeta de la pareja).</div>` : ``}
 
         <div class="footer">
           <span>${escapeHtml(node.id)}</span>
@@ -1265,7 +1221,6 @@
       el.addEventListener("click", (e) => {
         const btn = e.target.closest("button");
         if (!btn) return;
-
         const action = btn.dataset.action;
         if (!action) return;
 
@@ -1281,11 +1236,6 @@
           openEditor(node.id);
           return;
         }
-        if (action === "remove") {
-          removeNode(node.id);
-          closeEditor();
-          return;
-        }
         if (action === "addSpouse") {
           addSpouseTo(node.id);
           return;
@@ -1295,10 +1245,13 @@
           return;
         }
         if (action === "removeSpouse") {
-          removeSpouseByAnyId(node.id);
-          // si era spouse, cerramos; si era principal, reabrimos principal
-          if (isSpouse && spouseOwner?.id) openEditor(spouseOwner.id);
-          else openEditor(node.id);
+          removeSpouse(node.id);
+          closeEditor();
+          return;
+        }
+        if (action === "remove") {
+          removeNode(node.id);
+          closeEditor();
           return;
         }
       });
@@ -1317,13 +1270,13 @@
       return el;
     }
 
-    // ======= NODO círculo (layout) =======
-    function renderNodeCircle(node, cls, { isSpouse=false } = {}){
+    // ======= NODO círculo =======
+    function renderNodeCircle(node, cls){
       const el = document.createElement("div");
-      el.className = `node ${cls}${isSpouse ? " spouse" : ""}`;
+      el.className = `node ${cls}`;
       el.dataset.id = node.id;
 
-      const name = (node.name && node.name.trim()) ? node.name.trim() : (isSpouse ? "Pareja" : "Sin nombre");
+      const name = (node.name && node.name.trim()) ? node.name.trim() : "Sin nombre";
       const yrs  = yearRange(node.birth, node.death);
 
       el.innerHTML = `
@@ -1335,6 +1288,17 @@
       return el;
     }
 
+    function renderPersonUnit(node, cls){
+      const unit = document.createElement("div");
+      unit.className = "personUnit";
+      unit.appendChild(renderNodeCircle(node, cls));
+
+      if (node.spouse) {
+        unit.appendChild(renderNodeCircle(node.spouse, `${cls} spouseNode`));
+      }
+      return unit;
+    }
+
     // ======= SUBÁRBOL =======
     const MAX_DEPTH = 8;
 
@@ -1344,21 +1308,19 @@
       return "lvl-3";
     }
 
+    function colsForKids(n){
+      if (n <= 0) return 0;
+      if (n <= 3) return n;   // 1..3 en una fila
+      if (n === 4) return 2;  // 2x2
+      return 3;               // 5+ => 3 columnas (ej: 3+2)
+    }
+
     function renderSubtree(node, depth = 0, { isOriginal = false } = {}) {
       const wrap = document.createElement("div");
       wrap.className = "subtree";
 
       const cls = isOriginal ? "lvl-original" : depthClass(depth);
-
-      // ✅ persona + pareja
-      const pr = document.createElement("div");
-      pr.className = "pairRow";
-      pr.appendChild(renderNodeCircle(node, cls, { isSpouse:false }));
-
-      if (node.spouse && typeof node.spouse === "object") {
-        pr.appendChild(renderNodeCircle(node.spouse, cls, { isSpouse:true }));
-      }
-      wrap.appendChild(pr);
+      wrap.appendChild(renderPersonUnit(node, cls));
 
       if (Array.isArray(node.children) && node.children.length > 0 && depth < MAX_DEPTH) {
         const group = document.createElement("div");
@@ -1366,6 +1328,7 @@
 
         const row = document.createElement("div");
         row.className = "childrenRow";
+        row.style.setProperty("--cols", String(colsForKids(node.children.length)));
 
         node.children.forEach(ch => {
           const cw = document.createElement("div");
@@ -1411,11 +1374,7 @@
 
       childrenGen.appendChild(grid);
 
-      // ✅ actualizar dimensiones para zoom
-      requestAnimationFrame(() => {
-        recalcZoomBase();
-        applyZoom(zoom, { keepCenter:true });
-      });
+      requestAnimationFrame(() => refreshZoomBounds(false));
     }
 
     // ======= Portada =======
@@ -1431,7 +1390,7 @@
       scheduleSave();
     });
 
-    // Subir fotos (cover o persona/spouse)
+    // Subir fotos (cover o persona)
     filePicker.addEventListener("change", async () => {
       const file = filePicker.files?.[0];
       if (!file || !pendingPhotoTarget) return;
@@ -1596,7 +1555,7 @@
       subscribeRealtime();
     }
 
-    // ======= Buscador (ir a persona) =======
+    // ======= Buscador (incluye parejas) =======
     function collectPeople(){
       const out = [];
       const walk = (node, depth, rootId) => {
@@ -1609,11 +1568,11 @@
           photo_url: node.photo_url || placeholderImg
         });
 
-        if (node.spouse && typeof node.spouse === "object") {
+        if (node.spouse) {
           out.push({
             id: node.spouse.id,
             name: (node.spouse.name || "").trim(),
-            role: "Pareja",
+            role: node.spouse.role || "Pareja",
             depth,
             rootId: rootId || node.id,
             photo_url: node.spouse.photo_url || placeholderImg
@@ -1652,144 +1611,19 @@
       searchResults.classList.add("show");
     }
 
-    // ======= Zoom/Pan =======
-    const ZMIN = 0.50;
-    const ZMAX = 1.70;
-    const ZSTEP = 0.10;
-
-    let zoom = 1.0;
-    let baseW = 1200, baseH = 700;
-
-    function clamp(n, a, b){ return Math.max(a, Math.min(b, n)); }
-
-    function recalcZoomBase(){
-      // medir tamaño base (sin depender del transform)
-      const rect = zoomContent.getBoundingClientRect();
-      // si ya está escalado, revertimos:
-      baseW = Math.max(600, Math.round(rect.width / zoom));
-      baseH = Math.max(400, Math.round(rect.height / zoom));
-    }
-
-    function setZoomUI(){
-      zoomRange.value = String(Math.round(zoom * 100));
-      zoomRead.textContent = `${Math.round(zoom * 100)}%`;
-    }
-
-    function applyZoom(newZoom, { keepCenter=false, anchor=null } = {}){
-      const prev = zoom;
-      zoom = clamp(newZoom, ZMIN, ZMAX);
-
-      // ancla: mantener punto bajo mouse (o centro del viewport)
-      const vp = treeViewport;
-      const vpRect = vp.getBoundingClientRect();
-
-      let ax, ay;
-      if (anchor && typeof anchor.x === "number" && typeof anchor.y === "number") {
-        ax = anchor.x; ay = anchor.y;
-      } else if (keepCenter) {
-        ax = vp.clientWidth / 2;
-        ay = vp.clientHeight / 2;
-      } else {
-        ax = vp.clientWidth / 2;
-        ay = vp.clientHeight / 2;
-      }
-
-      // coordenadas en contenido (unscaled)
-      const cx = (vp.scrollLeft + ax) / prev;
-      const cy = (vp.scrollTop  + ay) / prev;
-
-      // aplicar transform
-      zoomContent.style.transform = `scale(${zoom})`;
-
-      // actualizar spacer
-      zoomSpacer.style.width  = `${Math.round(baseW * zoom)}px`;
-      zoomSpacer.style.height = `${Math.round(baseH * zoom)}px`;
-
-      // reubicar scroll para mantener ancla
-      vp.scrollLeft = Math.max(0, Math.round(cx * zoom - ax));
-      vp.scrollTop  = Math.max(0, Math.round(cy * zoom - ay));
-
-      setZoomUI();
-    }
-
-    // botones/slider
-    zoomOutBtn.addEventListener("click", () => applyZoom(zoom - ZSTEP, { keepCenter:true }));
-    zoomInBtn.addEventListener("click",  () => applyZoom(zoom + ZSTEP, { keepCenter:true }));
-    zoomResetBtn.addEventListener("click", () => applyZoom(1.0, { keepCenter:true }));
-    zoomRange.addEventListener("input", () => applyZoom(Number(zoomRange.value)/100, { keepCenter:true }));
-
-    // ctrl/cmd + rueda = zoom (trackpad pinch normalmente activa ctrlKey)
-    treeViewport.addEventListener("wheel", (e) => {
-      const isZoomGesture = e.ctrlKey || e.metaKey;
-      if (!isZoomGesture) return;
-      e.preventDefault();
-
-      const vpRect = treeViewport.getBoundingClientRect();
-      const ax = e.clientX - vpRect.left;
-      const ay = e.clientY - vpRect.top;
-
-      const dir = (e.deltaY > 0) ? -1 : 1;
-      const step = 0.06 * dir;
-      applyZoom(zoom + step, { anchor: { x: ax, y: ay } });
-    }, { passive:false });
-
-    // Pan por arrastre
-    let isPanning = false;
-    let panStartX = 0, panStartY = 0, panStartSL = 0, panStartST = 0;
-
-    treeViewport.addEventListener("pointerdown", (e) => {
-      // no iniciar pan si tocaron un nodo (para no pelear con click)
-      if (e.target.closest(".node") || e.target.closest(".modal")) return;
-
-      isPanning = true;
-      treeViewport.classList.add("panning");
-      panStartX = e.clientX;
-      panStartY = e.clientY;
-      panStartSL = treeViewport.scrollLeft;
-      panStartST = treeViewport.scrollTop;
-      treeViewport.setPointerCapture(e.pointerId);
-    });
-
-    treeViewport.addEventListener("pointermove", (e) => {
-      if (!isPanning) return;
-      const dx = e.clientX - panStartX;
-      const dy = e.clientY - panStartY;
-      treeViewport.scrollLeft = panStartSL - dx;
-      treeViewport.scrollTop  = panStartST - dy;
-    });
-
-    treeViewport.addEventListener("pointerup", (e) => {
-      if (!isPanning) return;
-      isPanning = false;
-      treeViewport.classList.remove("panning");
-      try { treeViewport.releasePointerCapture(e.pointerId); } catch {}
-    });
-
-    // scroll programático al buscar (compatible con transform scale)
-    function offsetToZoomContent(el){
-      let x = 0, y = 0;
-      let cur = el;
-      while (cur && cur !== zoomContent) {
-        x += cur.offsetLeft || 0;
-        y += cur.offsetTop  || 0;
-        cur = cur.offsetParent;
-      }
-      return { x, y, w: el.offsetWidth || 0, h: el.offsetHeight || 0 };
+    function centerOnElement(el){
+      const vpRect = zoomViewport.getBoundingClientRect();
+      const r = el.getBoundingClientRect();
+      const dx = (r.left - vpRect.left) + r.width/2 - zoomViewport.clientWidth/2;
+      const dy = (r.top - vpRect.top) + r.height/2 - zoomViewport.clientHeight/2;
+      zoomViewport.scrollLeft += dx;
+      zoomViewport.scrollTop  += dy;
     }
 
     function goToPerson(id, { open=false } = {}){
       const el = document.querySelector(`[data-id="${CSS.escape(id)}"]`);
       if (el) {
-        const o = offsetToZoomContent(el);
-        const targetX = (o.x + o.w/2) * zoom - treeViewport.clientWidth/2;
-        const targetY = (o.y + o.h/2) * zoom - treeViewport.clientHeight/2;
-
-        treeViewport.scrollTo({
-          left: Math.max(0, targetX),
-          top:  Math.max(0, targetY),
-          behavior: "smooth"
-        });
-
+        centerOnElement(el);
         el.classList.add("flash");
         setTimeout(() => el.classList.remove("flash"), 1400);
       }
@@ -1825,16 +1659,150 @@
       }
     });
 
-    // Init
+    // =========================
+    // ZOOM + PAN
+    // =========================
+    let zoom = 1;
+    let minZoom = 0.1; // se recalcula con fit
+    const maxZoom = 2.6;
+    let baseW = 1, baseH = 1;
+
+    function clamp(v, a, b){ return Math.max(a, Math.min(b, v)); }
+
+    function updateZoomLabel(){
+      zoomLabel.textContent = `${Math.round(zoom*100)}%`;
+    }
+
+    function measureBase(){
+      baseW = Math.max(1, zoomContent.scrollWidth);
+      baseH = Math.max(1, zoomContent.scrollHeight);
+      const fit = Math.min(zoomViewport.clientWidth / baseW, zoomViewport.clientHeight / baseH);
+      minZoom = clamp(Math.min(1, fit), 0.06, 1);
+      return fit;
+    }
+
+    function applyZoom(newZoom, { clientX=null, clientY=null, center=false } = {}){
+      measureBase();
+
+      const vpRect = zoomViewport.getBoundingClientRect();
+      const cx = center ? (vpRect.left + zoomViewport.clientWidth/2) : (clientX ?? (vpRect.left + zoomViewport.clientWidth/2));
+      const cy = center ? (vpRect.top  + zoomViewport.clientHeight/2): (clientY ?? (vpRect.top  + zoomViewport.clientHeight/2));
+
+      // coords actuales (en "espacio sin escala")
+      const px = (zoomViewport.scrollLeft + (cx - vpRect.left)) / zoom;
+      const py = (zoomViewport.scrollTop  + (cy - vpRect.top )) / zoom;
+
+      zoom = clamp(newZoom, minZoom, maxZoom);
+
+      zoomContent.style.transform = `scale(${zoom})`;
+      zoomSpacer.style.width  = (baseW * zoom) + "px";
+      zoomSpacer.style.height = (baseH * zoom) + "px";
+
+      // mantener el punto bajo el cursor
+      zoomViewport.scrollLeft = px * zoom - (cx - vpRect.left);
+      zoomViewport.scrollTop  = py * zoom - (cy - vpRect.top);
+
+      updateZoomLabel();
+    }
+
+    function fitAll(){
+      measureBase();
+      zoom = minZoom;
+
+      zoomContent.style.transform = `scale(${zoom})`;
+      zoomSpacer.style.width  = (baseW * zoom) + "px";
+      zoomSpacer.style.height = (baseH * zoom) + "px";
+
+      // centrar (para que "se vea todo" y no deje hermanos por fuera)
+      zoomViewport.scrollLeft = Math.max(0, (baseW*zoom - zoomViewport.clientWidth) / 2);
+      zoomViewport.scrollTop  = Math.max(0, (baseH*zoom - zoomViewport.clientHeight) / 2);
+
+      updateZoomLabel();
+    }
+
+    function refreshZoomBounds(initial=false){
+      measureBase();
+      // si el usuario está muy alejado, lo dejamos; si quedó por debajo del min fit, lo subimos
+      const z = clamp(zoom, minZoom, maxZoom);
+      if (initial) {
+        zoom = z;
+        fitAll();
+      } else {
+        if (z !== zoom) zoom = z;
+        zoomContent.style.transform = `scale(${zoom})`;
+        zoomSpacer.style.width  = (baseW * zoom) + "px";
+        zoomSpacer.style.height = (baseH * zoom) + "px";
+        updateZoomLabel();
+      }
+    }
+
+    zoomInBtn.addEventListener("click", () => applyZoom(zoom * 1.12, { center:true }));
+    zoomOutBtn.addEventListener("click", () => {
+      const next = zoom / 1.12;
+      // si ya estás muy cerca del fit, al bajar te manda a “ver todo”
+      if (next <= minZoom * 1.05) { fitAll(); return; }
+      applyZoom(next, { center:true });
+    });
+    zoomFitBtn.addEventListener("click", fitAll);
+
+    // Ctrl/⌘ + rueda para zoom (rueda normal queda como scroll)
+    zoomViewport.addEventListener("wheel", (e) => {
+      const isZoomGesture = e.ctrlKey || e.metaKey;
+      if (!isZoomGesture) return;
+      e.preventDefault();
+      const factor = (e.deltaY < 0) ? 1.08 : 0.92;
+      applyZoom(zoom * factor, { clientX: e.clientX, clientY: e.clientY });
+    }, { passive:false });
+
+    // Drag para pan (solo si tocas fondo, no nodos)
+    let isPanning = false;
+    let panStartX = 0, panStartY = 0, panStartL = 0, panStartT = 0;
+
+    function isInteractiveTarget(t){
+      if (!(t instanceof Element)) return false;
+      return !!t.closest(".node, button, a, input, label, .searchWrap, .cover, .modal, .person");
+    }
+
+    zoomViewport.addEventListener("pointerdown", (e) => {
+      if (e.button !== 0) return;
+      if (isInteractiveTarget(e.target)) return;
+
+      isPanning = true;
+      zoomViewport.classList.add("dragging");
+      panStartX = e.clientX;
+      panStartY = e.clientY;
+      panStartL = zoomViewport.scrollLeft;
+      panStartT = zoomViewport.scrollTop;
+      zoomViewport.setPointerCapture(e.pointerId);
+    });
+
+    zoomViewport.addEventListener("pointermove", (e) => {
+      if (!isPanning) return;
+      const dx = e.clientX - panStartX;
+      const dy = e.clientY - panStartY;
+      zoomViewport.scrollLeft = panStartL - dx;
+      zoomViewport.scrollTop  = panStartT - dy;
+    });
+
+    zoomViewport.addEventListener("pointerup", (e) => {
+      if (!isPanning) return;
+      isPanning = false;
+      zoomViewport.classList.remove("dragging");
+      try { zoomViewport.releasePointerCapture(e.pointerId); } catch {}
+    });
+
+    window.addEventListener("resize", () => refreshZoomBounds(false));
+
+    // ======= Init =======
     (async () => {
       state = normalizeState(state);
       renderAll();
-      setZoomUI();
+      refreshZoomBounds(true);
       await boot();
+      // al conectar, re-fit por si cargó un árbol más grande
+      requestAnimationFrame(() => fitAll());
     })();
   </script>
 </body>
 </html>
-
-
 
