@@ -27,9 +27,11 @@
 
       --treeLine: rgba(0,0,0,.10);
 
-      /* layout */
-      --colW: 180px;
-      --colGap: 14px;
+      /* ✅ ancho de columna para que quepan parejas */
+      --colW: 240px;
+
+      /* ✅ se setea por JS */
+      --headerH: 72px;
     }
 
     *{box-sizing:border-box}
@@ -44,7 +46,7 @@
     }
 
     header{
-      position:sticky; top:0; z-index:10;
+      position:sticky; top:0; z-index:50;
       background: rgba(246,239,227,.88);
       backdrop-filter: blur(10px);
       border-bottom:1px solid rgba(0,0,0,.08);
@@ -108,12 +110,6 @@
       border-color: rgba(182,70,63,.30);
       box-shadow:none;
     }
-    .btn-ghost{
-      background: rgba(255,255,255,.55);
-      color: var(--text);
-      box-shadow:none;
-      border:1px solid rgba(0,0,0,.12);
-    }
 
     .pill{
       display:inline-flex; align-items:center; gap:8px;
@@ -127,23 +123,6 @@
     .dot{width:9px; height:9px; border-radius:50%;}
     .dot.ok{background: var(--ok); box-shadow: 0 0 0 4px rgba(47,143,107,.12);}
     .dot.bad{background: var(--danger); box-shadow: 0 0 0 4px rgba(182,70,63,.12);}
-
-    /* Zoom controls */
-    .zoomWrap{
-      display:flex;
-      gap:8px;
-      align-items:center;
-      flex-wrap:wrap;
-    }
-    .zoomLabel{
-      font-weight:900;
-      color: var(--text);
-      background: rgba(255,255,255,.55);
-      border:1px solid rgba(0,0,0,.10);
-      border-radius: 999px;
-      padding:8px 10px;
-      font-size:12px;
-    }
 
     /* Buscador */
     .searchWrap{
@@ -181,7 +160,7 @@
       box-shadow: 0 14px 40px rgba(0,0,0,.18);
       padding: 6px;
       display:none;
-      z-index: 20;
+      z-index: 60;
     }
     .searchResults.show{ display:block; }
     .srItem{
@@ -207,6 +186,17 @@
     .srName{ font-weight:900; font-size:12px; }
     .srMeta{ font-size:11px; color: var(--muted); }
 
+    /* Zoom controls */
+    .zoomWrap{
+      display:flex;
+      gap:8px;
+      align-items:center;
+      justify-content:flex-end;
+      flex: 0 0 auto;
+    }
+    .zoomBtn{ padding:8px 10px; min-width: 40px; }
+    .zoomPct{ min-width: 76px; justify-content:center; }
+
     main{padding:18px 16px 34px;}
     .container{max-width:1200px; margin:0 auto;}
 
@@ -219,13 +209,22 @@
       overflow:hidden;
       margin-bottom: 18px;
     }
+
+    /* ✅ Sticky SOLO la franja de imagen+texto */
     .cover-top{
       display:grid;
       grid-template-columns: 1.6fr 1fr;
       gap: 14px;
       padding: 14px;
       align-items: stretch;
+
+      position: sticky;
+      top: var(--headerH);
+      z-index: 20;
+      background: linear-gradient(180deg, var(--card), var(--card2));
+      border-bottom: 1px solid rgba(0,0,0,.08);
     }
+
     .cover-imgwrap{
       border-radius: 16px;
       overflow:hidden;
@@ -274,7 +273,7 @@
       white-space: nowrap;
     }
 
-    /* Árbol */
+    /* Árbol (zoomable) */
     .divider{height:1px; background: rgba(0,0,0,.10); margin: 16px 0;}
     .gen{display:flex; justify-content:center; gap:18px; flex-wrap:wrap; position:relative;}
 
@@ -302,51 +301,44 @@
       border-radius: 99px;
     }
 
-    /* =========================
-       ZOOM VIEWPORT (árbol completo)
-       ========================= */
-    .zoomArea{
-      margin-top: 6px;
-    }
-    .zoomViewport{
-      height: min(72vh, 820px);
-      border: 1px solid rgba(0,0,0,.10);
-      border-radius: var(--radius);
-      box-shadow: 0 10px 25px rgba(0,0,0,.10);
+    /* ✅ Zoom viewport */
+    .treeViewport{
+      border:1px solid rgba(0,0,0,.10);
+      border-radius: 16px;
       background: rgba(255,255,255,.35);
-      overflow: auto;
-      position: relative;
+      box-shadow: 0 10px 22px rgba(0,0,0,.08);
+      overflow:auto;
       -webkit-overflow-scrolling: touch;
+      height: min(74vh, 760px);
+      padding: 10px;
       cursor: grab;
     }
-    .zoomViewport.dragging{ cursor: grabbing; }
-    .zoomSpacer{ position: relative; width: 0px; height: 0px; }
-    .zoomContent{
+    .treeViewport:active{ cursor: grabbing; }
+
+    .treeSpace{
+      position: relative;
+      width: 100px; height: 100px; /* se actualiza por JS */
+    }
+    .treeScaler{
       position: absolute;
-      left: 0; top: 0;
+      top: 0; left: 0;
       transform-origin: 0 0;
-      padding: 10px 14px 26px;
     }
 
-    /* =========================
-       LAYOUT (11 columnas)
-       ========================= */
+    /* LAYOUT columnas */
     .treeGrid{
       display:grid;
-      grid-auto-flow: column;
-      grid-auto-columns: minmax(var(--colW), max-content);
-      grid-template-columns: repeat(11, minmax(var(--colW), max-content));
-      gap: var(--colGap);
+      grid-template-columns: repeat(11, var(--colW));
+      gap: 14px;
       align-items:start;
-      justify-content:start;
-      width: max-content;
-      margin: 0 auto;
+      justify-content:center;
       padding: 6px 4px 2px;
+      min-width: calc(11 * var(--colW) + 10 * 14px);
     }
     .treeGrid.moreCols{
       grid-auto-flow: column;
-      grid-auto-columns: minmax(var(--colW), max-content);
-      grid-template-columns: repeat(11, minmax(var(--colW), max-content));
+      grid-auto-columns: var(--colW);
+      grid-template-columns: repeat(11, var(--colW));
     }
 
     .subtree{
@@ -356,7 +348,6 @@
       align-items:center;
       gap: 10px;
       padding: 6px 4px 2px;
-      width: max-content;
     }
 
     .node{
@@ -367,7 +358,7 @@
       gap: 6px;
       cursor:pointer;
       user-select:none;
-      max-width: 180px;
+      max-width: 220px;
     }
 
     .circle{
@@ -383,7 +374,7 @@
       font-size: 12px;
       font-weight: 900;
       text-align:center;
-      max-width: 170px;
+      max-width: 200px;
       overflow:hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -395,7 +386,7 @@
       text-align:center;
     }
 
-    /* Marcos por nivel */
+    /* Marco por nivel */
     .lvl-parent .circle{
       width:110px; height:130px;
       border-width: 4px;
@@ -414,6 +405,7 @@
       border-color: rgba(79,134,170,.90);
       box-shadow: 0 0 0 3px rgba(79,134,170,.16);
     }
+    /* Bisnietos: cuadritos */
     .lvl-2 .circle{
       width:64px; height:64px;
       border-width: 3px;
@@ -430,28 +422,24 @@
       opacity:.96;
     }
 
-    /* Parejas */
+    /* ✅ PAREJA: MISMO marco, pero BORDE PUNTEADO (SIN cuadro extra) */
+    .node.spouseNode .circle{
+      border-style: dashed;   /* <-- esto es lo único “punteado” */
+    }
+
+    /* unidad persona + pareja en la misma línea */
     .personUnit{
       display:flex;
-      gap:12px;
       align-items:flex-start;
       justify-content:center;
-      flex-wrap:nowrap;
+      gap: 10px;
+      flex-wrap: nowrap;
     }
-    .spouseNode{
-      opacity: .98;
-    }
-    /* un poquito más pequeña la pareja para que “quepa” mejor */
-    .lvl-parent.spouseNode .circle{ width:96px; height:112px; border-width:3px; }
-    .lvl-original.spouseNode .circle{ width:86px; height:96px; border-width:3px; }
-    .lvl-1.spouseNode .circle{ width:70px; height:70px; border-width:3px; }
-    .lvl-2.spouseNode .circle{ width:56px; height:56px; border-width:3px; }
-    .lvl-3.spouseNode .circle{ width:46px; height:46px; border-width:2px; }
 
     /* Conectores */
     .childrenGroup{
       position:relative;
-      width: max-content;
+      width: 100%;
       padding-top: 10px;
     }
     .childrenGroup::before{
@@ -476,15 +464,13 @@
       border-radius: 99px;
     }
 
-    /* ✅ Hijos en 1 fila / 2 filas si hace falta (grid controlado desde JS con --cols) */
     .childrenRow{
-      display:grid;
+      display:flex;
+      flex-wrap:wrap;
       gap: 10px;
       justify-content:center;
-      align-items:start;
+      align-items:flex-start;
       margin-top: 8px;
-      grid-template-columns: repeat(var(--cols, 3), max-content);
-      width: max-content;
     }
 
     .childWrap{
@@ -494,7 +480,6 @@
       align-items:center;
       gap: 8px;
       padding-top: 10px;
-      width: max-content;
     }
     .childWrap::before{
       content:"";
@@ -516,21 +501,20 @@
     }
 
     @media (max-width: 860px){
-      :root{ --colW: 170px; }
       .cover-top{grid-template-columns: 1fr;}
       .cover-imgwrap{min-height: 210px;}
       .searchWrap{ justify-content:flex-start; width:100%; }
       .searchInput{ width:100%; }
-      .zoomViewport{ height: min(70vh, 780px); }
+      :root{ --colW: 220px; }
+      .treeViewport{ height: min(70vh, 720px); }
     }
     @media (max-width: 560px){
-      :root{ --colW: 160px; }
+      :root{ --colW: 210px; }
       .lvl-parent .circle{ width:106px; height:106px; }
       .lvl-original .circle{ width:92px; height:92px; }
       .lvl-1 .circle{ width:62px; height:62px; }
       .lvl-2 .circle{ width:54px; height:54px; }
       .lvl-3 .circle{ width:46px; height:46px; }
-      .zoomViewport{ height: min(72vh, 760px); }
     }
 
     /* =========================
@@ -546,7 +530,7 @@
     .modal.show{display:flex;}
     .modalPanel{
       margin:auto;
-      width: min(760px, 100%);
+      width: min(860px, 100%);
       max-height: min(92vh, 900px);
       overflow:auto;
       background: rgba(246,239,227,.98);
@@ -569,7 +553,7 @@
     }
 
     .person{
-      width: 320px; max-width: calc(100vw - 32px);
+      width: 360px; max-width: calc(100vw - 32px);
       background: linear-gradient(180deg, var(--card), var(--card2));
       border: 1px solid rgba(0,0,0,.10);
       border-radius: var(--radius);
@@ -630,7 +614,7 @@
     .smallbtn:hover{opacity:.92}
     .smallbtn.addkid{background: rgba(198,162,74,.20); border-color: rgba(198,162,74,.35);}
     .smallbtn.remove{background: rgba(182,70,63,.12); border-color: rgba(182,70,63,.28); color:#4a1411;}
-    .smallbtn.spouse{background: rgba(79,134,170,.14); border-color: rgba(79,134,170,.26);}
+    .smallbtn.addsp{background: rgba(79,134,170,.16); border-color: rgba(79,134,170,.28);}
 
     .fields{
       margin-top:12px;
@@ -654,6 +638,43 @@
       box-shadow: 0 0 0 4px rgba(198,162,74,.16);
     }
 
+    .spouseBlock{
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px dashed rgba(0,0,0,.18);
+    }
+    .spouseHead{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom: 10px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .spouseHead b{ color: var(--text); }
+    .spouseCard{
+      border: 1px solid rgba(0,0,0,.10);
+      border-radius: 14px;
+      padding: 10px;
+      background: rgba(255,255,255,.40);
+    }
+    .spouseRow{
+      display:flex;
+      gap:10px;
+      align-items:center;
+    }
+    .spouseAvatar{
+      width:72px; height:72px;
+      border-radius: 14px;
+      border: 1px dashed rgba(0,0,0,.22);
+      overflow:hidden;
+      background: rgba(0,0,0,.04);
+      cursor:pointer;
+      flex:0 0 auto;
+    }
+    .spouseAvatar img{ width:100%; height:100%; object-fit:cover; display:block; }
+
     .footer{
       margin-top:12px;
       display:flex;
@@ -674,7 +695,7 @@
 </head>
 
 <body>
-  <header>
+  <header id="headerEl">
     <div class="wrap">
       <h1>Árbol genealógico — <span class="brand">Familia Arango</span></h1>
       <div class="sub">
@@ -682,17 +703,17 @@
       </div>
 
       <div class="toolbar">
-        <div class="zoomWrap">
-          <button class="btn btn-ghost" id="zoomOut" type="button">−</button>
-          <button class="btn btn-ghost" id="zoomIn" type="button">+</button>
-          <button class="btn btn-primary" id="zoomFit" type="button">Ver todo</button>
-          <span class="zoomLabel" id="zoomLabel">100%</span>
-        </div>
-
         <div class="searchWrap">
           <input class="searchInput" id="searchInput" type="text" placeholder="Buscar persona (nombre)…" autocomplete="off" />
           <button class="btn btn-primary" id="searchBtn" type="button">Buscar</button>
           <div class="searchResults" id="searchResults"></div>
+        </div>
+
+        <div class="zoomWrap" title="Zoom del árbol">
+          <button class="btn zoomBtn" id="zoomOutBtn" type="button">−</button>
+          <span class="pill zoomPct" id="zoomPct">100%</span>
+          <button class="btn zoomBtn" id="zoomInBtn" type="button">+</button>
+          <button class="btn btn-primary" id="zoomFitBtn" type="button">Ver todo</button>
         </div>
 
         <div class="pill" title="Estado de guardado">
@@ -714,7 +735,8 @@
           <div class="cover-side">
             <div>
               <h2>Sobre esta familia</h2>
-              <p> (Por favor aquí acudo a los poetas o historiadores de la familia a que me envien por mensajes lo que consideran acompaña el camino de los Arango, y que va ir en este lugar. tambien quejas reclamos y/o sugerencias para que construyamos este espacio entre todos).</p>
+              <!-- ✅ Texto fijo: solo se cambia en código -->
+              <p>(Por favor aquí acudo a los poetas o historiadores de la familia a que me envien por mensajes lo que consideran acompaña el camino de los Arango, y que va ir en este lugar. tambien quejas reclamos y/o sugerencias para que construyamos este espacio entre todos).</p>
             </div>
             <div class="cover-actions">
               <label class="btn btn-primary" for="filePicker" id="coverPickLabel">Cambiar foto portada</label>
@@ -727,18 +749,16 @@
 
       <div class="divider"></div>
 
-      <!-- ✅ Árbol completo dentro del viewport (zoom+pan+scroll) -->
-      <section class="zoomArea">
-        <div class="zoomViewport" id="zoomViewport" aria-label="Árbol (zoom y desplazamiento)">
-          <div class="zoomSpacer" id="zoomSpacer">
-            <div class="zoomContent" id="zoomContent">
-              <section class="gen couple" id="parentsGen" aria-label="Padres"></section>
-              <div class="divider"></div>
-              <section class="gen" id="childrenGen" aria-label="Hijos"></section>
-            </div>
+      <!-- ✅ ÁREA ZOOMABLE (padres + árbol completo) -->
+      <div class="treeViewport" id="treeViewport" aria-label="Árbol (zoom y desplazamiento)">
+        <div class="treeSpace" id="treeSpace">
+          <div class="treeScaler" id="treeScaler">
+            <section class="gen couple" id="parentsGen" aria-label="Padres"></section>
+            <div class="divider"></div>
+            <section class="gen" id="childrenGen" aria-label="Hijos"></section>
           </div>
         </div>
-      </section>
+      </div>
 
     </div>
   </main>
@@ -766,6 +786,13 @@
       bucket: "family-photos"
     };
 
+    const headerEl = document.getElementById("headerEl");
+    function updateHeaderH(){
+      const h = headerEl ? headerEl.offsetHeight : 72;
+      document.documentElement.style.setProperty("--headerH", h + "px");
+    }
+    window.addEventListener("resize", updateHeaderH);
+
     const connDot  = document.getElementById("connDot");
     const connText = document.getElementById("connText");
 
@@ -790,13 +817,14 @@
     const searchResults = document.getElementById("searchResults");
 
     // Zoom
-    const zoomViewport = document.getElementById("zoomViewport");
-    const zoomSpacer   = document.getElementById("zoomSpacer");
-    const zoomContent  = document.getElementById("zoomContent");
-    const zoomInBtn    = document.getElementById("zoomIn");
-    const zoomOutBtn   = document.getElementById("zoomOut");
-    const zoomFitBtn   = document.getElementById("zoomFit");
-    const zoomLabel    = document.getElementById("zoomLabel");
+    const treeViewport = document.getElementById("treeViewport");
+    const treeSpace    = document.getElementById("treeSpace");
+    const treeScaler   = document.getElementById("treeScaler");
+
+    const zoomOutBtn = document.getElementById("zoomOutBtn");
+    const zoomInBtn  = document.getElementById("zoomInBtn");
+    const zoomFitBtn = document.getElementById("zoomFitBtn");
+    const zoomPct    = document.getElementById("zoomPct");
 
     let supabase = null;
     let TREE_ID = DEFAULT_CFG.treeId;
@@ -806,21 +834,21 @@
     let applyingRemote = false;
     let channel = null;
 
-    let pendingPhotoTarget = null; // {type:"cover"} o {type:"person",id}
+    let pendingPhotoTarget = null;
+    // {type:"cover"} o {type:"person", id} o {type:"spouse", ownerId}
 
     // ======= Realtime pausado mientras escriben =======
     let isEditing = false;
     let queuedRemote = null;
 
     document.addEventListener("focusin", (e) => {
-      if (e.target instanceof HTMLInputElement && e.target.dataset.field) isEditing = true;
+      if (e.target instanceof HTMLInputElement && (e.target.dataset.field || e.target.dataset.sfield)) isEditing = true;
     });
-
     document.addEventListener("focusout", (e) => {
-      if (!(e.target instanceof HTMLInputElement) || !e.target.dataset.field) return;
+      if (!(e.target instanceof HTMLInputElement) || !(e.target.dataset.field || e.target.dataset.sfield)) return;
       setTimeout(() => {
         const a = document.activeElement;
-        const stillEditing = (a instanceof HTMLInputElement && a.dataset.field);
+        const stillEditing = (a instanceof HTMLInputElement && (a.dataset.field || a.dataset.sfield));
         if (stillEditing) return;
 
         isEditing = false;
@@ -897,6 +925,17 @@
       return `${prefix}_${Date.now()}_${Math.random().toString(16).slice(2)}`;
     }
 
+    function makeSpouse(){
+      return {
+        id: makeId("s"),
+        name:"",
+        birth:"",
+        death:"",
+        photo_url: placeholderImg,
+        photo_path:""
+      };
+    }
+
     function makePerson({ role="", id=null } = {}){
       return {
         id: id || makeId("p"),
@@ -906,21 +945,8 @@
         death:"",
         photo_url: placeholderImg,
         photo_path:"",
-        spouse: null,     // ✅ NUEVO: pareja (objeto simple)
+        spouse: null,     // ✅ soporte de pareja
         children:[]
-      };
-    }
-    function makeSpouse(){
-      return {
-        id: makeId("s"),
-        role: "Pareja",
-        name:"",
-        birth:"",
-        death:"",
-        photo_url: placeholderImg,
-        photo_path:"",
-        spouse: null,
-        children: [] // no se usa, pero lo dejamos para normalizar sin romper
       };
     }
 
@@ -937,26 +963,28 @@
 
     let state = structuredClone(defaultState);
 
+    function normalizeSpouse(sp){
+      if (!sp) return null;
+      if (!sp.id) sp.id = makeId("s");
+      if (!sp.photo_url) sp.photo_url = placeholderImg;
+      if (sp.photo_url === "") sp.photo_url = placeholderImg;
+      if (!("photo_path" in sp)) sp.photo_path = "";
+      if (!("name" in sp)) sp.name = "";
+      if (!("birth" in sp)) sp.birth = "";
+      if (!("death" in sp)) sp.death = "";
+      return sp;
+    }
+
     function normalizeNode(node){
       if (!node) return;
       if (!Array.isArray(node.children)) node.children = [];
       if (!node.photo_url) node.photo_url = placeholderImg;
       if (node.photo_url === "") node.photo_url = placeholderImg;
-      if (!("photo_path" in node)) node.photo_path = "";
 
-      // ✅ spouse
-      if (node.spouse) {
-        if (!node.spouse.id) node.spouse.id = makeId("s");
-        if (!node.spouse.role) node.spouse.role = "Pareja";
-        if (!node.spouse.photo_url) node.spouse.photo_url = placeholderImg;
-        if (node.spouse.photo_url === "") node.spouse.photo_url = placeholderImg;
-        if (!("photo_path" in node.spouse)) node.spouse.photo_path = "";
-        if (!Array.isArray(node.spouse.children)) node.spouse.children = [];
-      }
+      node.spouse = normalizeSpouse(node.spouse);
 
       node.children.forEach(normalizeNode);
     }
-
     function normalizeState(s){
       if (!s) return structuredClone(defaultState);
       if (!Array.isArray(s.parents) || s.parents.length < 2) s.parents = structuredClone(defaultState.parents);
@@ -971,19 +999,15 @@
       return s;
     }
 
-    // ======= Buscar (incluye parejas) =======
+    // ======= Buscar (con depth) =======
     function findInChildren(parentNode, id, depth){
-      if (!parentNode) return null;
-
-      // spouse primero
-      if (parentNode.spouse && parentNode.spouse.id === id) {
-        return { node: parentNode.spouse, parent: parentNode, parentChildrenArray: null, depth, isSpouse:true };
-      }
-
-      if (!parentNode.children?.length) return null;
+      if (!parentNode?.children?.length) return null;
       for (const child of parentNode.children) {
         if (child.id === id) {
-          return { node: child, parent: parentNode, parentChildrenArray: parentNode.children, depth, isSpouse:false };
+          return { node: child, depth };
+        }
+        if (child.spouse?.id === id) {
+          return { node: child, depth, hitSpouse: true }; // devolvemos dueño
         }
         const deeper = findInChildren(child, id, depth + 1);
         if (deeper) return deeper;
@@ -992,15 +1016,15 @@
     }
 
     function findNodeById(id){
-      // Padres
       for (const p of state.parents) {
-        if (p.id === id) return { node: p, parent: null, parentChildrenArray: null, depth: 0, isSpouse:false };
+        if (p.id === id) return { node: p, depth: 0, hitSpouse:false };
+        if (p.spouse?.id === id) return { node: p, depth: 0, hitSpouse:true };
         const hit = findInChildren(p, id, 1);
         if (hit) return hit;
       }
-      // Hijos originales
       for (const c of state.children) {
-        if (c.id === id) return { node: c, parent: null, parentChildrenArray: state.children, depth: 1, isSpouse:false };
+        if (c.id === id) return { node: c, depth: 1, hitSpouse:false };
+        if (c.spouse?.id === id) return { node: c, depth: 1, hitSpouse:true };
         const hit = findInChildren(c, id, 2);
         if (hit) return hit;
       }
@@ -1014,13 +1038,17 @@
       if (render) renderAll();
     }
 
+    function patchSpouse(ownerId, patch, { render=true } = {}){
+      const hit = findNodeById(ownerId);
+      if (!hit?.node) return;
+      if (!hit.node.spouse) hit.node.spouse = makeSpouse();
+      Object.assign(hit.node.spouse, patch);
+      if (render) renderAll();
+    }
+
     function addChildTo(parentId){
       const hit = findNodeById(parentId);
       if (!hit?.node) return;
-
-      // no children on spouse editor
-      if (hit.isSpouse) return;
-
       const parent = hit.node;
       if (!Array.isArray(parent.children)) parent.children = [];
 
@@ -1032,51 +1060,22 @@
       scheduleSave();
     }
 
-    function addSpouseTo(ownerId){
-      if (ownerId === "p1" || ownerId === "p2") return; // padres ya están como pareja
-      const hit = findNodeById(ownerId);
-      if (!hit?.node || hit.isSpouse) return;
-
-      if (hit.node.spouse) {
-        openEditor(hit.node.spouse.id);
-        return;
-      }
-      hit.node.spouse = makeSpouse();
-      renderAll();
-      scheduleSave();
-      openEditor(hit.node.spouse.id);
-    }
-
-    function removeSpouse(spouseId){
-      const hit = findNodeById(spouseId);
-      if (!hit?.node || !hit.isSpouse || !hit.parent) return;
-
-      const ownerName = (hit.parent.name || hit.parent.role || hit.parent.id);
-      const ok = confirm(`¿Quitar pareja de "${ownerName}"?`);
-      if (!ok) return;
-
-      hit.parent.spouse = null;
-      renderAll();
-      scheduleSave();
-    }
-
     function isOriginal11(id){
       return /^c([1-9]|10|11)$/.test(id);
     }
 
     // ✅ Eliminar con doble confirmación y bloqueos p1/p2 y c1..c11
     function removeNode(id){
-      const hit = findNodeById(id);
-      if (hit?.isSpouse) return removeSpouse(id);
-
       if (id === "p1" || id === "p2") return alert("No se pueden eliminar los padres.");
       if (isOriginal11(id)) return alert("Los 11 hermanos originales (c1–c11) no se eliminan, solo se editan.");
 
-      if (!hit?.parentChildrenArray) return;
+      // encontrar dueño en árbol para borrado real
+      const hit = findContainerArrayAndIndex(id);
+      if (!hit) return;
 
-      const who = (hit.node?.name && hit.node.name.trim())
-        ? hit.node.name.trim()
-        : (hit.node?.role || id);
+      const who = (hit.item?.name && hit.item.name.trim())
+        ? hit.item.name.trim()
+        : (hit.item?.role || id);
 
       const ok1 = confirm(`¿Seguro que deseas eliminar a "${who}"?\n\nEsto elimina a esta persona y todos sus descendientes.`);
       if (!ok1) return;
@@ -1084,36 +1083,69 @@
       const typed = prompt('Para confirmar, escribe exactamente: ELIMINAR');
       if (typed !== "ELIMINAR") return;
 
-      const idx = hit.parentChildrenArray.findIndex(x => x.id === id);
-      if (idx >= 0) {
-        hit.parentChildrenArray.splice(idx, 1);
-        renderAll();
-        scheduleSave();
+      hit.arr.splice(hit.idx, 1);
+      renderAll();
+      scheduleSave();
+    }
+
+    // helper para eliminar: hallar array contenedor
+    function findContainerArrayAndIndex(id){
+      // dentro de parents children arrays
+      const walkArr = (arr) => {
+        for (let i=0;i<arr.length;i++){
+          const n = arr[i];
+          if (n.id === id) return { arr, idx:i, item:n };
+          if (n.children?.length){
+            const r = walkArr(n.children);
+            if (r) return r;
+          }
+        }
+        return null;
+      };
+
+      // hijos raíz viven en state.children
+      const r1 = walkArr(state.children);
+      if (r1) return r1;
+
+      // descendientes colgados de padres (por si acaso)
+      for (const p of state.parents){
+        const r2 = walkArr(p.children || []);
+        if (r2) return r2;
       }
+      return null;
     }
 
     // ======= Modal editor =======
-    function openEditor(nodeId){
+    let editorFocusSpouse = false;
+
+    function openEditor(nodeId, { focusSpouse=false } = {}){
       const hit = findNodeById(nodeId);
       if (!hit?.node) return;
 
-      const n = hit.node;
-      const title = (n.name && n.name.trim()) ? n.name.trim() : (n.role || "Editar");
-      editorTitle.textContent = hit.isSpouse ? `Editar pareja: ${title}` : `Editar: ${title}`;
+      const owner = hit.node;
+      const isSpouseClick = !!hit.hitSpouse;
+      editorFocusSpouse = focusSpouse || isSpouseClick;
+
+      const title = (owner.name && owner.name.trim()) ? owner.name.trim() : (owner.role || "Editar");
+      editorTitle.textContent = `Editar: ${title}`;
 
       editorBody.innerHTML = "";
 
-      const removable = !(nodeId === "p1" || nodeId === "p2" || isOriginal11(nodeId)) && !hit.isSpouse;
-      const card = editorPersonCard(n, {
-        removable,
-        isSpouse: hit.isSpouse,
-        spouseOwner: hit.isSpouse ? hit.parent : null
-      });
+      const removable = !(owner.id === "p1" || owner.id === "p2" || isOriginal11(owner.id));
+      const card = editorPersonCard(owner, { removable });
 
-      if (nodeId === "p1" || nodeId === "p2") card.classList.add("parent-card");
+      if (owner.id === "p1" || owner.id === "p2") card.classList.add("parent-card");
       editorBody.appendChild(card);
 
       editorModal.classList.add("show");
+
+      // si el click fue en pareja, bajar al bloque pareja
+      if (editorFocusSpouse) {
+        setTimeout(() => {
+          const b = editorBody.querySelector("[data-spouse-block='1']");
+          if (b) b.scrollIntoView({ behavior:"smooth", block:"start" });
+        }, 0);
+      }
     }
 
     function closeEditor(){
@@ -1148,35 +1180,20 @@
       });
     }
 
-    // ======= Tarjeta (solo modal) =======
-    function editorPersonCard(node, { removable=false, isSpouse=false, spouseOwner=null } = {}){
+    // ======= Tarjeta (modal) =======
+    function editorPersonCard(node, { removable=false } = {}){
       const el = document.createElement("article");
       el.className = "person";
       el.dataset.id = node.id;
 
       const imgSrc = node.photo_url || placeholderImg;
 
-      const canAddSpouse = (!isSpouse) && (node.id !== "p1") && (node.id !== "p2");
-      const hasSpouse = (!!node.spouse);
-
-      const spouseBtns = canAddSpouse
-        ? (hasSpouse
-            ? `<button class="smallbtn spouse" data-action="editSpouse" type="button">Ver/editar pareja</button>`
-            : `<button class="smallbtn spouse" data-action="addSpouse" type="button">+ Agregar pareja</button>`)
-        : "";
-
-      const spouseRemoveBtn = isSpouse
-        ? `<button class="smallbtn remove" data-action="removeSpouse" type="button">Quitar pareja</button>`
-        : (removable ? `<button class="smallbtn remove" data-action="remove" type="button">Eliminar</button>` : `<span></span>`);
-
-      const addKidBtn = (!isSpouse)
-        ? `<button class="smallbtn addkid" data-action="addChild" type="button">+ Agregar hijo/a</button>`
-        : ``;
+      const spouse = node.spouse;
 
       el.innerHTML = `
         <div class="role">
           <b>${escapeHtml(node.role || "")}</b>
-          ${spouseRemoveBtn}
+          ${removable ? `<button class="smallbtn remove" data-action="remove" type="button">Eliminar</button>` : `<span></span>`}
         </div>
 
         <div class="row">
@@ -1185,8 +1202,7 @@
           </label>
 
           <div class="photo-actions">
-            ${addKidBtn}
-            ${spouseBtns}
+            <button class="smallbtn addkid" data-action="addChild" type="button">+ Agregar hijo/a</button>
             <button class="smallbtn" data-action="clearPhoto" type="button">Quitar foto</button>
           </div>
         </div>
@@ -1203,24 +1219,73 @@
           </label>
         </div>
 
+        <div class="spouseBlock" data-spouse-block="1">
+          <div class="spouseHead">
+            <b>Pareja</b>
+            ${spouse
+              ? `<button class="smallbtn remove" data-action="removeSpouse" type="button">Quitar pareja</button>`
+              : `<button class="smallbtn addsp" data-action="addSpouse" type="button">+ Agregar pareja</button>`
+            }
+          </div>
+
+          ${spouse ? `
+            <div class="spouseCard">
+              <div class="spouseRow">
+                <label class="spouseAvatar" for="filePicker" data-action="spousePhoto" title="Toca para cambiar la foto de la pareja">
+                  <img alt="Foto pareja" src="${escapeAttr(spouse.photo_url || placeholderImg)}">
+                </label>
+                <div style="flex:1 1 auto;">
+                  <div class="fields" style="margin-top:0;">
+                    <label>Nombre
+                      <input type="text" data-sfield="name" placeholder="Nombre pareja" value="${escapeAttr(spouse.name || "")}">
+                    </label>
+                    <label>Nacimiento
+                      <input type="date" data-sfield="birth" value="${escapeAttr(spouse.birth || "")}">
+                    </label>
+                    <label>Fallecimiento (opcional)
+                      <input type="date" data-sfield="death" value="${escapeAttr(spouse.death || "")}">
+                    </label>
+                  </div>
+                  <div style="margin-top:8px; display:flex; gap:8px; flex-wrap:wrap;">
+                    <button class="smallbtn" data-action="clearSpousePhoto" type="button">Quitar foto pareja</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ` : `
+            <div style="color: var(--muted); font-size:12px;">
+              (Opcional) Agrega la pareja para verla al lado en el árbol.
+            </div>
+          `}
+        </div>
+
         <div class="footer">
           <span>${escapeHtml(node.id)}</span>
           <span>Familia Arango</span>
         </div>
       `;
 
-      // target upload
+      // target upload (persona o pareja)
       el.addEventListener("pointerdown", (e) => {
-        const lab = e.target.closest('label[data-action="photo"]');
-        if (!lab) return;
-        pendingPhotoTarget = { type:"person", id: node.id };
-        filePicker.value = "";
+        const labP = e.target.closest('label[data-action="photo"]');
+        if (labP) {
+          pendingPhotoTarget = { type:"person", id: node.id };
+          filePicker.value = "";
+          return;
+        }
+        const labS = e.target.closest('label[data-action="spousePhoto"]');
+        if (labS) {
+          pendingPhotoTarget = { type:"spouse", ownerId: node.id };
+          filePicker.value = "";
+          return;
+        }
       });
 
       // botones
       el.addEventListener("click", (e) => {
         const btn = e.target.closest("button");
         if (!btn) return;
+
         const action = btn.dataset.action;
         if (!action) return;
 
@@ -1231,50 +1296,67 @@
           if (img) img.src = placeholderImg;
           return;
         }
+
         if (action === "addChild") {
           addChildTo(node.id);
           openEditor(node.id);
           return;
         }
-        if (action === "addSpouse") {
-          addSpouseTo(node.id);
-          return;
-        }
-        if (action === "editSpouse") {
-          if (node.spouse?.id) openEditor(node.spouse.id);
-          return;
-        }
-        if (action === "removeSpouse") {
-          removeSpouse(node.id);
-          closeEditor();
-          return;
-        }
+
         if (action === "remove") {
           removeNode(node.id);
           closeEditor();
           return;
         }
+
+        if (action === "addSpouse") {
+          patchNode(node.id, { spouse: makeSpouse() }, { render:false });
+          scheduleSave();
+          openEditor(node.id, { focusSpouse:true });
+          return;
+        }
+
+        if (action === "removeSpouse") {
+          patchNode(node.id, { spouse: null }, { render:false });
+          scheduleSave();
+          openEditor(node.id);
+          return;
+        }
+
+        if (action === "clearSpousePhoto") {
+          patchSpouse(node.id, { photo_url: placeholderImg, photo_path:"" }, { render:false });
+          scheduleSave();
+          openEditor(node.id, { focusSpouse:true });
+          return;
+        }
       });
 
-      // ✅ NO re-render por tecla (evita “se salta” en celular)
+      // inputs (sin re-render)
       el.addEventListener("input", (e) => {
         const input = e.target;
         if (!(input instanceof HTMLInputElement)) return;
-        const field = input.dataset.field;
-        if (!field) return;
 
-        patchNode(node.id, { [field]: input.value }, { render:false });
-        scheduleSave();
+        const field = input.dataset.field;
+        const sfield = input.dataset.sfield;
+
+        if (field) {
+          patchNode(node.id, { [field]: input.value }, { render:false });
+          scheduleSave();
+        } else if (sfield) {
+          patchSpouse(node.id, { [sfield]: input.value }, { render:false });
+          scheduleSave();
+        }
       });
 
       return el;
     }
 
-    // ======= NODO círculo =======
-    function renderNodeCircle(node, cls){
+    // ======= Render nodo =======
+    function renderNodeCircle(node, cls, { isSpouse=false, ownerId=null } = {}){
       const el = document.createElement("div");
-      el.className = `node ${cls}`;
+      el.className = `node ${cls}` + (isSpouse ? " spouseNode" : "");
       el.dataset.id = node.id;
+      if (ownerId) el.dataset.owner = ownerId;
 
       const name = (node.name && node.name.trim()) ? node.name.trim() : "Sin nombre";
       const yrs  = yearRange(node.birth, node.death);
@@ -1284,17 +1366,22 @@
         <div class="labelName">${escapeHtml(name)}</div>
         <div class="labelYears">${escapeHtml(yrs)}</div>
       `;
-      el.addEventListener("click", () => openEditor(node.id));
+
+      el.addEventListener("click", () => {
+        if (isSpouse && ownerId) openEditor(ownerId, { focusSpouse:true });
+        else openEditor(node.id);
+      });
+
       return el;
     }
 
     function renderPersonUnit(node, cls){
       const unit = document.createElement("div");
       unit.className = "personUnit";
-      unit.appendChild(renderNodeCircle(node, cls));
+      unit.appendChild(renderNodeCircle(node, cls, { isSpouse:false }));
 
       if (node.spouse) {
-        unit.appendChild(renderNodeCircle(node.spouse, `${cls} spouseNode`));
+        unit.appendChild(renderNodeCircle(node.spouse, cls, { isSpouse:true, ownerId: node.id }));
       }
       return unit;
     }
@@ -1308,18 +1395,13 @@
       return "lvl-3";
     }
 
-    function colsForKids(n){
-      if (n <= 0) return 0;
-      if (n <= 3) return n;   // 1..3 en una fila
-      if (n === 4) return 2;  // 2x2
-      return 3;               // 5+ => 3 columnas (ej: 3+2)
-    }
-
     function renderSubtree(node, depth = 0, { isOriginal = false } = {}) {
       const wrap = document.createElement("div");
       wrap.className = "subtree";
 
       const cls = isOriginal ? "lvl-original" : depthClass(depth);
+
+      // ✅ aquí se renderiza persona + pareja en la misma línea
       wrap.appendChild(renderPersonUnit(node, cls));
 
       if (Array.isArray(node.children) && node.children.length > 0 && depth < MAX_DEPTH) {
@@ -1328,7 +1410,6 @@
 
         const row = document.createElement("div");
         row.className = "childrenRow";
-        row.style.setProperty("--cols", String(colsForKids(node.children.length)));
 
         node.children.forEach(ch => {
           const cw = document.createElement("div");
@@ -1344,6 +1425,105 @@
       return wrap;
     }
 
+    // ======= Zoom/Pan =======
+    let zoom = 1;
+    const minZoom = 0.06;  // ✅ permite ver TODO aunque columnas sean más anchas
+    const maxZoom = 2.6;
+    let didAutoFit = false;
+
+    function clamp(x,a,b){ return Math.max(a, Math.min(b,x)); }
+
+    function updateZoomSpace(){
+      if (!treeScaler || !treeSpace) return;
+      const baseW = treeScaler.offsetWidth;
+      const baseH = treeScaler.offsetHeight;
+      treeSpace.style.width  = Math.ceil(baseW * zoom) + "px";
+      treeSpace.style.height = Math.ceil(baseH * zoom) + "px";
+      treeScaler.style.transform = `scale(${zoom})`;
+      zoomPct.textContent = Math.round(zoom * 100) + "%";
+    }
+
+    function applyZoom(next, { keepCenter=true, anchorTop=false } = {}){
+      const vp = treeViewport;
+      const prev = zoom;
+
+      let cx=0, cy=0;
+      if (keepCenter) {
+        cx = (vp.scrollLeft + vp.clientWidth/2) / prev;
+        cy = (vp.scrollTop + vp.clientHeight/2) / prev;
+      }
+
+      zoom = clamp(next, minZoom, maxZoom);
+      updateZoomSpace();
+
+      if (keepCenter) {
+        vp.scrollLeft = cx * zoom - vp.clientWidth/2;
+        vp.scrollTop  = cy * zoom - vp.clientHeight/2;
+      }
+      if (anchorTop) {
+        vp.scrollTop = 0; // ✅ garantiza ver P1/P2
+      }
+    }
+
+    function fitAll(){
+      const vp = treeViewport;
+
+      // medir en zoom=1
+      const old = zoom;
+      zoom = 1;
+      updateZoomSpace();
+
+      const baseW = treeScaler.offsetWidth;
+      const baseH = treeScaler.offsetHeight;
+
+      const z = Math.min(vp.clientWidth / baseW, vp.clientHeight / baseH);
+      zoom = old; // volver antes de aplicar
+
+      applyZoom(z, { keepCenter:false, anchorTop:true });
+      // centrar horizontal para que salgan los 11
+      vp.scrollLeft = Math.max(0, (treeSpace.offsetWidth - vp.clientWidth)/2);
+    }
+
+    // botones
+    zoomInBtn.addEventListener("click", () => applyZoom(zoom * 1.18, { keepCenter:true }));
+    zoomOutBtn.addEventListener("click", () => applyZoom(zoom / 1.18, { keepCenter:true }));
+    zoomFitBtn.addEventListener("click", () => fitAll());
+
+    // rueda/trackpad: zoom con CTRL (o pinch en trackpad)
+    treeViewport.addEventListener("wheel", (e) => {
+      if (!(e.ctrlKey || e.metaKey)) return;
+      e.preventDefault();
+      const factor = Math.exp(-e.deltaY / 250);
+      applyZoom(zoom * factor, { keepCenter:true });
+    }, { passive:false });
+
+    // pan arrastrando
+    let panning = false;
+    let panStartX=0, panStartY=0, panScrollL=0, panScrollT=0;
+
+    treeViewport.addEventListener("pointerdown", (e) => {
+      // no pan si hacen click en botones/inputs (por seguridad)
+      const tag = (e.target?.tagName || "").toLowerCase();
+      if (tag === "input" || tag === "button" || tag === "label") return;
+      panning = true;
+      panStartX = e.clientX;
+      panStartY = e.clientY;
+      panScrollL = treeViewport.scrollLeft;
+      panScrollT = treeViewport.scrollTop;
+      treeViewport.setPointerCapture(e.pointerId);
+    });
+
+    treeViewport.addEventListener("pointermove", (e) => {
+      if (!panning) return;
+      const dx = e.clientX - panStartX;
+      const dy = e.clientY - panStartY;
+      treeViewport.scrollLeft = panScrollL - dx;
+      treeViewport.scrollTop  = panScrollT - dy;
+    });
+
+    treeViewport.addEventListener("pointerup", () => { panning = false; });
+    treeViewport.addEventListener("pointercancel", () => { panning = false; });
+
     // ======= Render general =======
     function renderAll(){
       renderCover();
@@ -1354,8 +1534,8 @@
       cw.className = "coupleWrap";
       parentsGen.appendChild(cw);
 
-      cw.appendChild(renderNodeCircle(state.parents[0], "lvl-parent"));
-      cw.appendChild(renderNodeCircle(state.parents[1], "lvl-parent"));
+      cw.appendChild(renderPersonUnit(state.parents[0], "lvl-parent"));
+      cw.appendChild(renderPersonUnit(state.parents[1], "lvl-parent"));
 
       // Hijos (11 columnas)
       childrenGen.innerHTML = "";
@@ -1374,10 +1554,17 @@
 
       childrenGen.appendChild(grid);
 
-      requestAnimationFrame(() => refreshZoomBounds(false));
+      // ✅ actualizar espacio del zoom (sin cambiar zoom actual)
+      requestAnimationFrame(() => {
+        updateZoomSpace();
+        if (!didAutoFit) {
+          fitAll();     // ✅ zoom inicial = ver todo con P1/P2
+          didAutoFit = true;
+        }
+      });
     }
 
-    // ======= Portada =======
+    // ======= Portada acciones =======
     coverPickLabel.addEventListener("pointerdown", () => {
       pendingPhotoTarget = { type:"cover" };
       filePicker.value = "";
@@ -1390,7 +1577,7 @@
       scheduleSave();
     });
 
-    // Subir fotos (cover o persona)
+    // Subir fotos (cover/persona/pareja)
     filePicker.addEventListener("change", async () => {
       const file = filePicker.files?.[0];
       if (!file || !pendingPhotoTarget) return;
@@ -1401,9 +1588,10 @@
         const jpgBlob = await compressImageToJpeg(file, maxSide, 0.85);
 
         const ts = Date.now();
-        const path = (pendingPhotoTarget.type === "cover")
-          ? `${TREE_ID}/cover_${ts}.jpg`
-          : `${TREE_ID}/${pendingPhotoTarget.id}_${ts}.jpg`;
+        const path =
+          (pendingPhotoTarget.type === "cover")  ? `${TREE_ID}/cover_${ts}.jpg` :
+          (pendingPhotoTarget.type === "person") ? `${TREE_ID}/${pendingPhotoTarget.id}_${ts}.jpg` :
+          `${TREE_ID}/spouse_${pendingPhotoTarget.ownerId}_${ts}.jpg`;
 
         const { error: upErr } = await supabase.storage
           .from(BUCKET)
@@ -1418,11 +1606,16 @@
           state.cover_photo_path = path;
           renderAll();
           scheduleSave();
-        } else {
+        } else if (pendingPhotoTarget.type === "person") {
           patchNode(pendingPhotoTarget.id, { photo_url: publicUrl, photo_path: path }, { render:false });
           scheduleSave();
           if (editorModal.classList.contains("show")) openEditor(pendingPhotoTarget.id);
           else renderAll();
+        } else {
+          // spouse
+          patchSpouse(pendingPhotoTarget.ownerId, { photo_url: publicUrl, photo_path: path }, { render:false });
+          scheduleSave();
+          openEditor(pendingPhotoTarget.ownerId, { focusSpouse:true });
         }
 
         pendingPhotoTarget = null;
@@ -1561,6 +1754,7 @@
       const walk = (node, depth, rootId) => {
         out.push({
           id: node.id,
+          ownerId: null,
           name: (node.name || "").trim(),
           role: node.role || "",
           depth,
@@ -1571,8 +1765,9 @@
         if (node.spouse) {
           out.push({
             id: node.spouse.id,
+            ownerId: node.id,
             name: (node.spouse.name || "").trim(),
-            role: node.spouse.role || "Pareja",
+            role: "Pareja",
             depth,
             rootId: rootId || node.id,
             photo_url: node.spouse.photo_url || placeholderImg
@@ -1581,6 +1776,7 @@
 
         (node.children || []).forEach(ch => walk(ch, depth + 1, rootId || node.id));
       };
+
       state.parents.forEach(p => walk(p, 0, p.id));
       (state.children || []).forEach(c => walk(c, 1, c.id));
       return out;
@@ -1604,30 +1800,33 @@
         `;
         div.addEventListener("click", () => {
           searchResults.classList.remove("show");
-          goToPerson(it.id, { open:true });
+          goToPerson(it.id, { open:true, ownerId: it.ownerId });
         });
         searchResults.appendChild(div);
       });
       searchResults.classList.add("show");
     }
 
-    function centerOnElement(el){
-      const vpRect = zoomViewport.getBoundingClientRect();
+    function panToElement(el){
+      const vpRect = treeViewport.getBoundingClientRect();
       const r = el.getBoundingClientRect();
-      const dx = (r.left - vpRect.left) + r.width/2 - zoomViewport.clientWidth/2;
-      const dy = (r.top - vpRect.top) + r.height/2 - zoomViewport.clientHeight/2;
-      zoomViewport.scrollLeft += dx;
-      zoomViewport.scrollTop  += dy;
+      const dx = (r.left + r.width/2) - (vpRect.left + vpRect.width/2);
+      const dy = (r.top + r.height/2) - (vpRect.top + vpRect.height/2);
+      treeViewport.scrollLeft += dx;
+      treeViewport.scrollTop  += dy;
     }
 
-    function goToPerson(id, { open=false } = {}){
-      const el = document.querySelector(`[data-id="${CSS.escape(id)}"]`);
+    function goToPerson(id, { open=false, ownerId=null } = {}){
+      const el = treeScaler.querySelector(`[data-id="${CSS.escape(id)}"]`);
       if (el) {
-        centerOnElement(el);
+        panToElement(el);
         el.classList.add("flash");
         setTimeout(() => el.classList.remove("flash"), 1400);
       }
-      if (open) openEditor(id);
+      if (open) {
+        if (ownerId) openEditor(ownerId, { focusSpouse:true });
+        else openEditor(id);
+      }
     }
 
     function runSearch(openFirst=true){
@@ -1640,7 +1839,7 @@
 
       if (openFirst && matches[0]) {
         searchResults.classList.remove("show");
-        goToPerson(matches[0].id, { open:true });
+        goToPerson(matches[0].id, { open:true, ownerId: matches[0].ownerId });
       } else {
         showResults(matches);
       }
@@ -1659,157 +1858,16 @@
       }
     });
 
-    // =========================
-    // ZOOM + PAN
-    // =========================
-    let zoom = 1;
-    let minZoom = 0.1; // se recalcula con fit
-    const maxZoom = 2.6;
-    let baseW = 1, baseH = 1;
-
-    function clamp(v, a, b){ return Math.max(a, Math.min(b, v)); }
-
-    function updateZoomLabel(){
-      zoomLabel.textContent = `${Math.round(zoom*100)}%`;
-    }
-
-    function measureBase(){
-      baseW = Math.max(1, zoomContent.scrollWidth);
-      baseH = Math.max(1, zoomContent.scrollHeight);
-      const fit = Math.min(zoomViewport.clientWidth / baseW, zoomViewport.clientHeight / baseH);
-      minZoom = clamp(Math.min(1, fit), 0.06, 1);
-      return fit;
-    }
-
-    function applyZoom(newZoom, { clientX=null, clientY=null, center=false } = {}){
-      measureBase();
-
-      const vpRect = zoomViewport.getBoundingClientRect();
-      const cx = center ? (vpRect.left + zoomViewport.clientWidth/2) : (clientX ?? (vpRect.left + zoomViewport.clientWidth/2));
-      const cy = center ? (vpRect.top  + zoomViewport.clientHeight/2): (clientY ?? (vpRect.top  + zoomViewport.clientHeight/2));
-
-      // coords actuales (en "espacio sin escala")
-      const px = (zoomViewport.scrollLeft + (cx - vpRect.left)) / zoom;
-      const py = (zoomViewport.scrollTop  + (cy - vpRect.top )) / zoom;
-
-      zoom = clamp(newZoom, minZoom, maxZoom);
-
-      zoomContent.style.transform = `scale(${zoom})`;
-      zoomSpacer.style.width  = (baseW * zoom) + "px";
-      zoomSpacer.style.height = (baseH * zoom) + "px";
-
-      // mantener el punto bajo el cursor
-      zoomViewport.scrollLeft = px * zoom - (cx - vpRect.left);
-      zoomViewport.scrollTop  = py * zoom - (cy - vpRect.top);
-
-      updateZoomLabel();
-    }
-
-    function fitAll(){
-      measureBase();
-      zoom = minZoom;
-
-      zoomContent.style.transform = `scale(${zoom})`;
-      zoomSpacer.style.width  = (baseW * zoom) + "px";
-      zoomSpacer.style.height = (baseH * zoom) + "px";
-
-      // centrar (para que "se vea todo" y no deje hermanos por fuera)
-      zoomViewport.scrollLeft = Math.max(0, (baseW*zoom - zoomViewport.clientWidth) / 2);
-      zoomViewport.scrollTop  = Math.max(0, (baseH*zoom - zoomViewport.clientHeight) / 2);
-
-      updateZoomLabel();
-    }
-
-    function refreshZoomBounds(initial=false){
-      measureBase();
-      // si el usuario está muy alejado, lo dejamos; si quedó por debajo del min fit, lo subimos
-      const z = clamp(zoom, minZoom, maxZoom);
-      if (initial) {
-        zoom = z;
-        fitAll();
-      } else {
-        if (z !== zoom) zoom = z;
-        zoomContent.style.transform = `scale(${zoom})`;
-        zoomSpacer.style.width  = (baseW * zoom) + "px";
-        zoomSpacer.style.height = (baseH * zoom) + "px";
-        updateZoomLabel();
-      }
-    }
-
-    zoomInBtn.addEventListener("click", () => applyZoom(zoom * 1.12, { center:true }));
-    zoomOutBtn.addEventListener("click", () => {
-      const next = zoom / 1.12;
-      // si ya estás muy cerca del fit, al bajar te manda a “ver todo”
-      if (next <= minZoom * 1.05) { fitAll(); return; }
-      applyZoom(next, { center:true });
-    });
-    zoomFitBtn.addEventListener("click", fitAll);
-
-    // Ctrl/⌘ + rueda para zoom (rueda normal queda como scroll)
-    zoomViewport.addEventListener("wheel", (e) => {
-      const isZoomGesture = e.ctrlKey || e.metaKey;
-      if (!isZoomGesture) return;
-      e.preventDefault();
-      const factor = (e.deltaY < 0) ? 1.08 : 0.92;
-      applyZoom(zoom * factor, { clientX: e.clientX, clientY: e.clientY });
-    }, { passive:false });
-
-    // Drag para pan (solo si tocas fondo, no nodos)
-    let isPanning = false;
-    let panStartX = 0, panStartY = 0, panStartL = 0, panStartT = 0;
-
-    function isInteractiveTarget(t){
-      if (!(t instanceof Element)) return false;
-      return !!t.closest(".node, button, a, input, label, .searchWrap, .cover, .modal, .person");
-    }
-
-    zoomViewport.addEventListener("pointerdown", (e) => {
-      if (e.button !== 0) return;
-      if (isInteractiveTarget(e.target)) return;
-
-      isPanning = true;
-      zoomViewport.classList.add("dragging");
-      panStartX = e.clientX;
-      panStartY = e.clientY;
-      panStartL = zoomViewport.scrollLeft;
-      panStartT = zoomViewport.scrollTop;
-      zoomViewport.setPointerCapture(e.pointerId);
-    });
-
-    zoomViewport.addEventListener("pointermove", (e) => {
-      if (!isPanning) return;
-      const dx = e.clientX - panStartX;
-      const dy = e.clientY - panStartY;
-      zoomViewport.scrollLeft = panStartL - dx;
-      zoomViewport.scrollTop  = panStartT - dy;
-    });
-
-    zoomViewport.addEventListener("pointerup", (e) => {
-      if (!isPanning) return;
-      isPanning = false;
-      zoomViewport.classList.remove("dragging");
-      try { zoomViewport.releasePointerCapture(e.pointerId); } catch {}
-    });
-
-    window.addEventListener("resize", () => refreshZoomBounds(false));
-
-    // ======= Init =======
+    // Init
     (async () => {
+      updateHeaderH();
       state = normalizeState(state);
       renderAll();
-      refreshZoomBounds(true);
       await boot();
-      // al conectar, re-fit por si cargó un árbol más grande
-      requestAnimationFrame(() => fitAll());
     })();
   </script>
 </body>
 </html>
-
-
-
-
-
 
 
 
