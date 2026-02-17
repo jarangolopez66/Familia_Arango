@@ -1,4 +1,4 @@
-<!doctype html>
+<!doctype html> 
 <html lang="es">
 <head>
   <meta charset="utf-8" />
@@ -824,12 +824,19 @@
       scheduleSave();
     }
 
+    // ✅ RESTAURADO: eliminar vuelve como antes (solo bloquea p1/p2)
     function removeNode(id){
       if (id === "p1" || id === "p2") return alert("No se pueden eliminar los padres.");
-      if (/^c([1-9]|10|11)$/.test(id)) return alert("Estos 11 hijos no se eliminan (solo edita nombre/foto).");
 
       const hit = findNodeById(id);
       if (!hit?.parentChildrenArray) return;
+
+      const who = (hit.node?.name && hit.node.name.trim())
+        ? hit.node.name.trim()
+        : (hit.node?.role || id);
+
+      const ok = confirm(`¿Seguro que deseas eliminar a "${who}"?\n\nEsto elimina a esta persona y todos sus descendientes.`);
+      if (!ok) return;
 
       const idx = hit.parentChildrenArray.findIndex(x => x.id === id);
       if (idx >= 0) {
@@ -849,7 +856,10 @@
       editorTitle.textContent = `Editar: ${title}`;
 
       editorBody.innerHTML = "";
-      const removable = !(nodeId === "p1" || nodeId === "p2") && !(/^c([1-9]|10|11)$/.test(nodeId));
+
+      // ✅ RESTAURADO: “Eliminar” para todos excepto p1/p2
+      const removable = !(nodeId === "p1" || nodeId === "p2");
+
       const card = editorPersonCard(n, { removable });
 
       // set depth para marcos del modal
@@ -1011,10 +1021,6 @@
     const MAX_DEPTH = 8;
 
     function depthClass(depth){
-      // depth 0: lo maneja isOriginal => lvl-original
-      // depth 1: nietos
-      // depth 2: bisnietos
-      // depth >=3: hijos de bisnietos y más
       if (depth === 1) return "lvl-1";
       if (depth === 2) return "lvl-2";
       return "lvl-3";
@@ -1269,18 +1275,15 @@
       subscribeRealtime();
     }
 
-    // Init
-    state = normalizeState(state);
-    renderAll();
-    await boot();
+    // Init (sin top-level await para máxima compatibilidad)
+    (async () => {
+      state = normalizeState(state);
+      renderAll();
+      await boot();
+    })();
   </script>
 </body>
 </html>
-
-
-
-
-
 
 
 
