@@ -1800,8 +1800,9 @@
       refreshZoomBounds(true);
       await boot();
       // al conectar, re-fit por si cargó un árbol más grande
-      requestAnimationFrame(() => fitAll());
+      requestAnimationFrame(() => applyZoom(0.60, { center:true }));
     })();
   </script>
 </body>
 </html>
+
