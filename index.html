@@ -118,6 +118,68 @@
     .dot.ok{background: var(--ok); box-shadow: 0 0 0 4px rgba(47,143,107,.12);}
     .dot.bad{background: var(--danger); box-shadow: 0 0 0 4px rgba(182,70,63,.12);}
 
+    /* Buscador */
+    .searchWrap{
+      display:flex;
+      gap:8px;
+      align-items:center;
+      flex: 1 1 auto;
+      justify-content:flex-end;
+      min-width: 280px;
+      position: relative;
+    }
+    .searchInput{
+      width: min(420px, 70vw);
+      padding:9px 10px;
+      border-radius: 12px;
+      border:1px solid rgba(0,0,0,.12);
+      background: rgba(255,255,255,.65);
+      outline:none;
+      font-size:12px;
+    }
+    .searchInput:focus{
+      border-color: rgba(198,162,74,.55);
+      box-shadow: 0 0 0 4px rgba(198,162,74,.16);
+    }
+    .searchResults{
+      position:absolute;
+      top: 42px;
+      right: 0;
+      width: min(520px, 92vw);
+      max-height: 320px;
+      overflow:auto;
+      background: rgba(246,239,227,.98);
+      border:1px solid rgba(0,0,0,.12);
+      border-radius: 14px;
+      box-shadow: 0 14px 40px rgba(0,0,0,.18);
+      padding: 6px;
+      display:none;
+      z-index: 20;
+    }
+    .searchResults.show{ display:block; }
+    .srItem{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      padding:8px 10px;
+      border-radius: 12px;
+      cursor:pointer;
+      user-select:none;
+    }
+    .srItem:hover{ background: rgba(0,0,0,.05); }
+    .srThumb{
+      width:28px; height:28px;
+      border-radius: 10px;
+      overflow:hidden;
+      border:1px solid rgba(0,0,0,.12);
+      background: rgba(0,0,0,.04);
+      flex:0 0 auto;
+    }
+    .srThumb img{ width:100%; height:100%; object-fit:cover; display:block; }
+    .srText{ display:flex; flex-direction:column; gap:2px; }
+    .srName{ font-weight:900; font-size:12px; }
+    .srMeta{ font-size:11px; color: var(--muted); }
+
     main{padding:18px 16px 34px;}
     .container{max-width:1200px; margin:0 auto;}
 
@@ -214,7 +276,7 @@
     }
 
     /* =========================
-       NUEVO LAYOUT tipo “4 generaciones”
+       LAYOUT
        ========================= */
     .treeScroll{
       overflow-x:auto;
@@ -294,22 +356,23 @@
       border-color: rgba(198,162,74,.60);
       box-shadow: 0 0 0 5px rgba(198,162,74,.10), 0 9px 18px rgba(0,0,0,.10);
     }
-    /* Nietos generación 3 nosotros (Azul) */
+    /* Nietos generación 3 (Azul) */
     .lvl-1 .circle{
       width:80px; height:80px;
       border-width: 4px;
       border-color: rgba(79,134,170,.90);
       box-shadow: 0 0 0 3px rgba(79,134,170,.16);
     }
-    /* Bisnietos Generación 4 (Plateado) */
+    /* ✅ Bisnietos Generación 4: CUADRITOS */
     .lvl-2 .circle{
       width:64px; height:64px;
       border-width: 3px;
       border-color: rgba(179,109,76,.90);
       box-shadow: 0 0 0 3px rgba(179,109,76,.14);
       opacity:.98;
+      border-radius: 14px;   /* <--- clave */
     }
-    /* Hijos de bisnietos y más (azul muy claro) */
+    /* Hijos de bisnietos y más */
     .lvl-3 .circle{
       width:52px; height:52px;
       border-width: 2px;
@@ -375,10 +438,19 @@
       border-radius: 99px;
     }
 
+    /* flash al buscar */
+    .flash{
+      outline: 4px solid rgba(198,162,74,.60);
+      outline-offset: 4px;
+      border-radius: 16px;
+    }
+
     @media (max-width: 860px){
       .cover-top{grid-template-columns: 1fr;}
       .cover-imgwrap{min-height: 210px;}
       .treeGrid{grid-template-columns: repeat(11, 170px); min-width: calc(11 * 170px + 10 * 14px);}
+      .searchWrap{ justify-content:flex-start; width:100%; }
+      .searchInput{ width:100%; }
     }
     @media (max-width: 560px){
       .treeGrid{grid-template-columns: repeat(11, 160px); min-width: calc(11 * 160px + 10 * 14px);}
@@ -464,13 +536,6 @@
     }
     .avatar img{width:100%; height:100%; object-fit:cover; display:block;}
 
-    /* Marcos por generación en el MODAL (según data-depth) */
-    .person[data-depth="0"] .avatar{ border: 6px solid rgba(198,162,74,.95); }
-    .person[data-depth="1"] .avatar{ border: 3px solid rgba(198,162,74,.85); }
-    .person[data-depth="2"] .avatar{ border: 3px solid rgba(185,193,206,.95); }
-    .person[data-depth="3"] .avatar{ border: 3px solid rgba(79,134,198,.95); }
-    .person.gen4p .avatar{ border: 3px solid rgba(79,134,198,.35); }
-
     .photo-actions{
       display:flex;
       flex-direction:column;
@@ -545,7 +610,13 @@
       </div>
 
       <div class="toolbar">
-        <button class="btn btn-primary" id="addRootChildBtn" type="button">+ Agregar hijo (1ª generación)</button>
+        <!-- ✅ Quitado: botón agregar hijo de 1ª generación -->
+
+        <div class="searchWrap">
+          <input class="searchInput" id="searchInput" type="text" placeholder="Buscar persona (nombre)…" autocomplete="off" />
+          <button class="btn btn-primary" id="searchBtn" type="button">Buscar</button>
+          <div class="searchResults" id="searchResults"></div>
+        </div>
 
         <div class="pill" title="Estado de guardado">
           <span class="dot bad" id="connDot"></span>
@@ -619,13 +690,17 @@
     const coverClearBtn  = document.getElementById("coverClearBtn");
     const first11Strip   = document.getElementById("first11Strip");
 
-    const addRootChildBtn = document.getElementById("addRootChildBtn");
     const filePicker = document.getElementById("filePicker");
 
     const editorModal   = document.getElementById("editorModal");
     const editorCloseBtn= document.getElementById("editorCloseBtn");
     const editorTitle   = document.getElementById("editorTitle");
     const editorBody    = document.getElementById("editorBody");
+
+    // Buscador
+    const searchInput   = document.getElementById("searchInput");
+    const searchBtn     = document.getElementById("searchBtn");
+    const searchResults = document.getElementById("searchResults");
 
     let supabase = null;
     let TREE_ID = DEFAULT_CFG.treeId;
@@ -824,9 +899,14 @@
       scheduleSave();
     }
 
-    // ✅ RESTAURADO: eliminar vuelve como antes (solo bloquea p1/p2)
+    function isOriginal11(id){
+      return /^c([1-9]|10|11)$/.test(id);
+    }
+
+    // ✅ Eliminar con doble confirmación y bloqueos p1/p2 y c1..c11
     function removeNode(id){
       if (id === "p1" || id === "p2") return alert("No se pueden eliminar los padres.");
+      if (isOriginal11(id)) return alert("Los 11 hermanos originales (c1–c11) no se eliminan, solo se editan.");
 
       const hit = findNodeById(id);
       if (!hit?.parentChildrenArray) return;
@@ -835,8 +915,11 @@
         ? hit.node.name.trim()
         : (hit.node?.role || id);
 
-      const ok = confirm(`¿Seguro que deseas eliminar a "${who}"?\n\nEsto elimina a esta persona y todos sus descendientes.`);
-      if (!ok) return;
+      const ok1 = confirm(`¿Seguro que deseas eliminar a "${who}"?\n\nEsto elimina a esta persona y todos sus descendientes.`);
+      if (!ok1) return;
+
+      const typed = prompt('Para confirmar, escribe exactamente: ELIMINAR');
+      if (typed !== "ELIMINAR") return;
 
       const idx = hit.parentChildrenArray.findIndex(x => x.id === id);
       if (idx >= 0) {
@@ -857,14 +940,8 @@
 
       editorBody.innerHTML = "";
 
-      // ✅ RESTAURADO: “Eliminar” para todos excepto p1/p2
-      const removable = !(nodeId === "p1" || nodeId === "p2");
-
+      const removable = !(nodeId === "p1" || nodeId === "p2" || isOriginal11(nodeId));
       const card = editorPersonCard(n, { removable });
-
-      // set depth para marcos del modal
-      card.dataset.depth = String(hit.depth ?? 1);
-      if ((hit.depth ?? 1) >= 4) card.classList.add("gen4p");
 
       if (nodeId === "p1" || nodeId === "p2") card.classList.add("parent-card");
       editorBody.appendChild(card);
@@ -939,9 +1016,7 @@
           <label>Fallecimiento (opcional)
             <input type="date" data-field="death" value="${escapeAttr(node.death || "")}">
           </label>
-          <label>Cariñosamente
-            <input type="text" data-field="role" placeholder="Apodo en casa" value="${escapeAttr(node.role || "")}">
-          </label>
+          <!-- ✅ Quitado: Cariñosamente / rol editable -->
         </div>
 
         <div class="footer">
@@ -1017,7 +1092,7 @@
       return el;
     }
 
-    // ======= SUBÁRBOL (usa lvl-* como tu CSS) =======
+    // ======= SUBÁRBOL =======
     const MAX_DEPTH = 8;
 
     function depthClass(depth){
@@ -1089,15 +1164,7 @@
       childrenGen.appendChild(scroll);
     }
 
-    // Botón: agregar hijo raíz (1ª generación)
-    addRootChildBtn.addEventListener("click", () => {
-      const n = state.children.length + 1;
-      state.children.push(makePerson({ role: `Hijo/a ${n}` }));
-      renderAll();
-      scheduleSave();
-    });
-
-    // Portada
+    // ======= Portada =======
     coverPickLabel.addEventListener("pointerdown", () => {
       pendingPhotoTarget = { type:"cover" };
       filePicker.value = "";
@@ -1275,7 +1342,90 @@
       subscribeRealtime();
     }
 
-    // Init (sin top-level await para máxima compatibilidad)
+    // ======= Buscador (ir a persona) =======
+    function collectPeople(){
+      const out = [];
+      const walk = (node, depth, rootId) => {
+        out.push({
+          id: node.id,
+          name: (node.name || "").trim(),
+          role: node.role || "",
+          depth,
+          rootId: rootId || node.id,
+          photo_url: node.photo_url || placeholderImg
+        });
+        (node.children || []).forEach(ch => walk(ch, depth + 1, rootId || node.id));
+      };
+      state.parents.forEach(p => walk(p, 0, p.id));
+      (state.children || []).forEach(c => walk(c, 1, c.id));
+      return out;
+    }
+
+    function showResults(items){
+      searchResults.innerHTML = "";
+      if (!items.length) {
+        searchResults.classList.remove("show");
+        return;
+      }
+      items.forEach(it => {
+        const div = document.createElement("div");
+        div.className = "srItem";
+        div.innerHTML = `
+          <div class="srThumb"><img alt="" src="${escapeAttr(it.photo_url || placeholderImg)}"></div>
+          <div class="srText">
+            <div class="srName">${escapeHtml(it.name || "Sin nombre")}</div>
+            <div class="srMeta">${escapeHtml(it.role || it.id)} • id: ${escapeHtml(it.id)}</div>
+          </div>
+        `;
+        div.addEventListener("click", () => {
+          searchResults.classList.remove("show");
+          goToPerson(it.id, { open:true });
+        });
+        searchResults.appendChild(div);
+      });
+      searchResults.classList.add("show");
+    }
+
+    function goToPerson(id, { open=false } = {}){
+      const el = document.querySelector(`[data-id="${CSS.escape(id)}"]`);
+      if (el) {
+        el.scrollIntoView({ behavior:"smooth", block:"center", inline:"center" });
+        el.classList.add("flash");
+        setTimeout(() => el.classList.remove("flash"), 1400);
+      }
+      if (open) openEditor(id);
+    }
+
+    function runSearch(openFirst=true){
+      const q = (searchInput.value || "").trim().toLowerCase();
+      if (!q) { searchResults.classList.remove("show"); return; }
+      const all = collectPeople();
+      const matches = all
+        .filter(p => (p.name || "").toLowerCase().includes(q))
+        .slice(0, 10);
+
+      if (openFirst && matches[0]) {
+        searchResults.classList.remove("show");
+        goToPerson(matches[0].id, { open:true });
+      } else {
+        showResults(matches);
+      }
+    }
+
+    searchBtn.addEventListener("click", () => runSearch(true));
+    searchInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") { e.preventDefault(); runSearch(true); }
+      if (e.key === "Escape") { searchResults.classList.remove("show"); }
+    });
+    searchInput.addEventListener("input", () => runSearch(false));
+
+    document.addEventListener("click", (e) => {
+      if (!searchResults.contains(e.target) && e.target !== searchInput && e.target !== searchBtn) {
+        searchResults.classList.remove("show");
+      }
+    });
+
+    // Init
     (async () => {
       state = normalizeState(state);
       renderAll();
@@ -1284,15 +1434,6 @@
   </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
 
 
 
