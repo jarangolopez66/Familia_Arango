@@ -6,6 +6,9 @@
   <title>Árbol genealógico — Familia Arango</title>
 
   <style>
+    /* =========================
+       VARIABLES (ROOT) — START
+       ========================= */
     :root{
       --bg:#f6efe3;
       --card:#fff7ea;
@@ -31,6 +34,9 @@
       --colW: 180px;
       --colGap: 14px;
     }
+    /* =========================
+       VARIABLES (ROOT) — END
+       ========================= */
 
     *{box-sizing:border-box}
     body{
@@ -128,7 +134,9 @@
     .dot.ok{background: var(--ok); box-shadow: 0 0 0 4px rgba(47,143,107,.12);}
     .dot.bad{background: var(--danger); box-shadow: 0 0 0 4px rgba(182,70,63,.12);}
 
-    /* Zoom controls */
+    /* =========================
+       ZOOM CONTROLS — START
+       ========================= */
     .zoomWrap{
       display:flex;
       gap:8px;
@@ -144,8 +152,13 @@
       padding:8px 10px;
       font-size:12px;
     }
+    /* =========================
+       ZOOM CONTROLS — END
+       ========================= */
 
-    /* Buscador */
+    /* =========================
+       BUSCADOR — START
+       ========================= */
     .searchWrap{
       display:flex;
       gap:8px;
@@ -206,11 +219,17 @@
     .srText{ display:flex; flex-direction:column; gap:2px; }
     .srName{ font-weight:900; font-size:12px; }
     .srMeta{ font-size:11px; color: var(--muted); }
+    /* =========================
+       BUSCADOR — END
+       ========================= */
 
     main{padding:18px 16px 34px;}
     .container{max-width:1200px; margin:0 auto;}
 
-    /* Portada */
+    /* =========================
+       PORTADA — START
+       (CAMBIO: portada a la mitad)
+       ========================= */
     .cover{
       background: linear-gradient(180deg, var(--card), var(--card2));
       border:1px solid rgba(0,0,0,.10);
@@ -231,7 +250,10 @@
       overflow:hidden;
       border:1px solid rgba(0,0,0,.10);
       background: rgba(0,0,0,.04);
-      min-height: 230px;
+
+      /* 🔻 antes: min-height:230px (ahora aprox mitad) */
+      height: 120px;
+      min-height: 120px;
     }
     .cover-imgwrap img{width:100%; height:100%; object-fit:cover; display:block;}
     .cover-side{
@@ -273,6 +295,9 @@
       text-overflow: ellipsis;
       white-space: nowrap;
     }
+    /* =========================
+       PORTADA — END
+       ========================= */
 
     /* Árbol */
     .divider{height:1px; background: rgba(0,0,0,.10); margin: 16px 0;}
@@ -303,7 +328,7 @@
     }
 
     /* =========================
-       ZOOM VIEWPORT (árbol completo)
+       ZOOM VIEWPORT — START
        ========================= */
     .zoomArea{
       margin-top: 6px;
@@ -327,9 +352,12 @@
       transform-origin: 0 0;
       padding: 10px 14px 26px;
     }
+    /* =========================
+       ZOOM VIEWPORT — END
+       ========================= */
 
     /* =========================
-       LAYOUT (11 columnas)
+       GRID 11 COLUMNAS — START
        ========================= */
     .treeGrid{
       display:grid;
@@ -369,6 +397,9 @@
       user-select:none;
       max-width: 180px;
     }
+    /* =========================
+       GRID 11 COLUMNAS — END
+       ========================= */
 
     .circle{
       border-radius: 999px;
@@ -430,7 +461,9 @@
       opacity:.96;
     }
 
-    /* Parejas */
+    /* =========================
+       PAREJAS — START
+       ========================= */
     .personUnit{
       display:flex;
       gap:12px;
@@ -442,32 +475,35 @@
       opacity: .98;
     }
 
-    /* ✅ Marco punteado SOLO para la pareja (spouse) un poquito más pequeña*/
-.lvl-parent.spouseNode .circle{
-  width:110px; height:130px;
-  border-width:3px;
-  border-style:dashed;
-}
-.lvl-original.spouseNode .circle{
-  width:100px; height:110px;
-  border-width:3px;
-  border-style:dashed;
-}
-.lvl-1.spouseNode .circle{
-  width:80px; height:80px;
-  border-width:3px;
-  border-style:dashed;
-}
-.lvl-2.spouseNode .circle{
-  width:64px; height:64px;
-  border-width:3px;
-  border-style:dashed;
-}
-.lvl-3.spouseNode .circle{
-  width:52px; height:52px;
-  border-width:2px;
-  border-style:dashed;
-}
+    /* Marco punteado SOLO para la pareja (spouse) */
+    .lvl-parent.spouseNode .circle{
+      width:110px; height:130px;
+      border-width:3px;
+      border-style:dashed;
+    }
+    .lvl-original.spouseNode .circle{
+      width:100px; height:110px;
+      border-width:3px;
+      border-style:dashed;
+    }
+    .lvl-1.spouseNode .circle{
+      width:80px; height:80px;
+      border-width:3px;
+      border-style:dashed;
+    }
+    .lvl-2.spouseNode .circle{
+      width:64px; height:64px;
+      border-width:3px;
+      border-style:dashed;
+    }
+    .lvl-3.spouseNode .circle{
+      width:52px; height:52px;
+      border-width:2px;
+      border-style:dashed;
+    }
+    /* =========================
+       PAREJAS — END
+       ========================= */
 
     /* Conectores */
     .childrenGroup{
@@ -497,7 +533,6 @@
       border-radius: 99px;
     }
 
-    /* ✅ Hijos en 1 fila / 2 filas si hace falta (grid controlado desde JS con --cols) */
     .childrenRow{
       display:grid;
       gap: 10px;
@@ -529,7 +564,6 @@
       border-radius: 99px;
     }
 
-    /* flash al buscar */
     .flash{
       outline: 4px solid rgba(198,162,74,.60);
       outline-offset: 4px;
@@ -539,7 +573,8 @@
     @media (max-width: 860px){
       :root{ --colW: 170px; }
       .cover-top{grid-template-columns: 1fr;}
-      .cover-imgwrap{min-height: 210px;}
+      /* 🔻 antes 210; ahora mitad aprox */
+      .cover-imgwrap{ height: 110px; min-height: 110px; }
       .searchWrap{ justify-content:flex-start; width:100%; }
       .searchInput{ width:100%; }
       .zoomViewport{ height: min(70vh, 780px); }
@@ -555,7 +590,7 @@
     }
 
     /* =========================
-       MODAL EDITOR
+       MODAL EDITOR — START
        ========================= */
     .modal{
       position:fixed; inset:0;
@@ -691,135 +726,146 @@
       .row{justify-content:center;}
       .person{width: 100%;}
     }
-
-      /* Ocultar botones de portada */
-  #coverPickLabel,
-  #coverClearBtn{
-    display:none !important;
-  }
+    /* =========================
+       MODAL EDITOR — END
+       ========================= */
 
     /* =========================
-   CUMPLEAÑOS
-   ========================= */
-.bdayCard{
-  background: linear-gradient(180deg, var(--card), var(--card2));
-  border:1px solid rgba(0,0,0,.10);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  overflow:hidden;
-  margin-bottom: 18px;
-  padding: 14px;
-}
-.bdayHead{
-  display:flex;
-  align-items:flex-start;
-  justify-content:space-between;
-  gap:12px;
-  flex-wrap:wrap;
-}
-.bdayHead h2{ margin:0; font-size:16px; letter-spacing:.2px; }
-.bdayHead p{ margin:6px 0 0 0; color:var(--muted); font-size:12px; line-height:1.35; }
-.bdayNav{ display:flex; align-items:center; gap:10px; }
-.bdayMonth{
-  font-weight:900;
-  background: rgba(255,255,255,.55);
-  border:1px solid rgba(0,0,0,.10);
-  border-radius: 999px;
-  padding:8px 10px;
-  font-size:12px;
-  white-space:nowrap;
-}
+       PORTADA: OCULTAR BOTONES — START
+       ========================= */
+    #coverPickLabel,
+    #coverClearBtn{
+      display:none !important;
+    }
+    /* =========================
+       PORTADA: OCULTAR BOTONES — END
+       ========================= */
 
-.bdayGrid{
-  margin-top:12px;
-  display:grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  align-items:start;
-}
-.bdayList{
-  border:1px solid rgba(0,0,0,.10);
-  border-radius: 16px;
-  background: rgba(255,255,255,.45);
-  padding: 10px;
-  min-height: 160px;
-}
-.bdayItem{
-  display:flex; gap:10px; align-items:center;
-  padding:8px 10px;
-  border-radius: 12px;
-  cursor:pointer;
-  user-select:none;
-}
-.bdayItem:hover{ background: rgba(0,0,0,.05); }
-.bdayThumb{
-  width:30px; height:30px; border-radius: 12px; overflow:hidden;
-  border:1px solid rgba(0,0,0,.12);
-  background: rgba(0,0,0,.04);
-  flex:0 0 auto;
-}
-.bdayThumb img{ width:100%; height:100%; object-fit:cover; display:block; }
-.bdayTxt{ display:flex; flex-direction:column; gap:2px; }
-.bdayWho{ font-weight:900; font-size:12px; }
-.bdayWhen{ font-size:11px; color: var(--muted); }
+    /* =========================
+       CUMPLEAÑOS — START
+       ========================= */
+    .bdayCard{
+      background: linear-gradient(180deg, var(--card), var(--card2));
+      border:1px solid rgba(0,0,0,.10);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      margin-bottom: 18px;
+      padding: 14px;
+    }
+    .bdayHead{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+    .bdayHead h2{ margin:0; font-size:16px; letter-spacing:.2px; }
+    .bdayHead p{ margin:6px 0 0 0; color:var(--muted); font-size:12px; line-height:1.35; }
+    .bdayNav{ display:flex; align-items:center; gap:10px; }
+    .bdayMonth{
+      font-weight:900;
+      background: rgba(255,255,255,.55);
+      border:1px solid rgba(0,0,0,.10);
+      border-radius: 999px;
+      padding:8px 10px;
+      font-size:12px;
+      white-space:nowrap;
+    }
 
-.bdayCal{
-  border:1px solid rgba(0,0,0,.10);
-  border-radius: 16px;
-  background: rgba(255,255,255,.45);
-  padding: 10px;
-}
-.calGrid{
-  display:grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 6px;
-}
-.calDow{
-  font-size:11px;
-  color: var(--muted);
-  text-align:center;
-  font-weight:900;
-  padding:6px 0;
-}
-.calCell{
-  aspect-ratio: 1 / 1;
-  border-radius: 12px;
-  border:1px solid rgba(0,0,0,.08);
-  background: rgba(255,255,255,.35);
-  display:flex;
-  align-items:flex-start;
-  justify-content:flex-start;
-  padding: 6px;
-  position:relative;
-  font-size:12px;
-}
-.calCell.empty{
-  border-color: transparent;
-  background: transparent;
-}
-.calCell.hasBday{
-  outline: 3px solid rgba(198,162,74,.35);
-  background: rgba(226,199,124,.18);
-  cursor:pointer;
-}
-.calBadge{
-  position:absolute;
-  right:6px; bottom:6px;
-  font-size:10px;
-  font-weight:900;
-  color:#201a10;
-  background: rgba(226,199,124,.75);
-  border:1px solid rgba(0,0,0,.10);
-  border-radius:999px;
-  padding:2px 6px;
-}
+    .bdayGrid{
+      margin-top:12px;
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      align-items:start;
+    }
+    .bdayList{
+      border:1px solid rgba(0,0,0,.10);
+      border-radius: 16px;
+      background: rgba(255,255,255,.45);
+      padding: 10px;
+      min-height: 160px;
+    }
+    .bdayItem{
+      display:flex; gap:10px; align-items:center;
+      padding:8px 10px;
+      border-radius: 12px;
+      cursor:pointer;
+      user-select:none;
+    }
+    .bdayItem:hover{ background: rgba(0,0,0,.05); }
+    .bdayThumb{
+      width:30px; height:30px; border-radius: 12px; overflow:hidden;
+      border:1px solid rgba(0,0,0,.12);
+      background: rgba(0,0,0,.04);
+      flex:0 0 auto;
+    }
+    .bdayThumb img{ width:100%; height:100%; object-fit:cover; display:block; }
+    .bdayTxt{ display:flex; flex-direction:column; gap:2px; }
+    .bdayWho{ font-weight:900; font-size:12px; }
+    .bdayWhen{ font-size:11px; color: var(--muted); }
 
-@media (max-width: 860px){
-  .bdayGrid{ grid-template-columns: 1fr; }
-}
-    
+    .bdayCal{
+      border:1px solid rgba(0,0,0,.10);
+      border-radius: 16px;
+      background: rgba(255,255,255,.45);
+      padding: 10px;
+    }
+    .calGrid{
+      display:grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+    }
+    .calDow{
+      font-size:11px;
+      color: var(--muted);
+      text-align:center;
+      font-weight:900;
+      padding:6px 0;
+    }
+    .calCell{
+      aspect-ratio: 1 / 1;
+      border-radius: 12px;
+      border:1px solid rgba(0,0,0,.08);
+      background: rgba(255,255,255,.35);
+      display:flex;
+      align-items:flex-start;
+      justify-content:flex-start;
+      padding: 6px;
+      position:relative;
+      font-size:12px;
+    }
+    .calCell.empty{
+      border-color: transparent;
+      background: transparent;
+    }
+    .calCell.hasBday{
+      outline: 3px solid rgba(198,162,74,.35);
+      background: rgba(226,199,124,.18);
+      cursor:pointer;
+    }
+    .calBadge{
+      position:absolute;
+      right:6px; bottom:6px;
+      font-size:10px;
+      font-weight:900;
+      color:#201a10;
+      background: rgba(226,199,124,.75);
+      border:1px solid rgba(0,0,0,.10);
+      border-radius:999px;
+      padding:2px 6px;
+    }
+
+    @media (max-width: 860px){
+      .bdayGrid{ grid-template-columns: 1fr; }
+    }
+    /* =========================
+       CUMPLEAÑOS — END
+       ========================= */
+
   </style>
-  
+
 </head>
 
 <body>
@@ -874,7 +920,7 @@
         <div class="strip" id="first11Strip"></div>
       </section>
 
-            <section class="bdayCard" aria-label="Cumpleaños">
+      <section class="bdayCard" aria-label="Cumpleaños">
         <div class="bdayHead">
           <div>
             <h2>Cumpleaños</h2>
@@ -925,6 +971,9 @@
   </div>
 
   <script type="module">
+    /* =========================
+       SUPABASE CONFIG — START
+       ========================= */
     import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.94.1/+esm";
 
     const DEFAULT_CFG = {
@@ -933,7 +982,13 @@
       treeId: "familia-arango-v2",
       bucket: "family-photos"
     };
+    /* =========================
+       SUPABASE CONFIG — END
+       ========================= */
 
+    /* =========================
+       DOM REFS — START
+       ========================= */
     const connDot  = document.getElementById("connDot");
     const connText = document.getElementById("connText");
 
@@ -966,6 +1021,19 @@
     const zoomFitBtn   = document.getElementById("zoomFit");
     const zoomLabel    = document.getElementById("zoomLabel");
 
+    // Cumpleaños
+    const bdayListEl  = document.getElementById("bdayList");
+    const bdayCalEl   = document.getElementById("bdayCal");
+    const bdayPrevBtn = document.getElementById("bdayPrev");
+    const bdayNextBtn = document.getElementById("bdayNext");
+    const bdayMonthEl = document.getElementById("bdayMonth");
+    /* =========================
+       DOM REFS — END
+       ========================= */
+
+    /* =========================
+       GLOBAL STATE — START
+       ========================= */
     let supabase = null;
     let TREE_ID = DEFAULT_CFG.treeId;
     let BUCKET  = DEFAULT_CFG.bucket;
@@ -976,18 +1044,16 @@
 
     let pendingPhotoTarget = null; // {type:"cover"} o {type:"person",id}
 
-    // Cumpleaños
-    const bdayListEl  = document.getElementById("bdayList");
-    const bdayCalEl   = document.getElementById("bdayCal");
-    const bdayPrevBtn = document.getElementById("bdayPrev");
-    const bdayNextBtn = document.getElementById("bdayNext");
-    const bdayMonthEl = document.getElementById("bdayMonth");
-
-    let bdayView = { y: new Date().getFullYear(), m: new Date().getMonth() }; // mes 0..11
+    // ✅ Calendario sin año: usamos un año “ancla” solo para construir el grid
+    const ANCHOR_YEAR = 2024; // bisiesto (sirve para 29-Feb)
+    let bdayView = { m: new Date().getMonth() }; // 0..11 (SOLO MES)
 
     // ======= Realtime pausado mientras escriben =======
     let isEditing = false;
     let queuedRemote = null;
+    /* =========================
+       GLOBAL STATE — END
+       ========================= */
 
     document.addEventListener("focusin", (e) => {
       if (e.target instanceof HTMLInputElement && e.target.dataset.field) isEditing = true;
@@ -1010,6 +1076,18 @@
         }
       }, 0);
     });
+
+    // ✅ Navegación del calendario: SOLO meses (cíclico), SIN año
+    if (bdayPrevBtn && bdayNextBtn){
+      bdayPrevBtn.addEventListener("click", () => {
+        bdayView.m = (bdayView.m + 11) % 12;
+        renderBirthdays();
+      });
+      bdayNextBtn.addEventListener("click", () => {
+        bdayView.m = (bdayView.m + 1) % 12;
+        renderBirthdays();
+      });
+    }
 
     function setConn(ok, text){
       connDot.className = "dot " + (ok ? "ok" : "bad");
@@ -1059,6 +1137,7 @@
         .replaceAll("'","&#039;");
     }
     function escapeAttr(str) { return escapeHtml(str).replaceAll("\n"," "); }
+    function cap1(s){ return s ? (s.charAt(0).toUpperCase() + s.slice(1)) : s; }
 
     function yearRange(birth, death){
       const y = (d) => (d && String(d).length >= 4 ? String(d).slice(0,4) : "");
@@ -1083,7 +1162,7 @@
         death:"",
         photo_url: placeholderImg,
         photo_path:"",
-        spouse: null,     // ✅ NUEVO: pareja (objeto simple)
+        spouse: null,
         children:[]
       };
     }
@@ -1097,7 +1176,7 @@
         photo_url: placeholderImg,
         photo_path:"",
         spouse: null,
-        children: [] // no se usa, pero lo dejamos para normalizar sin romper
+        children: []
       };
     }
 
@@ -1121,7 +1200,6 @@
       if (node.photo_url === "") node.photo_url = placeholderImg;
       if (!("photo_path" in node)) node.photo_path = "";
 
-      // ✅ spouse
       if (node.spouse) {
         if (!node.spouse.id) node.spouse.id = makeId("s");
         if (!node.spouse.role) node.spouse.role = "Pareja";
@@ -1148,11 +1226,12 @@
       return s;
     }
 
-    // ======= Buscar (incluye parejas) =======
+    /* =========================
+       FIND NODE — START
+       ========================= */
     function findInChildren(parentNode, id, depth){
       if (!parentNode) return null;
 
-      // spouse primero
       if (parentNode.spouse && parentNode.spouse.id === id) {
         return { node: parentNode.spouse, parent: parentNode, parentChildrenArray: null, depth, isSpouse:true };
       }
@@ -1169,13 +1248,11 @@
     }
 
     function findNodeById(id){
-      // Padres
       for (const p of state.parents) {
         if (p.id === id) return { node: p, parent: null, parentChildrenArray: null, depth: 0, isSpouse:false };
         const hit = findInChildren(p, id, 1);
         if (hit) return hit;
       }
-      // Hijos originales
       for (const c of state.children) {
         if (c.id === id) return { node: c, parent: null, parentChildrenArray: state.children, depth: 1, isSpouse:false };
         const hit = findInChildren(c, id, 2);
@@ -1183,6 +1260,9 @@
       }
       return null;
     }
+    /* =========================
+       FIND NODE — END
+       ========================= */
 
     function patchNode(id, patch, { render=true } = {}){
       const hit = findNodeById(id);
@@ -1194,8 +1274,6 @@
     function addChildTo(parentId){
       const hit = findNodeById(parentId);
       if (!hit?.node) return;
-
-      // no children on spouse editor
       if (hit.isSpouse) return;
 
       const parent = hit.node;
@@ -1205,14 +1283,12 @@
       const child = makePerson({ role: `Hijo/a ${nextIndex}` });
       parent.children.push(child);
 
-      renderBirthdays();
-
       renderAll();
       scheduleSave();
     }
 
     function addSpouseTo(ownerId){
-      if (ownerId === "p1" || ownerId === "p2") return; // padres ya están como pareja
+      if (ownerId === "p1" || ownerId === "p2") return;
       const hit = findNodeById(ownerId);
       if (!hit?.node || hit.isSpouse) return;
 
@@ -1243,7 +1319,6 @@
       return /^c([1-9]|10|11)$/.test(id);
     }
 
-    // ✅ Eliminar con doble confirmación y bloqueos p1/p2 y c1..c11
     function removeNode(id){
       const hit = findNodeById(id);
       if (hit?.isSpouse) return removeSpouse(id);
@@ -1271,7 +1346,9 @@
       }
     }
 
-    // ======= Modal editor =======
+    /* =========================
+       MODAL — START
+       ========================= */
     function openEditor(nodeId){
       const hit = findNodeById(nodeId);
       if (!hit?.node) return;
@@ -1306,28 +1383,6 @@
       if (e.target === editorModal) closeEditor();
     });
 
-    // ======= Portada =======
-    function renderCover(){
-      coverImg.src = state.cover_photo_url || placeholderCover;
-
-      first11Strip.innerHTML = "";
-      const first11 = (state.children || []).slice(0, 11);
-      first11.forEach((p, idx) => {
-        const chip = document.createElement("div");
-        chip.className = "sib";
-        const img = document.createElement("img");
-        img.src = p.photo_url || placeholderImg;
-        img.alt = `Hijo ${idx+1}`;
-        const name = document.createElement("span");
-        name.textContent = (p.name && p.name.trim()) ? p.name.trim() : `Hijo ${idx+1}`;
-        chip.appendChild(img);
-        chip.appendChild(name);
-        chip.addEventListener("click", () => openEditor(p.id));
-        first11Strip.appendChild(chip);
-      });
-    }
-
-    // ======= Tarjeta (solo modal) =======
     function editorPersonCard(node, { removable=false, isSpouse=false, spouseOwner=null } = {}){
       const el = document.createElement("article");
       el.className = "person";
@@ -1388,7 +1443,6 @@
         </div>
       `;
 
-      // target upload
       el.addEventListener("pointerdown", (e) => {
         const lab = e.target.closest('label[data-action="photo"]');
         if (!lab) return;
@@ -1396,9 +1450,6 @@
         filePicker.value = "";
       });
 
-      
-
-      // botones
       el.addEventListener("click", (e) => {
         const btn = e.target.closest("button");
         if (!btn) return;
@@ -1437,19 +1488,6 @@
         }
       });
 
-      if (bdayPrevBtn && bdayNextBtn){
-  bdayPrevBtn.addEventListener("click", () => {
-    bdayView.m -= 1;
-    if (bdayView.m < 0){ bdayView.m = 11; bdayView.y -= 1; }
-    renderBirthdayCalendar();
-  });
-  bdayNextBtn.addEventListener("click", () => {
-    bdayView.m += 1;
-    if (bdayView.m > 11){ bdayView.m = 0; bdayView.y += 1; }
-    renderBirthdayCalendar();
-  });
-}
-
       // ✅ NO re-render por tecla (evita “se salta” en celular)
       el.addEventListener("input", (e) => {
         const input = e.target;
@@ -1463,8 +1501,39 @@
 
       return el;
     }
+    /* =========================
+       MODAL — END
+       ========================= */
 
-    // ======= NODO círculo =======
+    /* =========================
+       PORTADA RENDER — START
+       ========================= */
+    function renderCover(){
+      coverImg.src = state.cover_photo_url || placeholderCover;
+
+      first11Strip.innerHTML = "";
+      const first11 = (state.children || []).slice(0, 11);
+      first11.forEach((p, idx) => {
+        const chip = document.createElement("div");
+        chip.className = "sib";
+        const img = document.createElement("img");
+        img.src = p.photo_url || placeholderImg;
+        img.alt = `Hijo ${idx+1}`;
+        const name = document.createElement("span");
+        name.textContent = (p.name && p.name.trim()) ? p.name.trim() : `Hijo ${idx+1}`;
+        chip.appendChild(img);
+        chip.appendChild(name);
+        chip.addEventListener("click", () => openEditor(p.id));
+        first11Strip.appendChild(chip);
+      });
+    }
+    /* =========================
+       PORTADA RENDER — END
+       ========================= */
+
+    /* =========================
+       NODO / SUBÁRBOL — START
+       ========================= */
     function renderNodeCircle(node, cls){
       const el = document.createElement("div");
       el.className = `node ${cls}`;
@@ -1493,7 +1562,6 @@
       return unit;
     }
 
-    // ======= SUBÁRBOL =======
     const MAX_DEPTH = 8;
 
     function depthClass(depth){
@@ -1504,9 +1572,9 @@
 
     function colsForKids(n){
       if (n <= 0) return 0;
-      if (n <= 3) return n;   // 1..3 en una fila
-      if (n === 4) return 2;  // 2x2
-      return 3;               // 5+ => 3 columnas (ej: 3+2)
+      if (n <= 3) return n;
+      if (n === 4) return 2;
+      return 3;
     }
 
     function renderSubtree(node, depth = 0, { isOriginal = false } = {}) {
@@ -1537,10 +1605,184 @@
 
       return wrap;
     }
+    /* =========================
+       NODO / SUBÁRBOL — END
+       ========================= */
 
-    // ======= Render general =======
+    /* =========================
+       CUMPLEAÑOS (SIN AÑO) — START
+       ========================= */
+    function parseYMD(ymd){
+      if (!ymd || typeof ymd !== "string") return null;
+      const m = ymd.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      if (!m) return null;
+      const mo = Number(m[2]) - 1, d = Number(m[3]);
+      if (!Number.isFinite(mo) || !Number.isFinite(d)) return null;
+      return { m: mo, d };
+    }
+
+    function monthNameEs(m0){
+      return new Date(2020, m0, 1).toLocaleDateString("es-CO", { month:"long" });
+    }
+
+    function fmtMonthDay(m0, d){
+      return `${String(d).padStart(2,"0")} de ${monthNameEs(m0)}`;
+    }
+
+    function collectBirthdays(){
+      const out = [];
+      const walk = (node) => {
+        const p = parseYMD(node.birth);
+        if (p){
+          out.push({
+            id: node.id,
+            name: (node.name || "").trim() || "Sin nombre",
+            role: node.role || "",
+            photo_url: node.photo_url || placeholderImg,
+            month: p.m,
+            day: p.d
+          });
+        }
+        if (node.spouse){
+          const s = node.spouse;
+          const sp = parseYMD(s.birth);
+          if (sp){
+            out.push({
+              id: s.id,
+              name: (s.name || "").trim() || "Sin nombre",
+              role: s.role || "Pareja",
+              photo_url: s.photo_url || placeholderImg,
+              month: sp.m,
+              day: sp.d
+            });
+          }
+        }
+        (node.children || []).forEach(walk);
+      };
+
+      state.parents.forEach(walk);
+      (state.children || []).forEach(walk);
+      return out;
+    }
+
+    // ✅ Lista izquierda: SOLO los cumpleaños del mes seleccionado (sin año)
+    function renderBirthdayList(){
+      if (!bdayListEl) return;
+
+      const m = bdayView.m;
+      const all = collectBirthdays();
+      const items = all
+        .filter(p => p.month === m)
+        .sort((a,b) => (a.day - b.day) || (a.name.localeCompare(b.name)));
+
+      bdayListEl.innerHTML = "";
+
+      if (!items.length){
+        bdayListEl.innerHTML = `<div style="color:var(--muted); font-size:12px; padding:8px 6px;">
+          No hay cumpleaños registrados en <b>${escapeHtml(cap1(monthNameEs(m)))}</b>.
+        </div>`;
+        return;
+      }
+
+      items.forEach(it => {
+        const div = document.createElement("div");
+        div.className = "bdayItem";
+        div.innerHTML = `
+          <div class="bdayThumb"><img alt="" src="${escapeAttr(it.photo_url)}"></div>
+          <div class="bdayTxt">
+            <div class="bdayWho">${escapeHtml(it.name)}</div>
+            <div class="bdayWhen">${escapeHtml(fmtMonthDay(it.month, it.day))} • ${escapeHtml(it.role || it.id)}</div>
+          </div>
+        `;
+        div.addEventListener("click", () => goToPerson(it.id, { open:true }));
+        bdayListEl.appendChild(div);
+      });
+    }
+
+    // ✅ Calendario: SOLO mes (sin año visible). Año ancla solo para construir el grid.
+    function renderBirthdayCalendar(){
+      if (!bdayCalEl || !bdayMonthEl) return;
+
+      const m = bdayView.m;
+      bdayMonthEl.textContent = cap1(monthNameEs(m)); // sin año
+
+      const all = collectBirthdays();
+      const map = new Map(); // day -> array people
+      all.forEach(p => {
+        if (p.month === m){
+          const arr = map.get(p.day) || [];
+          arr.push(p);
+          map.set(p.day, arr);
+        }
+      });
+
+      const y = ANCHOR_YEAR;
+      const first = new Date(y, m, 1);
+      const last  = new Date(y, m + 1, 0);
+      const daysInMonth = last.getDate();
+
+      const jsDow = first.getDay(); // 0 dom ... 6 sáb
+      const startOffset = (jsDow + 6) % 7; // lunes=0
+
+      const dows = ["Lun","Mar","Mié","Jue","Vie","Sáb","Dom"];
+
+      const grid = document.createElement("div");
+      grid.className = "calGrid";
+
+      dows.forEach(d => {
+        const h = document.createElement("div");
+        h.className = "calDow";
+        h.textContent = d;
+        grid.appendChild(h);
+      });
+
+      for (let i=0; i<startOffset; i++){
+        const c = document.createElement("div");
+        c.className = "calCell empty";
+        grid.appendChild(c);
+      }
+
+      for (let day=1; day<=daysInMonth; day++){
+        const c = document.createElement("div");
+        const people = map.get(day) || [];
+        c.className = "calCell" + (people.length ? " hasBday" : "");
+        c.textContent = String(day);
+
+        if (people.length){
+          const badge = document.createElement("div");
+          badge.className = "calBadge";
+          badge.textContent = String(people.length);
+          c.appendChild(badge);
+
+          c.title = people.map(p => p.name).join(", ");
+
+          c.addEventListener("click", () => {
+            // abre el primero (simple)
+            goToPerson(people[0].id, { open:true });
+          });
+        }
+
+        grid.appendChild(c);
+      }
+
+      bdayCalEl.innerHTML = "";
+      bdayCalEl.appendChild(grid);
+    }
+
+    function renderBirthdays(){
+      renderBirthdayList();
+      renderBirthdayCalendar();
+    }
+    /* =========================
+       CUMPLEAÑOS (SIN AÑO) — END
+       ========================= */
+
+    /* =========================
+       RENDER ALL — START
+       ========================= */
     function renderAll(){
       renderCover();
+      renderBirthdays(); // ✅ siempre actualiza cumpleaños cuando cambia state
 
       // Padres
       parentsGen.innerHTML = "";
@@ -1570,8 +1812,13 @@
 
       requestAnimationFrame(() => refreshZoomBounds(false));
     }
+    /* =========================
+       RENDER ALL — END
+       ========================= */
 
-    // ======= Portada =======
+    /* =========================
+       PORTADA EVENTS + UPLOAD — START
+       ========================= */
     coverPickLabel.addEventListener("pointerdown", () => {
       pendingPhotoTarget = { type:"cover" };
       filePicker.value = "";
@@ -1584,7 +1831,6 @@
       scheduleSave();
     });
 
-    // Subir fotos (cover o persona)
     filePicker.addEventListener("change", async () => {
       const file = filePicker.files?.[0];
       if (!file || !pendingPhotoTarget) return;
@@ -1649,8 +1895,13 @@
         img.src = url;
       });
     }
+    /* =========================
+       PORTADA EVENTS + UPLOAD — END
+       ========================= */
 
-    // Guardado “debounced”
+    /* =========================
+       SAVE / REALTIME — START
+       ========================= */
     function scheduleSave(){
       if (!supabase) return;
       if (applyingRemote) return;
@@ -1748,8 +1999,13 @@
       await ensureRow();
       subscribeRealtime();
     }
+    /* =========================
+       SAVE / REALTIME — END
+       ========================= */
 
-    // ======= Buscador (incluye parejas) =======
+    /* =========================
+       BUSCADOR — START
+       ========================= */
     function collectPeople(){
       const out = [];
       const walk = (node, depth, rootId) => {
@@ -1852,184 +2108,15 @@
         searchResults.classList.remove("show");
       }
     });
+    /* =========================
+       BUSCADOR — END
+       ========================= */
 
-    function parseYMD(ymd){
-  if (!ymd || typeof ymd !== "string") return null;
-  const m = ymd.match(/^(\d{4})-(\d{2})-(\d{2})$/);
-  if (!m) return null;
-  const y = Number(m[1]), mo = Number(m[2]) - 1, d = Number(m[3]);
-  if (!Number.isFinite(y) || !Number.isFinite(mo) || !Number.isFinite(d)) return null;
-  return { y, m: mo, d };
-}
-
-function nextOccurrence(month0, day, fromDate = new Date()){
-  const y = fromDate.getFullYear();
-  const a = new Date(y, month0, day);
-  const b = new Date(y + 1, month0, day);
-  // si ya pasó (hoy más tarde cuenta como hoy)
-  return (a.setHours(0,0,0,0) >= new Date(fromDate.setHours(0,0,0,0))) ? a : b;
-}
-
-function fmtDateShort(d){
-  const opts = { weekday:"short", day:"2-digit", month:"short" };
-  return d.toLocaleDateString("es-CO", opts);
-}
-
-function collectBirthdays(){
-  const out = [];
-  const walk = (node) => {
-    const p = parseYMD(node.birth);
-    if (p){
-      out.push({
-        id: node.id,
-        name: (node.name || "").trim() || "Sin nombre",
-        role: node.role || "",
-        photo_url: node.photo_url || placeholderImg,
-        month: p.m,
-        day: p.d
-      });
-    }
-    if (node.spouse){
-      const s = node.spouse;
-      const sp = parseYMD(s.birth);
-      if (sp){
-        out.push({
-          id: s.id,
-          name: (s.name || "").trim() || "Sin nombre",
-          role: s.role || "Pareja",
-          photo_url: s.photo_url || placeholderImg,
-          month: sp.m,
-          day: sp.d
-        });
-      }
-    }
-    (node.children || []).forEach(walk);
-  };
-
-  state.parents.forEach(walk);
-  (state.children || []).forEach(walk);
-  return out;
-}
-
-function renderBirthdayList(){
-  if (!bdayListEl) return;
-
-  const all = collectBirthdays();
-  const now = new Date();
-
-  const items = all
-    .map(p => ({ ...p, next: nextOccurrence(p.month, p.day, new Date(now)) }))
-    .sort((a,b) => a.next - b.next)
-    .slice(0, 25);
-
-  bdayListEl.innerHTML = "";
-
-  if (!items.length){
-    bdayListEl.innerHTML = `<div style="color:var(--muted); font-size:12px; padding:8px 6px;">
-      Aún no hay fechas de nacimiento registradas.
-    </div>`;
-    return;
-  }
-
-  items.forEach(it => {
-    const div = document.createElement("div");
-    div.className = "bdayItem";
-    div.innerHTML = `
-      <div class="bdayThumb"><img alt="" src="${escapeAttr(it.photo_url)}"></div>
-      <div class="bdayTxt">
-        <div class="bdayWho">${escapeHtml(it.name)}</div>
-        <div class="bdayWhen">${escapeHtml(fmtDateShort(it.next))} • ${escapeHtml(it.role || it.id)}</div>
-      </div>
-    `;
-    div.addEventListener("click", () => goToPerson(it.id, { open:true }));
-    bdayListEl.appendChild(div);
-  });
-}
-
-function monthNameEs(m0){
-  return new Date(2020, m0, 1).toLocaleDateString("es-CO", { month:"long" });
-}
-
-function renderBirthdayCalendar(){
-  if (!bdayCalEl || !bdayMonthEl) return;
-
-  const y = bdayView.y, m = bdayView.m;
-  bdayMonthEl.textContent = `${monthNameEs(m)} ${y}`.replace(/^./, c => c.toUpperCase());
-
-  const all = collectBirthdays();
-  const map = new Map(); // day -> array people
-  all.forEach(p => {
-    if (p.month === m){
-      const arr = map.get(p.day) || [];
-      arr.push(p);
-      map.set(p.day, arr);
-    }
-  });
-
-  const first = new Date(y, m, 1);
-  const last  = new Date(y, m + 1, 0);
-  const daysInMonth = last.getDate();
-
-  // lunes=1..domingo=0 -> lo pasamos a lunes=0..domingo=6
-  const jsDow = first.getDay(); // 0 dom ... 6 sáb
-  const startOffset = (jsDow + 6) % 7; // lunes=0
-
-  const dows = ["Lun","Mar","Mié","Jue","Vie","Sáb","Dom"];
-
-  const grid = document.createElement("div");
-  grid.className = "calGrid";
-
-  dows.forEach(d => {
-    const h = document.createElement("div");
-    h.className = "calDow";
-    h.textContent = d;
-    grid.appendChild(h);
-  });
-
-  // celdas vacías iniciales
-  for (let i=0; i<startOffset; i++){
-    const c = document.createElement("div");
-    c.className = "calCell empty";
-    grid.appendChild(c);
-  }
-
-  for (let day=1; day<=daysInMonth; day++){
-    const c = document.createElement("div");
-    const people = map.get(day) || [];
-    c.className = "calCell" + (people.length ? " hasBday" : "");
-    c.textContent = String(day);
-
-    if (people.length){
-      const badge = document.createElement("div");
-      badge.className = "calBadge";
-      badge.textContent = String(people.length);
-      c.appendChild(badge);
-
-      c.title = people.map(p => p.name).join(", ");
-
-      c.addEventListener("click", () => {
-        // si hay 1, abre directo; si hay varios, abre el primero (simple)
-        goToPerson(people[0].id, { open:true });
-      });
-    }
-
-    grid.appendChild(c);
-  }
-
-  bdayCalEl.innerHTML = "";
-  bdayCalEl.appendChild(grid);
-}
-
-function renderBirthdays(){
-  renderBirthdayList();
-  renderBirthdayCalendar();
-}
-
-    // =========================
-    // ZOOM + PAN
-    // =========================
+    /* =========================
+       ZOOM + PAN — START
+       ========================= */
     let zoom = 1;
-    let minZoom = 0.1; // se recalcula con fit
+    let minZoom = 0.1;
     const maxZoom = 2.6;
     let baseW = 1, baseH = 1;
 
@@ -2054,7 +2141,6 @@ function renderBirthdays(){
       const cx = center ? (vpRect.left + zoomViewport.clientWidth/2) : (clientX ?? (vpRect.left + zoomViewport.clientWidth/2));
       const cy = center ? (vpRect.top  + zoomViewport.clientHeight/2): (clientY ?? (vpRect.top  + zoomViewport.clientHeight/2));
 
-      // coords actuales (en "espacio sin escala")
       const px = (zoomViewport.scrollLeft + (cx - vpRect.left)) / zoom;
       const py = (zoomViewport.scrollTop  + (cy - vpRect.top )) / zoom;
 
@@ -2064,7 +2150,6 @@ function renderBirthdays(){
       zoomSpacer.style.width  = (baseW * zoom) + "px";
       zoomSpacer.style.height = (baseH * zoom) + "px";
 
-      // mantener el punto bajo el cursor
       zoomViewport.scrollLeft = px * zoom - (cx - vpRect.left);
       zoomViewport.scrollTop  = py * zoom - (cy - vpRect.top);
 
@@ -2079,7 +2164,6 @@ function renderBirthdays(){
       zoomSpacer.style.width  = (baseW * zoom) + "px";
       zoomSpacer.style.height = (baseH * zoom) + "px";
 
-      // centrar (para que "se vea todo" y no deje hermanos por fuera)
       zoomViewport.scrollLeft = Math.max(0, (baseW*zoom - zoomViewport.clientWidth) / 2);
       zoomViewport.scrollTop  = Math.max(0, (baseH*zoom - zoomViewport.clientHeight) / 2);
 
@@ -2088,7 +2172,6 @@ function renderBirthdays(){
 
     function refreshZoomBounds(initial=false){
       measureBase();
-      // si el usuario está muy alejado, lo dejamos; si quedó por debajo del min fit, lo subimos
       const z = clamp(zoom, minZoom, maxZoom);
       if (initial) {
         zoom = z;
@@ -2105,13 +2188,11 @@ function renderBirthdays(){
     zoomInBtn.addEventListener("click", () => applyZoom(zoom * 1.12, { center:true }));
     zoomOutBtn.addEventListener("click", () => {
       const next = zoom / 1.12;
-      // si ya estás muy cerca del fit, al bajar te manda a “ver todo”
       if (next <= minZoom * 1.05) { fitAll(); return; }
       applyZoom(next, { center:true });
     });
     zoomFitBtn.addEventListener("click", fitAll);
 
-    // Ctrl/⌘ + rueda para zoom (rueda normal queda como scroll)
     zoomViewport.addEventListener("wheel", (e) => {
       const isZoomGesture = e.ctrlKey || e.metaKey;
       if (!isZoomGesture) return;
@@ -2120,7 +2201,6 @@ function renderBirthdays(){
       applyZoom(zoom * factor, { clientX: e.clientX, clientY: e.clientY });
     }, { passive:false });
 
-    // Drag para pan (solo si tocas fondo, no nodos)
     let isPanning = false;
     let panStartX = 0, panStartY = 0, panStartL = 0, panStartT = 0;
 
@@ -2158,26 +2238,24 @@ function renderBirthdays(){
     });
 
     window.addEventListener("resize", () => refreshZoomBounds(false));
+    /* =========================
+       ZOOM + PAN — END
+       ========================= */
 
-    // ======= Init =======
+    /* =========================
+       INIT — START
+       ========================= */
     (async () => {
       state = normalizeState(state);
       renderAll();
       refreshZoomBounds(true);
       await boot();
-      // al conectar, re-fit por si cargó un árbol más grande
       requestAnimationFrame(() => fitAll());
     })();
+    /* =========================
+       INIT — END
+       ========================= */
   </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
 
