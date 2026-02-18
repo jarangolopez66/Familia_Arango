@@ -697,7 +697,129 @@
   #coverClearBtn{
     display:none !important;
   }
+
+    /* =========================
+   CUMPLEAÑOS
+   ========================= */
+.bdayCard{
+  background: linear-gradient(180deg, var(--card), var(--card2));
+  border:1px solid rgba(0,0,0,.10);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow:hidden;
+  margin-bottom: 18px;
+  padding: 14px;
+}
+.bdayHead{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+  flex-wrap:wrap;
+}
+.bdayHead h2{ margin:0; font-size:16px; letter-spacing:.2px; }
+.bdayHead p{ margin:6px 0 0 0; color:var(--muted); font-size:12px; line-height:1.35; }
+.bdayNav{ display:flex; align-items:center; gap:10px; }
+.bdayMonth{
+  font-weight:900;
+  background: rgba(255,255,255,.55);
+  border:1px solid rgba(0,0,0,.10);
+  border-radius: 999px;
+  padding:8px 10px;
+  font-size:12px;
+  white-space:nowrap;
+}
+
+.bdayGrid{
+  margin-top:12px;
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  align-items:start;
+}
+.bdayList{
+  border:1px solid rgba(0,0,0,.10);
+  border-radius: 16px;
+  background: rgba(255,255,255,.45);
+  padding: 10px;
+  min-height: 160px;
+}
+.bdayItem{
+  display:flex; gap:10px; align-items:center;
+  padding:8px 10px;
+  border-radius: 12px;
+  cursor:pointer;
+  user-select:none;
+}
+.bdayItem:hover{ background: rgba(0,0,0,.05); }
+.bdayThumb{
+  width:30px; height:30px; border-radius: 12px; overflow:hidden;
+  border:1px solid rgba(0,0,0,.12);
+  background: rgba(0,0,0,.04);
+  flex:0 0 auto;
+}
+.bdayThumb img{ width:100%; height:100%; object-fit:cover; display:block; }
+.bdayTxt{ display:flex; flex-direction:column; gap:2px; }
+.bdayWho{ font-weight:900; font-size:12px; }
+.bdayWhen{ font-size:11px; color: var(--muted); }
+
+.bdayCal{
+  border:1px solid rgba(0,0,0,.10);
+  border-radius: 16px;
+  background: rgba(255,255,255,.45);
+  padding: 10px;
+}
+.calGrid{
+  display:grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+}
+.calDow{
+  font-size:11px;
+  color: var(--muted);
+  text-align:center;
+  font-weight:900;
+  padding:6px 0;
+}
+.calCell{
+  aspect-ratio: 1 / 1;
+  border-radius: 12px;
+  border:1px solid rgba(0,0,0,.08);
+  background: rgba(255,255,255,.35);
+  display:flex;
+  align-items:flex-start;
+  justify-content:flex-start;
+  padding: 6px;
+  position:relative;
+  font-size:12px;
+}
+.calCell.empty{
+  border-color: transparent;
+  background: transparent;
+}
+.calCell.hasBday{
+  outline: 3px solid rgba(198,162,74,.35);
+  background: rgba(226,199,124,.18);
+  cursor:pointer;
+}
+.calBadge{
+  position:absolute;
+  right:6px; bottom:6px;
+  font-size:10px;
+  font-weight:900;
+  color:#201a10;
+  background: rgba(226,199,124,.75);
+  border:1px solid rgba(0,0,0,.10);
+  border-radius:999px;
+  padding:2px 6px;
+}
+
+@media (max-width: 860px){
+  .bdayGrid{ grid-template-columns: 1fr; }
+}
+    
   </style>
+  
 </head>
 
 <body>
@@ -1851,6 +1973,7 @@
   </script>
 </body>
 </html>
+
 
 
 
