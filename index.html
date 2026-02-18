@@ -878,7 +878,7 @@
         <div class="bdayHead">
           <div>
             <h2>Cumpleaños</h2>
-            <p>Se actualiza con las fechas que agregan en cada persona (incluye parejas).</p>
+            <p>Se actualiza con las fechas que agregan en cada persona.</p>
           </div>
           <div class="bdayNav">
             <button class="btn btn-ghost" id="bdayPrev" type="button">◀</button>
@@ -975,6 +975,15 @@
     let channel = null;
 
     let pendingPhotoTarget = null; // {type:"cover"} o {type:"person",id}
+
+    // Cumpleaños
+    const bdayListEl  = document.getElementById("bdayList");
+    const bdayCalEl   = document.getElementById("bdayCal");
+    const bdayPrevBtn = document.getElementById("bdayPrev");
+    const bdayNextBtn = document.getElementById("bdayNext");
+    const bdayMonthEl = document.getElementById("bdayMonth");
+
+    let bdayView = { y: new Date().getFullYear(), m: new Date().getMonth() }; // mes 0..11
 
     // ======= Realtime pausado mientras escriben =======
     let isEditing = false;
@@ -1196,6 +1205,8 @@
       const child = makePerson({ role: `Hijo/a ${nextIndex}` });
       parent.children.push(child);
 
+      renderBirthdays();
+
       renderAll();
       scheduleSave();
     }
@@ -1385,6 +1396,8 @@
         filePicker.value = "";
       });
 
+      
+
       // botones
       el.addEventListener("click", (e) => {
         const btn = e.target.closest("button");
@@ -1423,6 +1436,19 @@
           return;
         }
       });
+
+      if (bdayPrevBtn && bdayNextBtn){
+  bdayPrevBtn.addEventListener("click", () => {
+    bdayView.m -= 1;
+    if (bdayView.m < 0){ bdayView.m = 11; bdayView.y -= 1; }
+    renderBirthdayCalendar();
+  });
+  bdayNextBtn.addEventListener("click", () => {
+    bdayView.m += 1;
+    if (bdayView.m > 11){ bdayView.m = 0; bdayView.y += 1; }
+    renderBirthdayCalendar();
+  });
+}
 
       // ✅ NO re-render por tecla (evita “se salta” en celular)
       el.addEventListener("input", (e) => {
@@ -1827,6 +1853,178 @@
       }
     });
 
+    function parseYMD(ymd){
+  if (!ymd || typeof ymd !== "string") return null;
+  const m = ymd.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!m) return null;
+  const y = Number(m[1]), mo = Number(m[2]) - 1, d = Number(m[3]);
+  if (!Number.isFinite(y) || !Number.isFinite(mo) || !Number.isFinite(d)) return null;
+  return { y, m: mo, d };
+}
+
+function nextOccurrence(month0, day, fromDate = new Date()){
+  const y = fromDate.getFullYear();
+  const a = new Date(y, month0, day);
+  const b = new Date(y + 1, month0, day);
+  // si ya pasó (hoy más tarde cuenta como hoy)
+  return (a.setHours(0,0,0,0) >= new Date(fromDate.setHours(0,0,0,0))) ? a : b;
+}
+
+function fmtDateShort(d){
+  const opts = { weekday:"short", day:"2-digit", month:"short" };
+  return d.toLocaleDateString("es-CO", opts);
+}
+
+function collectBirthdays(){
+  const out = [];
+  const walk = (node) => {
+    const p = parseYMD(node.birth);
+    if (p){
+      out.push({
+        id: node.id,
+        name: (node.name || "").trim() || "Sin nombre",
+        role: node.role || "",
+        photo_url: node.photo_url || placeholderImg,
+        month: p.m,
+        day: p.d
+      });
+    }
+    if (node.spouse){
+      const s = node.spouse;
+      const sp = parseYMD(s.birth);
+      if (sp){
+        out.push({
+          id: s.id,
+          name: (s.name || "").trim() || "Sin nombre",
+          role: s.role || "Pareja",
+          photo_url: s.photo_url || placeholderImg,
+          month: sp.m,
+          day: sp.d
+        });
+      }
+    }
+    (node.children || []).forEach(walk);
+  };
+
+  state.parents.forEach(walk);
+  (state.children || []).forEach(walk);
+  return out;
+}
+
+function renderBirthdayList(){
+  if (!bdayListEl) return;
+
+  const all = collectBirthdays();
+  const now = new Date();
+
+  const items = all
+    .map(p => ({ ...p, next: nextOccurrence(p.month, p.day, new Date(now)) }))
+    .sort((a,b) => a.next - b.next)
+    .slice(0, 25);
+
+  bdayListEl.innerHTML = "";
+
+  if (!items.length){
+    bdayListEl.innerHTML = `<div style="color:var(--muted); font-size:12px; padding:8px 6px;">
+      Aún no hay fechas de nacimiento registradas.
+    </div>`;
+    return;
+  }
+
+  items.forEach(it => {
+    const div = document.createElement("div");
+    div.className = "bdayItem";
+    div.innerHTML = `
+      <div class="bdayThumb"><img alt="" src="${escapeAttr(it.photo_url)}"></div>
+      <div class="bdayTxt">
+        <div class="bdayWho">${escapeHtml(it.name)}</div>
+        <div class="bdayWhen">${escapeHtml(fmtDateShort(it.next))} • ${escapeHtml(it.role || it.id)}</div>
+      </div>
+    `;
+    div.addEventListener("click", () => goToPerson(it.id, { open:true }));
+    bdayListEl.appendChild(div);
+  });
+}
+
+function monthNameEs(m0){
+  return new Date(2020, m0, 1).toLocaleDateString("es-CO", { month:"long" });
+}
+
+function renderBirthdayCalendar(){
+  if (!bdayCalEl || !bdayMonthEl) return;
+
+  const y = bdayView.y, m = bdayView.m;
+  bdayMonthEl.textContent = `${monthNameEs(m)} ${y}`.replace(/^./, c => c.toUpperCase());
+
+  const all = collectBirthdays();
+  const map = new Map(); // day -> array people
+  all.forEach(p => {
+    if (p.month === m){
+      const arr = map.get(p.day) || [];
+      arr.push(p);
+      map.set(p.day, arr);
+    }
+  });
+
+  const first = new Date(y, m, 1);
+  const last  = new Date(y, m + 1, 0);
+  const daysInMonth = last.getDate();
+
+  // lunes=1..domingo=0 -> lo pasamos a lunes=0..domingo=6
+  const jsDow = first.getDay(); // 0 dom ... 6 sáb
+  const startOffset = (jsDow + 6) % 7; // lunes=0
+
+  const dows = ["Lun","Mar","Mié","Jue","Vie","Sáb","Dom"];
+
+  const grid = document.createElement("div");
+  grid.className = "calGrid";
+
+  dows.forEach(d => {
+    const h = document.createElement("div");
+    h.className = "calDow";
+    h.textContent = d;
+    grid.appendChild(h);
+  });
+
+  // celdas vacías iniciales
+  for (let i=0; i<startOffset; i++){
+    const c = document.createElement("div");
+    c.className = "calCell empty";
+    grid.appendChild(c);
+  }
+
+  for (let day=1; day<=daysInMonth; day++){
+    const c = document.createElement("div");
+    const people = map.get(day) || [];
+    c.className = "calCell" + (people.length ? " hasBday" : "");
+    c.textContent = String(day);
+
+    if (people.length){
+      const badge = document.createElement("div");
+      badge.className = "calBadge";
+      badge.textContent = String(people.length);
+      c.appendChild(badge);
+
+      c.title = people.map(p => p.name).join(", ");
+
+      c.addEventListener("click", () => {
+        // si hay 1, abre directo; si hay varios, abre el primero (simple)
+        goToPerson(people[0].id, { open:true });
+      });
+    }
+
+    grid.appendChild(c);
+  }
+
+  bdayCalEl.innerHTML = "";
+  bdayCalEl.appendChild(grid);
+}
+
+function renderBirthdays(){
+  renderBirthdayList();
+  renderBirthdayCalendar();
+}
+
     // =========================
     // ZOOM + PAN
     // =========================
@@ -1973,6 +2171,7 @@
   </script>
 </body>
 </html>
+
 
 
 
