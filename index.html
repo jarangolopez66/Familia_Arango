@@ -5,11 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Árbol genealógico — Familia Arango</title>
 
-  <!-- =========================
-       BLOQUE CSS 1/6 — Variables y base
-       (FIN BLOQUE CSS 1/6 al final de "Base UI")
-       ========================= -->
   <style>
+    /* =========================================================
+       INICIO BLOQUE: THEME + BASE
+       ========================================================= */
     :root{
       --bg:#f6efe3;
       --card:#fff7ea;
@@ -34,6 +33,9 @@
       /* layout */
       --colW: 180px;
       --colGap: 14px;
+
+      /* portada */
+      --coverH: 115px; /* ✅ aprox mitad de 230 */
     }
 
     *{box-sizing:border-box}
@@ -213,41 +215,50 @@
 
     main{padding:18px 16px 34px;}
     .container{max-width:1200px; margin:0 auto;}
+    /* =========================================================
+       FIN BLOQUE: THEME + BASE
+       ========================================================= */
 
-    /* =========================
-       BLOQUE CSS 2/6 — Tabs (pestañas)
-       (FIN BLOQUE CSS 2/6 al final de "Panels")
-       ========================= */
+
+    /* =========================================================
+       INICIO BLOQUE: TABS (Nuestra Historia / Cumpleaños / Árbol)
+       ========================================================= */
     .tabsBar{
-      margin-top: 12px;
       display:flex;
       gap:10px;
-      flex-wrap:wrap;
       align-items:center;
+      flex-wrap:wrap;
+      margin-bottom: 12px;
     }
     .tabBtn{
+      cursor:pointer;
+      border:1px solid rgba(0,0,0,.12);
+      background: rgba(255,255,255,.55);
+      color: var(--text);
+      padding:9px 12px;
       border-radius: 999px;
-      padding:8px 12px;
+      font-weight:900;
+      font-size:12px;
+      box-shadow: 0 6px 16px rgba(0,0,0,.08);
+      user-select:none;
     }
-    .tabBtn[aria-selected="true"]{
+    .tabBtn.active{
       background: linear-gradient(180deg, var(--gold2), var(--gold));
-      color:#201a10;
       border-color: rgba(0,0,0,.14);
+      color:#201a10;
     }
-    .tabPanel{ display:none; }
-    .tabPanel.active{ display:block; }
+    .tabPane{ display:none; }
+    .tabPane.active{ display:block; }
+    /* =========================================================
+       FIN BLOQUE: TABS
+       ========================================================= */
 
-    /* En pestañas NO-árbol, oculto zoom para no confundir */
-    body[data-active-tab="story"] .zoomWrap,
-    body[data-active-tab="bday"]  .zoomWrap{
-      display:none;
-    }
-    /* FIN BLOQUE CSS 2/6 */
 
-    /* =========================
-       BLOQUE CSS 3/6 — Portada (Nuestra Historia)
-       (FIN BLOQUE CSS 3/6 al final de "Portada")
-       ========================= */
+    /* =========================================================
+       INICIO BLOQUE: PORTADA (Nuestra Historia)
+       - ✅ Foto más pequeña (proporcional, sin “cortar arriba”)
+       - ✅ Texto aprovecha el espacio (sin hueco)
+       ========================================================= */
     .cover{
       background: linear-gradient(180deg, var(--card), var(--card2));
       border:1px solid rgba(0,0,0,.10);
@@ -258,31 +269,36 @@
     }
     .cover-top{
       display:grid;
-      grid-template-columns: 1.25fr 1fr; /* un poco menos dominante */
-      gap: 12px;
-      padding: 12px;
-      align-items: stretch;
+      grid-template-columns: 1.65fr .85fr; /* ✅ más espacio para el texto */
+      gap: 10px;
+      padding: 14px;
+      align-items:start; /* ✅ evita huecos verticales */
     }
-    /* ✅ FOTO PORTADA “A LA MITAD” PROPORCIONAL (más compacta sin recortar) */
     .cover-imgwrap{
       border-radius: 16px;
       overflow:hidden;
       border:1px solid rgba(0,0,0,.10);
       background: rgba(0,0,0,.04);
-      height: clamp(180px, 18vw, 180px);   /* antes min-height 230px */
-      aspect-ratio: 2 / 1;                 /* mantiene proporción tipo 1400x700 */
+      height: var(--coverH);
+      min-height: var(--coverH);
     }
-    .cover-imgwrap img{width:100%; height:100%; object-fit:cover; display:block;}
+    .cover-imgwrap img{
+      width:100%;
+      height:100%;
+      object-fit:contain;  /* ✅ proporcional, sin recortar */
+      display:block;
+      background: rgba(0,0,0,.02);
+    }
     .cover-side{
       display:flex; flex-direction:column; gap:10px;
-      justify-content:space-between;
+      justify-content:flex-start; /* ✅ no estirar dejando huecos */
     }
     .cover-side h2{margin:0; font-size:16px; letter-spacing:.2px;}
     .cover-side p{margin:6px 0 0 0; color:var(--muted); font-size:12px; line-height:1.35;}
-    .cover-actions{display:flex; flex-wrap:wrap; gap:10px; margin-top:10px;}
+    .cover-actions{display:flex; flex-wrap:wrap; gap:10px; margin-top:8px;}
 
     .strip{
-      padding: 0 12px 12px 12px;
+      padding: 0 14px 14px 14px;
       display:flex;
       flex-wrap:wrap;
       gap:10px;
@@ -298,7 +314,7 @@
       user-select:none;
     }
     .sib img{
-      width:32px; height:32px;
+      width:34px; height:34px;
       border-radius: 999px;
       object-fit: cover;
       border:1px solid rgba(0,0,0,.12);
@@ -312,15 +328,18 @@
       text-overflow: ellipsis;
       white-space: nowrap;
     }
-    /* FIN BLOQUE CSS 3/6 */
+    /* =========================================================
+       FIN BLOQUE: PORTADA
+       ========================================================= */
 
-    /* =========================
-       BLOQUE CSS 4/6 — Árbol (viewport/zoom + layout)
-       (FIN BLOQUE CSS 4/6 al final de "Árbol")
-       ========================= */
+
+    /* =========================================================
+       INICIO BLOQUE: ÁRBOL (layout + nodos)
+       ========================================================= */
     .divider{height:1px; background: rgba(0,0,0,.10); margin: 16px 0;}
     .gen{display:flex; justify-content:center; gap:18px; flex-wrap:wrap; position:relative;}
 
+    /* Padres como PAREJA (unidos) */
     .couple{justify-content:center; align-items:stretch;}
     .coupleWrap{
       display:flex;
@@ -344,11 +363,12 @@
       border-radius: 99px;
     }
 
-    .zoomArea{
-      margin-top: 6px;
-    }
+    /* =========================
+       ZOOM VIEWPORT (árbol completo)
+       ========================= */
+    .zoomArea{ margin-top: 6px; }
     .zoomViewport{
-      height: min(76vh, 860px); /* un poco más protagonista */
+      height: min(72vh, 820px);
       border: 1px solid rgba(0,0,0,.10);
       border-radius: var(--radius);
       box-shadow: 0 10px 25px rgba(0,0,0,.10);
@@ -367,11 +387,14 @@
       padding: 10px 14px 26px;
     }
 
+    /* =========================
+       LAYOUT (columnas auto-anchas por C)
+       - ✅ cada C crece según su subárbol
+       ========================= */
     .treeGrid{
       display:grid;
       grid-auto-flow: column;
-      grid-auto-columns: minmax(var(--colW), max-content);
-      grid-template-columns: repeat(11, minmax(var(--colW), max-content));
+      grid-auto-columns: max-content;
       gap: var(--colGap);
       align-items:start;
       justify-content:start;
@@ -379,16 +402,11 @@
       margin: 0 auto;
       padding: 6px 4px 2px;
     }
-
-    /* ===== INICIO: Columnas con ancho opcional por hijo original ===== */
-    .treeCol{ min-width: var(--colW); }
-    .treeCol.wide{ min-width: calc(var(--colW) * 1.55); } /* ajusta 1.55 si quieres más/menos */
-/* ===== FIN: Columnas con ancho opcional por hijo original ===== */
-
-    .treeGrid.moreCols{
-      grid-auto-flow: column;
-      grid-auto-columns: minmax(var(--colW), max-content);
-      grid-template-columns: repeat(11, minmax(var(--colW), max-content));
+    .treeCol{
+      width: max-content;
+      min-width: var(--colW);
+      display:flex;
+      justify-content:center;
     }
 
     .subtree{
@@ -421,14 +439,20 @@
     }
     .circle img{width:100%; height:100%; object-fit:cover; display:block;}
 
+    /* ✅ Nombres largos en 2 líneas, sin extender al horizonte */
     .labelName{
       font-size: 12px;
       font-weight: 900;
       text-align:center;
       max-width: 170px;
-      overflow:hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+
+      white-space: normal;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+
+      line-height: 1.15;
     }
     .labelYears{
       font-size: 11px;
@@ -437,6 +461,7 @@
       text-align:center;
     }
 
+    /* Marcos por nivel */
     .lvl-parent .circle{
       width:110px; height:130px;
       border-width: 4px;
@@ -471,6 +496,7 @@
       opacity:.96;
     }
 
+    /* Parejas */
     .personUnit{
       display:flex;
       gap:12px;
@@ -480,13 +506,14 @@
     }
     .spouseNode{ opacity: .98; }
 
-    /* Marco punteado para pareja */
-    .lvl-parent.spouseNode .circle{ width:110px; height:130px; border-width:3px; border-style:dashed; }
-    .lvl-original.spouseNode .circle{ width:100px; height:110px; border-width:3px; border-style:dashed; }
-    .lvl-1.spouseNode .circle{ width:80px; height:80px; border-width:3px; border-style:dashed; }
-    .lvl-2.spouseNode .circle{ width:64px; height:64px; border-width:3px; border-style:dashed; }
-    .lvl-3.spouseNode .circle{ width:52px; height:52px; border-width:2px; border-style:dashed; }
+    /* ✅ Marco punteado SOLO para la pareja */
+    .lvl-parent.spouseNode .circle{ border-width:3px; border-style:dashed; }
+    .lvl-original.spouseNode .circle{ border-width:3px; border-style:dashed; }
+    .lvl-1.spouseNode .circle{ border-width:3px; border-style:dashed; }
+    .lvl-2.spouseNode .circle{ border-width:3px; border-style:dashed; }
+    .lvl-3.spouseNode .circle{ border-width:2px; border-style:dashed; }
 
+    /* Conectores */
     .childrenGroup{
       position:relative;
       width: max-content;
@@ -514,13 +541,14 @@
       border-radius: 99px;
     }
 
+    /* ✅ Hijos en filas automáticas. --cols controla “hasta cuántos por fila” */
     .childrenRow{
       display:grid;
       gap: 10px;
       justify-content:center;
       align-items:start;
       margin-top: 8px;
-      grid-template-columns: repeat(var(--cols, 3), max-content);
+      grid-template-columns: repeat(var(--cols, 4), max-content);
       width: max-content;
     }
 
@@ -545,35 +573,20 @@
       border-radius: 99px;
     }
 
+    /* flash al buscar */
     .flash{
       outline: 4px solid rgba(198,162,74,.60);
       outline-offset: 4px;
       border-radius: 16px;
     }
+    /* =========================================================
+       FIN BLOQUE: ÁRBOL
+       ========================================================= */
 
-    @media (max-width: 860px){
-      :root{ --colW: 170px; }
-      .cover-top{grid-template-columns: 1fr;}
-      .cover-imgwrap{ height: clamp(110px, 38vw, 160px); }
-      .searchWrap{ justify-content:flex-start; width:100%; }
-      .searchInput{ width:100%; }
-      .zoomViewport{ height: min(78vh, 860px); }
-    }
-    @media (max-width: 560px){
-      :root{ --colW: 160px; }
-      .lvl-parent .circle{ width:106px; height:106px; }
-      .lvl-original .circle{ width:92px; height:92px; }
-      .lvl-1 .circle{ width:62px; height:62px; }
-      .lvl-2 .circle{ width:54px; height:54px; }
-      .lvl-3 .circle{ width:46px; height:46px; }
-      .zoomViewport{ height: min(80vh, 880px); }
-    }
-    /* FIN BLOQUE CSS 4/6 */
 
-    /* =========================
-       BLOQUE CSS 5/6 — Modal editor
-       (FIN BLOQUE CSS 5/6 al final de "Modal")
-       ========================= */
+    /* =========================================================
+       INICIO BLOQUE: MODAL EDITOR
+       ========================================================= */
     .modal{
       position:fixed; inset:0;
       background: rgba(0,0,0,.45);
@@ -708,18 +721,26 @@
       .row{justify-content:center;}
       .person{width: 100%;}
     }
-    /* FIN BLOQUE CSS 5/6 */
+    /* =========================================================
+       FIN BLOQUE: MODAL EDITOR
+       ========================================================= */
 
-    /* =========================
-       BLOQUE CSS 6/6 — Cumpleaños
-       (FIN BLOQUE CSS 6/6 al final de "Cumpleaños")
-       ========================= */
-    /* Ocultar botones de portada */
+
+    /* =========================================================
+       INICIO BLOQUE: OCULTAR BOTONES PORTADA (como ya lo querías)
+       ========================================================= */
     #coverPickLabel,
     #coverClearBtn{
       display:none !important;
     }
+    /* =========================================================
+       FIN BLOQUE: OCULTAR BOTONES PORTADA
+       ========================================================= */
 
+
+    /* =========================================================
+       INICIO BLOQUE: CUMPLEAÑOS (UI)
+       ========================================================= */
     .bdayCard{
       background: linear-gradient(180deg, var(--card), var(--card2));
       border:1px solid rgba(0,0,0,.10);
@@ -780,7 +801,7 @@
     .bdayThumb img{ width:100%; height:100%; object-fit:cover; display:block; }
     .bdayTxt{ display:flex; flex-direction:column; gap:2px; }
     .bdayWho{ font-weight:900; font-size:12px; }
-    .bdayWhen{ font-size:11px; color: var(--muted); }
+    .bdayWhen{ font-size:11px; color: var(--muted); } /* ✅ solo fecha, sin etiqueta */
 
     .bdayCal{
       border:1px solid rgba(0,0,0,.10);
@@ -832,22 +853,38 @@
       border-radius:999px;
       padding:2px 6px;
     }
+    /* =========================================================
+       FIN BLOQUE: CUMPLEAÑOS (UI)
+       ========================================================= */
 
+
+    /* =========================================================
+       INICIO BLOQUE: RESPONSIVE
+       ========================================================= */
     @media (max-width: 860px){
+      :root{ --colW: 170px; --coverH: 150px; }
+      .cover-top{grid-template-columns: 1fr;}
+      .searchWrap{ justify-content:flex-start; width:100%; }
+      .searchInput{ width:100%; }
+      .zoomViewport{ height: min(70vh, 780px); }
       .bdayGrid{ grid-template-columns: 1fr; }
     }
-    /* FIN BLOQUE CSS 6/6 */
+    @media (max-width: 560px){
+      :root{ --colW: 160px; --coverH: 160px; }
+      .lvl-parent .circle{ width:106px; height:106px; }
+      .lvl-original .circle{ width:92px; height:92px; }
+      .lvl-1 .circle{ width:62px; height:62px; }
+      .lvl-2 .circle{ width:54px; height:54px; }
+      .lvl-3 .circle{ width:46px; height:46px; }
+      .zoomViewport{ height: min(72vh, 760px); }
+    }
+    /* =========================================================
+       FIN BLOQUE: RESPONSIVE
+       ========================================================= */
   </style>
-  <!-- =========================
-       FIN HEAD
-       ========================= -->
 </head>
 
-<body data-active-tab="tree">
-  <!-- =========================
-       BLOQUE HTML 1/4 — Header
-       (FIN BLOQUE HTML 1/4 al cierre de </header>)
-       ========================= -->
+<body>
   <header>
     <div class="wrap">
       <h1>Árbol genealógico — <span class="brand">Familia Arango</span></h1>
@@ -874,94 +911,107 @@
           <span id="connText">Conectando…</span>
         </div>
       </div>
-
-      <!-- ✅ Tabs: Árbol protagonista (por defecto) -->
-      <div class="tabsBar" role="tablist" aria-label="Secciones">
-        <button class="btn tabBtn" id="tabBtnTree"  role="tab" aria-selected="true"  data-tab="tree"  type="button">Árbol genealógico</button>
-        <button class="btn btn-ghost tabBtn" id="tabBtnStory" role="tab" aria-selected="false" data-tab="story" type="button">Nuestra Historia</button>
-        <button class="btn btn-ghost tabBtn" id="tabBtnBday"  role="tab" aria-selected="false" data-tab="bday"  type="button">Cumpleaños</button>
-      </div>
     </div>
   </header>
-  <!-- FIN BLOQUE HTML 1/4 -->
 
-  <!-- =========================
-       BLOQUE HTML 2/4 — Main (Panels por pestañas)
-       (FIN BLOQUE HTML 2/4 al cierre de </main>)
-       ========================= -->
   <main>
     <div class="container">
 
-      <!-- =========================
-           PANEL 1/3 — ÁRBOL (protagonista)
-           ========================= -->
-      <section class="zoomArea tabPanel active" id="panel-tree" role="tabpanel" aria-labelledby="tabBtnTree" data-tabpanel="tree">
-        <div class="zoomViewport" id="zoomViewport" aria-label="Árbol (zoom y desplazamiento)">
-          <div class="zoomSpacer" id="zoomSpacer">
-            <div class="zoomContent" id="zoomContent">
-              <section class="gen couple" id="parentsGen" aria-label="Padres"></section>
-              <div class="divider"></div>
-              <section class="gen" id="childrenGen" aria-label="Hijos"></section>
+      <!-- =========================================================
+           INICIO BLOQUE: TABS (UI)
+           ========================================================= -->
+      <nav class="tabsBar" aria-label="Secciones">
+        <button class="tabBtn" id="tabBtnTree"  type="button">Árbol genealógico</button>
+        <button class="tabBtn" id="tabBtnStory" type="button">Nuestra Historia</button>
+        <button class="tabBtn" id="tabBtnBday"  type="button">Calendario de cumpleaños</button>
+      </nav>
+      <!-- =========================================================
+           FIN BLOQUE: TABS (UI)
+           ========================================================= -->
+
+
+      <!-- =========================================================
+           INICIO BLOQUE: TAB ÁRBOL
+           ========================================================= -->
+      <section class="tabPane" id="tabTreePane" aria-label="Árbol genealógico">
+        <!-- ✅ Árbol completo dentro del viewport (zoom+pan+scroll) -->
+        <section class="zoomArea">
+          <div class="zoomViewport" id="zoomViewport" aria-label="Árbol (zoom y desplazamiento)">
+            <div class="zoomSpacer" id="zoomSpacer">
+              <div class="zoomContent" id="zoomContent">
+                <section class="gen couple" id="parentsGen" aria-label="Padres"></section>
+                <div class="divider"></div>
+                <section class="gen" id="childrenGen" aria-label="Hijos"></section>
+              </div>
             </div>
           </div>
-        </div>
+        </section>
       </section>
-      <!-- FIN PANEL 1/3 -->
+      <!-- =========================================================
+           FIN BLOQUE: TAB ÁRBOL
+           ========================================================= -->
 
-      <!-- =========================
-           PANEL 2/3 — NUESTRA HISTORIA (Portada)
-           ========================= -->
-      <section class="cover tabPanel" id="panel-story" role="tabpanel" aria-labelledby="tabBtnStory" data-tabpanel="story">
-        <div class="cover-top">
-          <div class="cover-imgwrap">
-            <img id="coverImg" alt="Portada familiar" />
+
+      <!-- =========================================================
+           INICIO BLOQUE: TAB HISTORIA (PORTADA)
+           ========================================================= -->
+      <section class="tabPane" id="tabStoryPane" aria-label="Nuestra Historia">
+        <section class="cover">
+          <div class="cover-top">
+            <div class="cover-side">
+              <div>
+                <h2>Sobre esta familia</h2>
+                <p>Nuestra Historia</p>
+              </div>
+              <div class="cover-actions">
+                <label class="btn btn-primary" for="filePicker" id="coverPickLabel">Cambiar foto portada</label>
+                <button class="btn btn-danger" id="coverClearBtn" type="button">Eliminar foto</button>
+              </div>
+            </div>
+
+            <div class="cover-imgwrap">
+              <img id="coverImg" alt="Portada familiar" />
+            </div>
           </div>
-          <div class="cover-side">
+
+          <div class="strip" id="first11Strip"></div>
+        </section>
+      </section>
+      <!-- =========================================================
+           FIN BLOQUE: TAB HISTORIA
+           ========================================================= -->
+
+
+      <!-- =========================================================
+           INICIO BLOQUE: TAB CUMPLEAÑOS
+           ========================================================= -->
+      <section class="tabPane" id="tabBdayPane" aria-label="Cumpleaños">
+        <section class="bdayCard" aria-label="Cumpleaños">
+          <div class="bdayHead">
             <div>
-              <h2>Sobre esta familia</h2>
-              <p>Nuestra Historia</p>
+              <h2>Cumpleaños</h2>
+              <p>Se actualiza con las fechas que agregan en cada persona.</p>
             </div>
-            <div class="cover-actions">
-              <label class="btn btn-primary" for="filePicker" id="coverPickLabel">Cambiar foto portada</label>
-              <button class="btn btn-danger" id="coverClearBtn" type="button">Eliminar foto</button>
+            <div class="bdayNav">
+              <button class="btn btn-ghost" id="bdayPrev" type="button">◀</button>
+              <span class="bdayMonth" id="bdayMonth"></span>
+              <button class="btn btn-ghost" id="bdayNext" type="button">▶</button>
             </div>
           </div>
-        </div>
-        <div class="strip" id="first11Strip"></div>
-      </section>
-      <!-- FIN PANEL 2/3 -->
 
-      <!-- =========================
-           PANEL 3/3 — CUMPLEAÑOS (Calendario)
-           ========================= -->
-      <section class="bdayCard tabPanel" id="panel-bday" role="tabpanel" aria-labelledby="tabBtnBday" data-tabpanel="bday" aria-label="Cumpleaños">
-        <div class="bdayHead">
-          <div>
-            <h2>Cumpleaños</h2>
-            <p>Se actualiza con las fechas que agregan en cada persona.</p>
+          <div class="bdayGrid">
+            <div class="bdayList" id="bdayList"></div>
+            <div class="bdayCal" id="bdayCal"></div>
           </div>
-          <div class="bdayNav">
-            <button class="btn btn-ghost" id="bdayPrev" type="button">◀</button>
-            <span class="bdayMonth" id="bdayMonth"></span>
-            <button class="btn btn-ghost" id="bdayNext" type="button">▶</button>
-          </div>
-        </div>
-
-        <div class="bdayGrid">
-          <div class="bdayList" id="bdayList"></div>
-          <div class="bdayCal" id="bdayCal"></div>
-        </div>
+        </section>
       </section>
-      <!-- FIN PANEL 3/3 -->
+      <!-- =========================================================
+           FIN BLOQUE: TAB CUMPLEAÑOS
+           ========================================================= -->
 
     </div>
   </main>
-  <!-- FIN BLOQUE HTML 2/4 -->
 
-  <!-- =========================
-       BLOQUE HTML 3/4 — Inputs y Modal
-       (FIN BLOQUE HTML 3/4 al cierre de modal)
-       ========================= -->
   <input type="file" id="filePicker" accept="image/*"
          style="position:fixed; left:-9999px; top:-9999px; width:1px; height:1px; opacity:0;" />
 
@@ -974,31 +1024,20 @@
       <div id="editorBody"></div>
     </div>
   </div>
-  <!-- FIN BLOQUE HTML 3/4 -->
 
-  <!-- =========================
-       BLOQUE JS 1/9 — Imports + Config
-       (FIN BLOQUE JS 1/9 al final de "Config")
-       ========================= -->
   <script type="module">
     import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.94.1/+esm";
 
+    /* =========================================================
+       INICIO BLOQUE: CONFIG + DOM
+       ========================================================= */
     const DEFAULT_CFG = {
       url: "https://rgsgdycllmixpdoivize.supabase.co",
       key: "sb_publishable__opz94nN9f8XFTmprITCCw_FWBB5Muu",
       treeId: "familia-arango-v2",
       bucket: "family-photos"
     };
-    /* FIN BLOQUE JS 1/9 */
 
-    /* ===== INICIO: Columna ancha para un hijo original ===== */
-const WIDE_ORIGINAL_ID = "c2"; // <-- CAMBIA "c7" por el c# que te quedó apretado
-/* ===== FIN: Columna ancha para un hijo original ===== */
-
-    /* =========================
-       BLOQUE JS 2/9 — DOM refs
-       (FIN BLOQUE JS 2/9 al final de "Refs")
-       ========================= */
     const connDot  = document.getElementById("connDot");
     const connText = document.getElementById("connText");
 
@@ -1031,6 +1070,14 @@ const WIDE_ORIGINAL_ID = "c2"; // <-- CAMBIA "c7" por el c# que te quedó apreta
     const zoomFitBtn   = document.getElementById("zoomFit");
     const zoomLabel    = document.getElementById("zoomLabel");
 
+    // Tabs
+    const tabBtnTree  = document.getElementById("tabBtnTree");
+    const tabBtnStory = document.getElementById("tabBtnStory");
+    const tabBtnBday  = document.getElementById("tabBtnBday");
+    const tabTreePane  = document.getElementById("tabTreePane");
+    const tabStoryPane = document.getElementById("tabStoryPane");
+    const tabBdayPane  = document.getElementById("tabBdayPane");
+
     // Cumpleaños
     const bdayListEl  = document.getElementById("bdayList");
     const bdayCalEl   = document.getElementById("bdayCal");
@@ -1038,15 +1085,6 @@ const WIDE_ORIGINAL_ID = "c2"; // <-- CAMBIA "c7" por el c# que te quedó apreta
     const bdayNextBtn = document.getElementById("bdayNext");
     const bdayMonthEl = document.getElementById("bdayMonth");
 
-    // Tabs
-    const tabBtns = Array.from(document.querySelectorAll(".tabBtn"));
-    const panels  = Array.from(document.querySelectorAll(".tabPanel"));
-    /* FIN BLOQUE JS 2/9 */
-
-    /* =========================
-       BLOQUE JS 3/9 — Estado global + Realtime pause
-       (FIN BLOQUE JS 3/9 al final de "Editing pause")
-       ========================= */
     let supabase = null;
     let TREE_ID = DEFAULT_CFG.treeId;
     let BUCKET  = DEFAULT_CFG.bucket;
@@ -1057,9 +1095,61 @@ const WIDE_ORIGINAL_ID = "c2"; // <-- CAMBIA "c7" por el c# que te quedó apreta
 
     let pendingPhotoTarget = null; // {type:"cover"} o {type:"person",id}
 
-    let bdayView = { y: new Date().getFullYear(), m: new Date().getMonth() }; // mes 0..11
+    // ✅ vista de cumpleaños solo por mes (sin año)
+    let bdayView = { m: new Date().getMonth() }; // 0..11
+    /* =========================================================
+       FIN BLOQUE: CONFIG + DOM
+       ========================================================= */
 
-    // Realtime pausado mientras escriben
+
+    /* =========================================================
+       INICIO BLOQUE: TABS (LÓGICA)
+       - ✅ Árbol es protagonista (tab por defecto)
+       ========================================================= */
+    function setActiveTab(tab){
+      const isTree  = tab === "tree";
+      const isStory = tab === "story";
+      const isBday  = tab === "bday";
+
+      tabTreePane.classList.toggle("active", isTree);
+      tabStoryPane.classList.toggle("active", isStory);
+      tabBdayPane.classList.toggle("active", isBday);
+
+      tabBtnTree.classList.toggle("active", isTree);
+      tabBtnStory.classList.toggle("active", isStory);
+      tabBtnBday.classList.toggle("active", isBday);
+
+      try { localStorage.setItem("fa_tab", tab); } catch {}
+
+      // Al entrar al árbol, recalcular zoom para que no quede raro
+      if (isTree) {
+        requestAnimationFrame(() => {
+          refreshZoomBounds(false);
+          // opcional: fitAll(); // si quieres que siempre se “acomode”
+        });
+      }
+
+      // Al entrar a cumpleaños, repintar
+      if (isBday) {
+        requestAnimationFrame(() => renderBirthdays());
+      }
+    }
+
+    tabBtnTree.addEventListener("click", () => setActiveTab("tree"));
+    tabBtnStory.addEventListener("click", () => setActiveTab("story"));
+    tabBtnBday.addEventListener("click", () => setActiveTab("bday"));
+
+    function isTreeTabActive(){
+      return tabTreePane.classList.contains("active");
+    }
+    /* =========================================================
+       FIN BLOQUE: TABS (LÓGICA)
+       ========================================================= */
+
+
+    /* =========================================================
+       INICIO BLOQUE: REPLAY/REALTIME PAUSADO MIENTRAS EDITAN
+       ========================================================= */
     let isEditing = false;
     let queuedRemote = null;
 
@@ -1084,46 +1174,19 @@ const WIDE_ORIGINAL_ID = "c2"; // <-- CAMBIA "c7" por el c# que te quedó apreta
         }
       }, 0);
     });
+    /* =========================================================
+       FIN BLOQUE: REPLAY/REALTIME PAUSADO MIENTRAS EDITAN
+       ========================================================= */
 
+
+    /* =========================================================
+       INICIO BLOQUE: HELPERS
+       ========================================================= */
     function setConn(ok, text){
       connDot.className = "dot " + (ok ? "ok" : "bad");
       connText.textContent = text;
     }
-    /* FIN BLOQUE JS 3/9 */
 
-    /* =========================
-       BLOQUE JS 4/9 — Tabs logic (pestañas)
-       (FIN BLOQUE JS 4/9 al final de "setActiveTab")
-       ========================= */
-    function setActiveTab(tabKey){
-      document.body.dataset.activeTab = tabKey;
-
-      tabBtns.forEach(btn => {
-        const on = btn.dataset.tab === tabKey;
-        btn.setAttribute("aria-selected", on ? "true" : "false");
-        btn.classList.toggle("btn-ghost", !on);
-      });
-
-      panels.forEach(p => {
-        const on = p.dataset.tabpanel === tabKey;
-        p.classList.toggle("active", on);
-      });
-
-      // Entra al árbol y recalcula límites si hace falta
-      if (tabKey === "tree") {
-        requestAnimationFrame(() => refreshZoomBounds(false));
-      }
-    }
-
-    tabBtns.forEach(btn => {
-      btn.addEventListener("click", () => setActiveTab(btn.dataset.tab));
-    });
-    /* FIN BLOQUE JS 4/9 */
-
-    /* =========================
-       BLOQUE JS 5/9 — Placeholders + utils + state
-       (FIN BLOQUE JS 5/9 al final de "normalizeState")
-       ========================= */
     const placeholderImg = (() => {
       const svg =
         `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300">
@@ -1181,7 +1244,14 @@ const WIDE_ORIGINAL_ID = "c2"; // <-- CAMBIA "c7" por el c# que te quedó apreta
       if (crypto?.randomUUID) return `${prefix}_${crypto.randomUUID()}`;
       return `${prefix}_${Date.now()}_${Math.random().toString(16).slice(2)}`;
     }
+    /* =========================================================
+       FIN BLOQUE: HELPERS
+       ========================================================= */
 
+
+    /* =========================================================
+       INICIO BLOQUE: MODELO DE DATOS (personas / pareja)
+       ========================================================= */
     function makePerson({ role="", id=null } = {}){
       return {
         id: id || makeId("p"),
@@ -1191,7 +1261,7 @@ const WIDE_ORIGINAL_ID = "c2"; // <-- CAMBIA "c7" por el c# que te quedó apreta
         death:"",
         photo_url: placeholderImg,
         photo_path:"",
-        spouse: null,
+        spouse: null,     // pareja (objeto simple)
         children:[]
       };
     }
@@ -1205,7 +1275,7 @@ const WIDE_ORIGINAL_ID = "c2"; // <-- CAMBIA "c7" por el c# que te quedó apreta
         photo_url: placeholderImg,
         photo_path:"",
         spouse: null,
-        children: []
+        children: [] // no se usa, pero lo dejamos para normalizar sin romper
       };
     }
 
@@ -1254,12 +1324,14 @@ const WIDE_ORIGINAL_ID = "c2"; // <-- CAMBIA "c7" por el c# que te quedó apreta
 
       return s;
     }
-    /* FIN BLOQUE JS 5/9 */
+    /* =========================================================
+       FIN BLOQUE: MODELO DE DATOS
+       ========================================================= */
 
-    /* =========================
-       BLOQUE JS 6/9 — Find/patch/edit/remove/spouse
-       (FIN BLOQUE JS 6/9 al final de "editorPersonCard")
-       ========================= */
+
+    /* =========================================================
+       INICIO BLOQUE: FIND / PATCH / ADD / REMOVE
+       ========================================================= */
     function findInChildren(parentNode, id, depth){
       if (!parentNode) return null;
 
@@ -1353,7 +1425,6 @@ const WIDE_ORIGINAL_ID = "c2"; // <-- CAMBIA "c7" por el c# que te quedó apreta
 
       if (id === "p1" || id === "p2") return alert("No se pueden eliminar los padres.");
       if (isOriginal11(id)) return alert("Los 11 hermanos originales (c1–c11) no se eliminan, solo se editan.");
-
       if (!hit?.parentChildrenArray) return;
 
       const who = (hit.node?.name && hit.node.name.trim())
@@ -1373,7 +1444,14 @@ const WIDE_ORIGINAL_ID = "c2"; // <-- CAMBIA "c7" por el c# que te quedó apreta
         scheduleSave();
       }
     }
+    /* =========================================================
+       FIN BLOQUE: FIND / PATCH / ADD / REMOVE
+       ========================================================= */
 
+
+    /* =========================================================
+       INICIO BLOQUE: MODAL EDITOR
+       ========================================================= */
     function openEditor(nodeId){
       const hit = findNodeById(nodeId);
       if (!hit?.node) return;
@@ -1385,11 +1463,7 @@ const WIDE_ORIGINAL_ID = "c2"; // <-- CAMBIA "c7" por el c# que te quedó apreta
       editorBody.innerHTML = "";
 
       const removable = !(nodeId === "p1" || nodeId === "p2" || isOriginal11(nodeId)) && !hit.isSpouse;
-      const card = editorPersonCard(n, {
-        removable,
-        isSpouse: hit.isSpouse,
-        spouseOwner: hit.isSpouse ? hit.parent : null
-      });
+      const card = editorPersonCard(n, { removable, isSpouse: hit.isSpouse });
 
       if (nodeId === "p1" || nodeId === "p2") card.classList.add("parent-card");
       editorBody.appendChild(card);
@@ -1408,7 +1482,7 @@ const WIDE_ORIGINAL_ID = "c2"; // <-- CAMBIA "c7" por el c# que te quedó apreta
       if (e.target === editorModal) closeEditor();
     });
 
-    function editorPersonCard(node, { removable=false, isSpouse=false, spouseOwner=null } = {}){
+    function editorPersonCard(node, { removable=false, isSpouse=false } = {}){
       const el = document.createElement("article");
       el.className = "person";
       el.dataset.id = node.id;
@@ -1484,7 +1558,6 @@ const WIDE_ORIGINAL_ID = "c2"; // <-- CAMBIA "c7" por el c# que te quedó apreta
         if (action === "clearPhoto") {
           patchNode(node.id, { photo_url: placeholderImg, photo_path: "" }, { render:false });
           scheduleSave();
-          renderBirthdays();
           const img = el.querySelector(".avatar img");
           if (img) img.src = placeholderImg;
           return;
@@ -1522,41 +1595,23 @@ const WIDE_ORIGINAL_ID = "c2"; // <-- CAMBIA "c7" por el c# que te quedó apreta
         if (!field) return;
 
         patchNode(node.id, { [field]: input.value }, { render:false });
+
+        // ✅ si cambia nacimiento, refrescar cumpleaños (sin forzar rerender del árbol)
+        if (field === "birth") renderBirthdays();
+
         scheduleSave();
-        renderBirthdays(); // ✅ calendario/lista se actualiza aunque no re-renderices el árbol
       });
 
       return el;
     }
-    /* FIN BLOQUE JS 6/9 */
+    /* =========================================================
+       FIN BLOQUE: MODAL EDITOR
+       ========================================================= */
 
-    /* =========================
-       BLOQUE JS 7/9 — Render árbol + portada
-       (FIN BLOQUE JS 7/9 al final de "renderAll")
-       ========================= */
-    function renderCover(){
-      coverImg.src = state.cover_photo_url || placeholderCover;
 
-      first11Strip.innerHTML = "";
-      const first11 = (state.children || []).slice(0, 11);
-      first11.forEach((p, idx) => {
-        const chip = document.createElement("div");
-        chip.className = "sib";
-        const img = document.createElement("img");
-        img.src = p.photo_url || placeholderImg;
-        img.alt = `Hijo ${idx+1}`;
-        const name = document.createElement("span");
-        name.textContent = (p.name && p.name.trim()) ? p.name.trim() : `Hijo ${idx+1}`;
-        chip.appendChild(img);
-        chip.appendChild(name);
-        chip.addEventListener("click", () => {
-          setActiveTab("tree");
-          openEditor(p.id);
-        });
-        first11Strip.appendChild(chip);
-      });
-    }
-
+    /* =========================================================
+       INICIO BLOQUE: RENDER ÁRBOL (nodos / subárbol)
+       ========================================================= */
     function renderNodeCircle(node, cls){
       const el = document.createElement("div");
       el.className = `node ${cls}`;
@@ -1570,7 +1625,13 @@ const WIDE_ORIGINAL_ID = "c2"; // <-- CAMBIA "c7" por el c# que te quedó apreta
         <div class="labelName">${escapeHtml(name)}</div>
         <div class="labelYears">${escapeHtml(yrs)}</div>
       `;
-      el.addEventListener("click", () => openEditor(node.id));
+
+      el.addEventListener("click", () => {
+        // si estás en otra pestaña, vuelve al árbol
+        if (!isTreeTabActive()) setActiveTab("tree");
+        openEditor(node.id);
+      });
+
       return el;
     }
 
@@ -1593,11 +1654,10 @@ const WIDE_ORIGINAL_ID = "c2"; // <-- CAMBIA "c7" por el c# que te quedó apreta
       return "lvl-3";
     }
 
+    // ✅ regla nueva: hasta 4 por fila desde 3ra generación y también si hay >4 en cualquier nivel
     function colsForKids(n){
       if (n <= 0) return 0;
-      if (n <= 3) return n;
-      if (n === 4) return 2;
-      return 3;
+      return Math.min(4, n); // 1..4 por fila; 5+ se parte en 2+ filas automáticamente
     }
 
     function renderSubtree(node, depth = 0, { isOriginal = false } = {}) {
@@ -1613,6 +1673,8 @@ const WIDE_ORIGINAL_ID = "c2"; // <-- CAMBIA "c7" por el c# que te quedó apreta
 
         const row = document.createElement("div");
         row.className = "childrenRow";
+
+        // ✅ siempre hasta 4 por fila (incluye 3ra generación en adelante)
         row.style.setProperty("--cols", String(colsForKids(node.children.length)));
 
         node.children.forEach(ch => {
@@ -1628,64 +1690,60 @@ const WIDE_ORIGINAL_ID = "c2"; // <-- CAMBIA "c7" por el c# que te quedó apreta
 
       return wrap;
     }
+    /* =========================================================
+       FIN BLOQUE: RENDER ÁRBOL (nodos / subárbol)
+       ========================================================= */
 
-    function renderAll(){
-      renderCover();
 
-      // Padres
-      parentsGen.innerHTML = "";
-      const cw = document.createElement("div");
-      cw.className = "coupleWrap";
-      parentsGen.appendChild(cw);
+    /* =========================================================
+       INICIO BLOQUE: RENDER PORTADA (Nuestra Historia)
+       ========================================================= */
+    function renderCover(){
+      if (coverImg) coverImg.src = state.cover_photo_url || placeholderCover;
 
-      cw.appendChild(renderNodeCircle(state.parents[0], "lvl-parent"));
-      cw.appendChild(renderNodeCircle(state.parents[1], "lvl-parent"));
-
-      // Hijos (11 columnas)
-      childrenGen.innerHTML = "";
-
-      const grid = document.createElement("div");
-      grid.className = "treeGrid";
-
-      const kids = state.children || [];
-      if (kids.length > 11) grid.classList.add("moreCols");
-
-      kids.forEach((k, idx) => {
-        const col = document.createElement("div");
-        col.appendChild(renderSubtree(k, 0, { isOriginal: idx < 11 }));
-        grid.appendChild(col);
+      if (!first11Strip) return;
+      first11Strip.innerHTML = "";
+      const first11 = (state.children || []).slice(0, 11);
+      first11.forEach((p, idx) => {
+        const chip = document.createElement("div");
+        chip.className = "sib";
+        const img = document.createElement("img");
+        img.src = p.photo_url || placeholderImg;
+        img.alt = `Hijo ${idx+1}`;
+        const name = document.createElement("span");
+        name.textContent = (p.name && p.name.trim()) ? p.name.trim() : `Hijo ${idx+1}`;
+        chip.appendChild(img);
+        chip.appendChild(name);
+        chip.addEventListener("click", () => openEditor(p.id));
+        first11Strip.appendChild(chip);
       });
-
-      childrenGen.appendChild(grid);
-
-      renderBirthdays(); // ✅ siempre sincronizado
-      requestAnimationFrame(() => refreshZoomBounds(false));
     }
-    /* FIN BLOQUE JS 7/9 */
+    /* =========================================================
+       FIN BLOQUE: RENDER PORTADA
+       ========================================================= */
 
-    /* =========================
-       BLOQUE JS 8/9 — Cumpleaños (LISTA + CALENDARIO)
-       (FIN BLOQUE JS 8/9 al final de "renderBirthdays")
-       ========================= */
+
+    /* =========================================================
+       INICIO BLOQUE: CUMPLEAÑOS (SIN AÑOS, FILTRA POR MES)
+       - ✅ Panel: foto + nombre + fecha (mes/día)
+       - ✅ Botones ◀ ▶ funcionan (solo mes)
+       ========================================================= */
     function parseYMD(ymd){
       if (!ymd || typeof ymd !== "string") return null;
       const m = ymd.match(/^(\d{4})-(\d{2})-(\d{2})$/);
       if (!m) return null;
-      const y = Number(m[1]), mo = Number(m[2]) - 1, d = Number(m[3]);
-      if (!Number.isFinite(y) || !Number.isFinite(mo) || !Number.isFinite(d)) return null;
-      return { y, m: mo, d };
+      const mo = Number(m[2]) - 1, d = Number(m[3]);
+      if (!Number.isFinite(mo) || !Number.isFinite(d)) return null;
+      return { m: mo, d };
     }
 
-    function nextOccurrence(month0, day, fromDate = new Date()){
-      const y = fromDate.getFullYear();
-      const a = new Date(y, month0, day);
-      const b = new Date(y + 1, month0, day);
-      return (a.setHours(0,0,0,0) >= new Date(fromDate.setHours(0,0,0,0))) ? a : b;
+    function monthNameEs(m0){
+      const s = new Date(2020, m0, 1).toLocaleDateString("es-CO", { month:"long" });
+      return s.replace(/^./, c => c.toUpperCase());
     }
 
-    function fmtDateShort(d){
-      const opts = { weekday:"short", day:"2-digit", month:"short" };
-      return d.toLocaleDateString("es-CO", opts);
+    function fmtMonthDay(m0, d){
+      return new Date(2020, m0, d).toLocaleDateString("es-CO", { day:"2-digit", month:"long" });
     }
 
     function collectBirthdays(){
@@ -1696,10 +1754,8 @@ const WIDE_ORIGINAL_ID = "c2"; // <-- CAMBIA "c7" por el c# que te quedó apreta
           out.push({
             id: node.id,
             name: (node.name || "").trim() || "Sin nombre",
-            role: node.role || "",
             photo_url: node.photo_url || placeholderImg,
-            month: p.m,
-            day: p.d
+            m: p.m, d: p.d
           });
         }
         if (node.spouse){
@@ -1709,10 +1765,8 @@ const WIDE_ORIGINAL_ID = "c2"; // <-- CAMBIA "c7" por el c# que te quedó apreta
             out.push({
               id: s.id,
               name: (s.name || "").trim() || "Sin nombre",
-              role: s.role || "Pareja",
               photo_url: s.photo_url || placeholderImg,
-              month: sp.m,
-              day: sp.d
+              m: sp.m, d: sp.d
             });
           }
         }
@@ -1725,75 +1779,60 @@ const WIDE_ORIGINAL_ID = "c2"; // <-- CAMBIA "c7" por el c# que te quedó apreta
     }
 
     function renderBirthdayList(){
-  if (!bdayListEl) return;
+      if (!bdayListEl) return;
 
-  const all = collectBirthdays();
-  const y = bdayView.y;
-  const m = bdayView.m;
+      const m = bdayView.m;
+      const all = collectBirthdays()
+        .filter(p => p.m === m)
+        .sort((a,b) => a.d - b.d);
 
-  // ✅ Filtrar SOLO los del mes seleccionado
-  const items = all
-    .filter(p => p.month === m)
-    .sort((a,b) => a.day - b.day);
+      bdayListEl.innerHTML = "";
 
-  bdayListEl.innerHTML = "";
+      if (!all.length){
+        bdayListEl.innerHTML = `<div style="color:var(--muted); font-size:12px; padding:8px 6px;">
+          No hay cumpleaños registrados para <b>${monthNameEs(m)}</b>.
+        </div>`;
+        return;
+      }
 
-  if (!items.length){
-    bdayListEl.innerHTML = `<div style="color:var(--muted); font-size:12px; padding:8px 6px;">
-      No hay cumpleaños registrados para este mes.
-    </div>`;
-    return;
-  }
-
-  items.forEach(it => {
-    // Fecha “visual” del mes seleccionado (sin jugar con años próximos)
-    let d = new Date(y, m, it.day);
-    // (por si existiera 29-feb en año no bisiesto)
-    if (d.getMonth() !== m) d = new Date(y, m, 28);
-
-    const div = document.createElement("div");
-    div.className = "bdayItem";
-    div.innerHTML = `
-      <div class="bdayThumb"><img alt="" src="${escapeAttr(it.photo_url)}"></div>
-      <div class="bdayTxt">
-        <div class="bdayWho">${escapeHtml(it.name)}</div>
-        <div class="bdayWhen">${escapeHtml(fmtDateShort(it.next))}</div>
-      </div>
-    `;
-    div.addEventListener("click", () => goToPerson(it.id, { open:true }));
-    bdayListEl.appendChild(div);
-  });
-}
-
-    function monthNameEs(m0){
-      return new Date(2020, m0, 1).toLocaleDateString("es-CO", { month:"long" });
+      all.forEach(it => {
+        const div = document.createElement("div");
+        div.className = "bdayItem";
+        div.innerHTML = `
+          <div class="bdayThumb"><img alt="" src="${escapeAttr(it.photo_url)}"></div>
+          <div class="bdayTxt">
+            <div class="bdayWho">${escapeHtml(it.name)}</div>
+            <div class="bdayWhen">${escapeHtml(fmtMonthDay(it.m, it.d))}</div>
+          </div>
+        `;
+        div.addEventListener("click", () => goToPerson(it.id, { open:true }));
+        bdayListEl.appendChild(div);
+      });
     }
 
     function renderBirthdayCalendar(){
       if (!bdayCalEl || !bdayMonthEl) return;
 
-      const y = bdayView.y, m = bdayView.m;
-      bdayMonthEl.textContent = `${monthNameEs(m)} ${y}`.replace(/^./, c => c.toUpperCase());
+      const m = bdayView.m;
+      bdayMonthEl.textContent = monthNameEs(m); // ✅ sin año
 
-      const all = collectBirthdays();
-      const map = new Map(); // day -> array people
+      const all = collectBirthdays().filter(p => p.m === m);
+      const map = new Map(); // day -> people[]
       all.forEach(p => {
-        if (p.month === m){
-          const arr = map.get(p.day) || [];
-          arr.push(p);
-          map.set(p.day, arr);
-        }
+        const arr = map.get(p.d) || [];
+        arr.push(p);
+        map.set(p.d, arr);
       });
 
-      const first = new Date(y, m, 1);
-      const last  = new Date(y, m + 1, 0);
-      const daysInMonth = last.getDate();
+      const y = new Date().getFullYear(); // solo para cuadrar días/semana
+      let daysInMonth = new Date(y, m + 1, 0).getDate();
+      if (m === 1 && map.has(29) && daysInMonth === 28) daysInMonth = 29;
 
-      const jsDow = first.getDay(); // 0 dom ... 6 sáb
+      const first = new Date(y, m, 1);
+      const jsDow = first.getDay();        // 0 dom ... 6 sáb
       const startOffset = (jsDow + 6) % 7; // lunes=0
 
       const dows = ["Lun","Mar","Mié","Jue","Vie","Sáb","Dom"];
-
       const grid = document.createElement("div");
       grid.className = "calGrid";
 
@@ -1823,10 +1862,7 @@ const WIDE_ORIGINAL_ID = "c2"; // <-- CAMBIA "c7" por el c# que te quedó apreta
           c.appendChild(badge);
 
           c.title = people.map(p => p.name).join(", ");
-
-          c.addEventListener("click", () => {
-            goToPerson(people[0].id, { open:true });
-          });
+          c.addEventListener("click", () => goToPerson(people[0].id, { open:true }));
         }
         grid.appendChild(c);
       }
@@ -1836,43 +1872,101 @@ const WIDE_ORIGINAL_ID = "c2"; // <-- CAMBIA "c7" por el c# que te quedó apreta
     }
 
     function renderBirthdays(){
+      // solo si el tab existe (y aunque esté oculto, no hace daño)
       renderBirthdayList();
       renderBirthdayCalendar();
     }
 
-    /* ✅ LISTENERS DEL CALENDARIO (ANTES ESTABAN MAL UBICADOS Y SE DUPLICABAN) */
-    bdayPrevBtn.addEventListener("click", () => {
-  bdayView.m -= 1;
-  if (bdayView.m < 0){ bdayView.m = 11; bdayView.y -= 1; }
-  renderBirthdays(); // ✅ lista + calendario
-});
-bdayNextBtn.addEventListener("click", () => {
-  bdayView.m += 1;
-  if (bdayView.m > 11){ bdayView.m = 0; bdayView.y += 1; }
-  renderBirthdays(); // ✅ lista + calendario
-});
+    // ✅ listeners ◀ ▶ (una sola vez, aquí — no dentro del editor)
+    if (bdayPrevBtn && bdayNextBtn){
+      bdayPrevBtn.addEventListener("click", () => {
+        bdayView.m = (bdayView.m + 11) % 12;
+        renderBirthdays();
+      });
+      bdayNextBtn.addEventListener("click", () => {
+        bdayView.m = (bdayView.m + 1) % 12;
+        renderBirthdays();
+      });
+    }
+    /* =========================================================
+       FIN BLOQUE: CUMPLEAÑOS
+       ========================================================= */
 
-    /* FIN BLOQUE JS 8/9 */
 
-    /* =========================
-       BLOQUE JS 9/9 — Fotos, Supabase, Buscador, Zoom+Pan, Init
-       (FIN BLOQUE JS 9/9 al final del archivo)
-       ========================= */
+    /* =========================================================
+       INICIO BLOQUE: RENDER GENERAL
+       ========================================================= */
+    function renderAll(){
+      // Portada
+      renderCover();
 
-    // ======= Portada =======
-    coverPickLabel.addEventListener("pointerdown", () => {
-      pendingPhotoTarget = { type:"cover" };
-      filePicker.value = "";
-    });
+      // Padres
+      if (parentsGen){
+        parentsGen.innerHTML = "";
+        const cw = document.createElement("div");
+        cw.className = "coupleWrap";
+        parentsGen.appendChild(cw);
 
-    coverClearBtn.addEventListener("click", () => {
-      state.cover_photo_url = placeholderCover;
-      state.cover_photo_path = "";
-      renderAll();
-      scheduleSave();
-    });
+        cw.appendChild(renderNodeCircle(state.parents[0], "lvl-parent"));
+        cw.appendChild(renderNodeCircle(state.parents[1], "lvl-parent"));
+      }
 
-    // Subir fotos (cover o persona)
+      // Hijos (11 columnas auto-anchas por contenido)
+      if (childrenGen){
+        childrenGen.innerHTML = "";
+        const grid = document.createElement("div");
+        grid.className = "treeGrid";
+
+        const kids = state.children || [];
+        kids.forEach((k, idx) => {
+          const col = document.createElement("div");
+          col.className = "treeCol";
+          col.appendChild(renderSubtree(k, 0, { isOriginal: idx < 11 }));
+          grid.appendChild(col);
+        });
+
+        childrenGen.appendChild(grid);
+      }
+
+      // Cumpleaños (si estás editando, igual lo puede pintar; es liviano)
+      renderBirthdays();
+
+      // ✅ no romper zoom cuando el árbol está oculto por tabs
+      if (isTreeTabActive()){
+        requestAnimationFrame(() => refreshZoomBounds(false));
+      }
+    }
+    /* =========================================================
+       FIN BLOQUE: RENDER GENERAL
+       ========================================================= */
+
+
+    /* =========================================================
+       INICIO BLOQUE: PORTADA (eventos)
+       ========================================================= */
+    if (coverPickLabel){
+      coverPickLabel.addEventListener("pointerdown", () => {
+        pendingPhotoTarget = { type:"cover" };
+        filePicker.value = "";
+      });
+    }
+
+    if (coverClearBtn){
+      coverClearBtn.addEventListener("click", () => {
+        state.cover_photo_url = placeholderCover;
+        state.cover_photo_path = "";
+        renderAll();
+        scheduleSave();
+      });
+    }
+    /* =========================================================
+       FIN BLOQUE: PORTADA (eventos)
+       ========================================================= */
+
+
+    /* =========================================================
+       INICIO BLOQUE: SUBIR FOTOS (cover o persona)
+       ========================================================= */
     filePicker.addEventListener("change", async () => {
       const file = filePicker.files?.[0];
       if (!file || !pendingPhotoTarget) return;
@@ -1903,7 +1997,6 @@ bdayNextBtn.addEventListener("click", () => {
         } else {
           patchNode(pendingPhotoTarget.id, { photo_url: publicUrl, photo_path: path }, { render:false });
           scheduleSave();
-          renderBirthdays();
           if (editorModal.classList.contains("show")) openEditor(pendingPhotoTarget.id);
           else renderAll();
         }
@@ -1938,8 +2031,14 @@ bdayNextBtn.addEventListener("click", () => {
         img.src = url;
       });
     }
+    /* =========================================================
+       FIN BLOQUE: SUBIR FOTOS
+       ========================================================= */
 
-    // Guardado “debounced”
+
+    /* =========================================================
+       INICIO BLOQUE: GUARDADO (debounced) + SUPABASE
+       ========================================================= */
     function scheduleSave(){
       if (!supabase) return;
       if (applyingRemote) return;
@@ -2037,8 +2136,14 @@ bdayNextBtn.addEventListener("click", () => {
       await ensureRow();
       subscribeRealtime();
     }
+    /* =========================================================
+       FIN BLOQUE: GUARDADO + SUPABASE
+       ========================================================= */
 
-    // ======= Buscador (incluye parejas) =======
+
+    /* =========================================================
+       INICIO BLOQUE: BUSCADOR (incluye parejas)
+       ========================================================= */
     function collectPeople(){
       const out = [];
       const walk = (node, depth, rootId) => {
@@ -2104,16 +2209,17 @@ bdayNextBtn.addEventListener("click", () => {
     }
 
     function goToPerson(id, { open=false } = {}){
-      // ✅ Si estás en Historia/Cumpleaños, te manda al Árbol automáticamente
-      setActiveTab("tree");
+      if (!isTreeTabActive()) setActiveTab("tree");
 
-      const el = document.querySelector(`[data-id="${CSS.escape(id)}"]`);
-      if (el) {
-        centerOnElement(el);
-        el.classList.add("flash");
-        setTimeout(() => el.classList.remove("flash"), 1400);
-      }
-      if (open) openEditor(id);
+      requestAnimationFrame(() => {
+        const el = document.querySelector(`[data-id="${CSS.escape(id)}"]`);
+        if (el) {
+          centerOnElement(el);
+          el.classList.add("flash");
+          setTimeout(() => el.classList.remove("flash"), 1400);
+        }
+        if (open) openEditor(id);
+      });
     }
 
     function runSearch(openFirst=true){
@@ -2144,10 +2250,14 @@ bdayNextBtn.addEventListener("click", () => {
         searchResults.classList.remove("show");
       }
     });
+    /* =========================================================
+       FIN BLOQUE: BUSCADOR
+       ========================================================= */
 
-    // =========================
-    // ZOOM + PAN
-    // =========================
+
+    /* =========================================================
+       INICIO BLOQUE: ZOOM + PAN
+       ========================================================= */
     let zoom = 1;
     let minZoom = 0.1;
     const maxZoom = 2.6;
@@ -2160,6 +2270,9 @@ bdayNextBtn.addEventListener("click", () => {
     }
 
     function measureBase(){
+      // si está oculto por tabs, evita base=0
+      if (!isTreeTabActive()) return 1;
+
       baseW = Math.max(1, zoomContent.scrollWidth);
       baseH = Math.max(1, zoomContent.scrollHeight);
       const fit = Math.min(zoomViewport.clientWidth / baseW, zoomViewport.clientHeight / baseH);
@@ -2168,6 +2281,8 @@ bdayNextBtn.addEventListener("click", () => {
     }
 
     function applyZoom(newZoom, { clientX=null, clientY=null, center=false } = {}){
+      if (!isTreeTabActive()) return;
+
       measureBase();
 
       const vpRect = zoomViewport.getBoundingClientRect();
@@ -2190,6 +2305,8 @@ bdayNextBtn.addEventListener("click", () => {
     }
 
     function fitAll(){
+      if (!isTreeTabActive()) return;
+
       measureBase();
       zoom = minZoom;
 
@@ -2204,6 +2321,8 @@ bdayNextBtn.addEventListener("click", () => {
     }
 
     function refreshZoomBounds(initial=false){
+      if (!isTreeTabActive()) return;
+
       measureBase();
       const z = clamp(zoom, minZoom, maxZoom);
       if (initial) {
@@ -2243,6 +2362,7 @@ bdayNextBtn.addEventListener("click", () => {
     }
 
     zoomViewport.addEventListener("pointerdown", (e) => {
+      if (!isTreeTabActive()) return;
       if (e.button !== 0) return;
       if (isInteractiveTarget(e.target)) return;
 
@@ -2271,25 +2391,37 @@ bdayNextBtn.addEventListener("click", () => {
     });
 
     window.addEventListener("resize", () => refreshZoomBounds(false));
+    /* =========================================================
+       FIN BLOQUE: ZOOM + PAN
+       ========================================================= */
 
-    // ======= Init =======
+
+    /* =========================================================
+       INICIO BLOQUE: INIT
+       ========================================================= */
     (async () => {
-      // ✅ Arranca en árbol (protagonista)
-      setActiveTab("tree");
+      // tab por defecto: árbol
+      const saved = (() => { try { return localStorage.getItem("fa_tab"); } catch { return null; } })();
+      setActiveTab(saved || "tree");
 
       state = normalizeState(state);
       renderAll();
-      refreshZoomBounds(true);
+
+      // si arrancas en árbol, fit
+      if (isTreeTabActive()){
+        refreshZoomBounds(true);
+      }
+
       await boot();
-      requestAnimationFrame(() => fitAll());
+
+      // al conectar, re-fit si estás en árbol
+      if (isTreeTabActive()){
+        requestAnimationFrame(() => fitAll());
+      }
     })();
-    /* FIN BLOQUE JS 9/9 */
+    /* =========================================================
+       FIN BLOQUE: INIT
+       ========================================================= */
   </script>
 </body>
 </html>
-
-
-
-
-
-
