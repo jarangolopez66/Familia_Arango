@@ -377,8 +377,14 @@
       justify-content:start;
       width: max-content;
       margin: 0 auto;
-      padding: 7px 4px 2px;
+      padding: 6px 4px 2px;
     }
+
+    /* ===== INICIO: Columnas con ancho opcional por hijo original ===== */
+    .treeCol{ min-width: var(--colW); }
+    .treeCol.wide{ min-width: calc(var(--colW) * 1.55); } /* ajusta 1.55 si quieres más/menos */
+/* ===== FIN: Columnas con ancho opcional por hijo original ===== */
+
     .treeGrid.moreCols{
       grid-auto-flow: column;
       grid-auto-columns: minmax(var(--colW), max-content);
@@ -984,6 +990,10 @@
       bucket: "family-photos"
     };
     /* FIN BLOQUE JS 1/9 */
+
+    /* ===== INICIO: Columna ancha para un hijo original ===== */
+const WIDE_ORIGINAL_ID = "c2"; // <-- CAMBIA "c7" por el c# que te quedó apretado
+/* ===== FIN: Columna ancha para un hijo original ===== */
 
     /* =========================
        BLOQUE JS 2/9 — DOM refs
@@ -2277,6 +2287,7 @@ bdayNextBtn.addEventListener("click", () => {
   </script>
 </body>
 </html>
+
 
 
 
