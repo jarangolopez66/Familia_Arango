@@ -1747,7 +1747,7 @@
       <div class="bdayThumb"><img alt="" src="${escapeAttr(it.photo_url)}"></div>
       <div class="bdayTxt">
         <div class="bdayWho">${escapeHtml(it.name)}</div>
-        <div class="bdayWhen">${escapeHtml(fmtDateShort(d))} • ${escapeHtml(it.role || it.id)}</div>
+        <div class="bdayWhen">${escapeHtml(fmtDateShort(it.next))}</div>
       </div>
     `;
     div.addEventListener("click", () => goToPerson(it.id, { open:true }));
@@ -2277,5 +2277,6 @@ bdayNextBtn.addEventListener("click", () => {
   </script>
 </body>
 </html>
+
 
 
