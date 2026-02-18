@@ -36,6 +36,19 @@
 
       /* portada */
       --coverH: 250px; /* ✅ Tamaño del espacio de la foto de portada */
+
+      /* 2) (Opcional pero recomendado) asegura centrado */
+      .cover-imgwrap img{
+      object-fit: contain;
+      object-position: center;
+    }
+
+    /* 3) Ajusta también los valores responsive (para que no se encoja en móvil) */
+    @media (max-width: 860px){
+      :root{ --coverH: 240px; } /* antes 150px */
+    }
+    @media (max-width: 560px){
+      :root{ --coverH: 250px; } /* antes 160px */
     }
 
     *{box-sizing:border-box}
@@ -2425,5 +2438,6 @@
   </script>
 </body>
 </html>
+
 
 
