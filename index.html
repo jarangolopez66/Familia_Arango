@@ -1715,39 +1715,45 @@
     }
 
     function renderBirthdayList(){
-      if (!bdayListEl) return;
+  if (!bdayListEl) return;
 
-      const all = collectBirthdays();
-      const now = new Date();
+  const all = collectBirthdays();
+  const y = bdayView.y;
+  const m = bdayView.m;
 
-      const items = all
-        .map(p => ({ ...p, next: nextOccurrence(p.month, p.day, new Date(now)) }))
-        .sort((a,b) => a.next - b.next)
-        .slice(0, 25);
+  // ✅ Filtrar SOLO los del mes seleccionado
+  const items = all
+    .filter(p => p.month === m)
+    .sort((a,b) => a.day - b.day);
 
-      bdayListEl.innerHTML = "";
+  bdayListEl.innerHTML = "";
 
-      if (!items.length){
-        bdayListEl.innerHTML = `<div style="color:var(--muted); font-size:12px; padding:8px 6px;">
-          Aún no hay fechas de nacimiento registradas.
-        </div>`;
-        return;
-      }
+  if (!items.length){
+    bdayListEl.innerHTML = `<div style="color:var(--muted); font-size:12px; padding:8px 6px;">
+      No hay cumpleaños registrados para este mes.
+    </div>`;
+    return;
+  }
 
-      items.forEach(it => {
-        const div = document.createElement("div");
-        div.className = "bdayItem";
-        div.innerHTML = `
-          <div class="bdayThumb"><img alt="" src="${escapeAttr(it.photo_url)}"></div>
-          <div class="bdayTxt">
-            <div class="bdayWho">${escapeHtml(it.name)}</div>
-            <div class="bdayWhen">${escapeHtml(fmtDateShort(it.next))} • ${escapeHtml(it.role || it.id)}</div>
-          </div>
-        `;
-        div.addEventListener("click", () => goToPerson(it.id, { open:true }));
-        bdayListEl.appendChild(div);
-      });
-    }
+  items.forEach(it => {
+    // Fecha “visual” del mes seleccionado (sin jugar con años próximos)
+    let d = new Date(y, m, it.day);
+    // (por si existiera 29-feb en año no bisiesto)
+    if (d.getMonth() !== m) d = new Date(y, m, 28);
+
+    const div = document.createElement("div");
+    div.className = "bdayItem";
+    div.innerHTML = `
+      <div class="bdayThumb"><img alt="" src="${escapeAttr(it.photo_url)}"></div>
+      <div class="bdayTxt">
+        <div class="bdayWho">${escapeHtml(it.name)}</div>
+        <div class="bdayWhen">${escapeHtml(fmtDateShort(d))} • ${escapeHtml(it.role || it.id)}</div>
+      </div>
+    `;
+    div.addEventListener("click", () => goToPerson(it.id, { open:true }));
+    bdayListEl.appendChild(div);
+  });
+}
 
     function monthNameEs(m0){
       return new Date(2020, m0, 1).toLocaleDateString("es-CO", { month:"long" });
@@ -1825,18 +1831,17 @@
     }
 
     /* ✅ LISTENERS DEL CALENDARIO (ANTES ESTABAN MAL UBICADOS Y SE DUPLICABAN) */
-    if (bdayPrevBtn && bdayNextBtn){
-      bdayPrevBtn.addEventListener("click", () => {
-        bdayView.m -= 1;
-        if (bdayView.m < 0){ bdayView.m = 11; bdayView.y -= 1; }
-        renderBirthdayCalendar();
-      });
-      bdayNextBtn.addEventListener("click", () => {
-        bdayView.m += 1;
-        if (bdayView.m > 11){ bdayView.m = 0; bdayView.y += 1; }
-        renderBirthdayCalendar();
-      });
-    }
+    bdayPrevBtn.addEventListener("click", () => {
+  bdayView.m -= 1;
+  if (bdayView.m < 0){ bdayView.m = 11; bdayView.y -= 1; }
+  renderBirthdays(); // ✅ lista + calendario
+});
+bdayNextBtn.addEventListener("click", () => {
+  bdayView.m += 1;
+  if (bdayView.m > 11){ bdayView.m = 0; bdayView.y += 1; }
+  renderBirthdays(); // ✅ lista + calendario
+});
+
     /* FIN BLOQUE JS 8/9 */
 
     /* =========================
@@ -2272,4 +2277,5 @@
   </script>
 </body>
 </html>
+
 
