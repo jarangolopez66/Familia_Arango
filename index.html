@@ -1519,11 +1519,13 @@
         ? `<button class="smallbtn addkid" data-action="addChild" type="button">+ Agregar hijo/a</button>`
         : ``;
 
+      const cardName = (node.name && node.name.trim()) ? node.name.trim() : "Sin nombre";
+
       el.innerHTML = `
         <div class="role">
-          <b>${escapeHtml(node.role || "")}</b>
-          ${spouseRemoveBtn}
-        </div>
+  <b>${escapeHtml(cardName)}</b>
+  ${spouseRemoveBtn}
+</div>
 
         <div class="row">
           <label class="avatar" for="filePicker" data-action="photo" title="Toca para cambiar la foto">
@@ -1550,7 +1552,7 @@
         </div>
 
         <div class="footer">
-          <span>${escapeHtml(node.id)}</span>
+          <span></span>
           <span>Familia Arango</span>
         </div>
       `;
@@ -2438,6 +2440,7 @@
   </script>
 </body>
 </html>
+
 
 
 
