@@ -1,4 +1,4 @@
-<!doctype html>
+<!doctype html> 
 <html lang="es">
 <head>
   <meta charset="utf-8" />
@@ -608,9 +608,11 @@
       padding: 18px;
     }
     .modal.show{display:flex;}
+
+    /* ✅ MÁS ANGOSTO (antes 760px) */
     .modalPanel{
       margin:auto;
-      width: min(760px, 100%);
+      width: min(520px, 100%);
       max-height: min(92vh, 900px);
       overflow:auto;
       background: rgba(246,239,227,.98);
@@ -619,6 +621,7 @@
       box-shadow: 0 18px 55px rgba(0,0,0,.25);
       padding: 14px;
     }
+
     .modalHead{
       display:flex; align-items:center; justify-content:space-between;
       gap:10px;
@@ -1138,7 +1141,6 @@
       if (isTree) {
         requestAnimationFrame(() => {
           refreshZoomBounds(false);
-          // opcional: fitAll(); // si quieres que siempre se “acomode”
         });
       }
 
@@ -1432,30 +1434,21 @@
       return /^c([1-9]|10|11)$/.test(id);
     }
 
+    /* ✅ BLINDAJE: hijos/descendientes NO se eliminan; parejas sí se pueden quitar */
     function removeNode(id){
       const hit = findNodeById(id);
-      if (hit?.isSpouse) return removeSpouse(id);
+      if (!hit) return;
 
-      if (id === "p1" || id === "p2") return alert("No se pueden eliminar los padres.");
-      if (isOriginal11(id)) return alert("Los 11 hermanos originales (c1–c11) no se eliminan, solo se editan.");
-      if (!hit?.parentChildrenArray) return;
-
-      const who = (hit.node?.name && hit.node.name.trim())
-        ? hit.node.name.trim()
-        : (hit.node?.role || id);
-
-      const ok1 = confirm(`¿Seguro que deseas eliminar a "${who}"?\n\nEsto elimina a esta persona y todos sus descendientes.`);
-      if (!ok1) return;
-
-      const typed = prompt('Para confirmar, escribe exactamente: ELIMINAR');
-      if (typed !== "ELIMINAR") return;
-
-      const idx = hit.parentChildrenArray.findIndex(x => x.id === id);
-      if (idx >= 0) {
-        hit.parentChildrenArray.splice(idx, 1);
-        renderAll();
-        scheduleSave();
+      if (hit.isSpouse) {
+        return removeSpouse(id); // ✅ parejas NO blindadas
       }
+
+      if (id === "p1" || id === "p2") {
+        return alert("No se pueden eliminar los padres.");
+      }
+
+      // ✅ A partir de aquí: cualquier persona (hijo/descendiente) queda blindada
+      return alert("Los hijos y descendientes no se eliminan (quedan blindados). Solo puedes quitar parejas.");
     }
     /* =========================================================
        FIN BLOQUE: FIND / PATCH / ADD / REMOVE
@@ -1475,7 +1468,9 @@
 
       editorBody.innerHTML = "";
 
-      const removable = !(nodeId === "p1" || nodeId === "p2" || isOriginal11(nodeId)) && !hit.isSpouse;
+      // ✅ BLINDADO: nunca mostrar botón "Eliminar" para personas (no parejas)
+      const removable = false;
+
       const card = editorPersonCard(n, { removable, isSpouse: hit.isSpouse });
 
       if (nodeId === "p1" || nodeId === "p2") card.classList.add("parent-card");
@@ -1523,9 +1518,9 @@
 
       el.innerHTML = `
         <div class="role">
-  <b>${escapeHtml(cardName)}</b>
-  ${spouseRemoveBtn}
-</div>
+          <b>${escapeHtml(cardName)}</b>
+          ${spouseRemoveBtn}
+        </div>
 
         <div class="row">
           <label class="avatar" for="filePicker" data-action="photo" title="Toca para cambiar la foto">
@@ -1535,7 +1530,7 @@
           <div class="photo-actions">
             ${addKidBtn}
             ${spouseBtns}
-            <button class="smallbtn" data-action="clearPhoto" type="button">Quitar foto</button>
+            <!-- ✅ Quitado el botón "Quitar foto" -->
           </div>
         </div>
 
@@ -1570,13 +1565,6 @@
         const action = btn.dataset.action;
         if (!action) return;
 
-        if (action === "clearPhoto") {
-          patchNode(node.id, { photo_url: placeholderImg, photo_path: "" }, { render:false });
-          scheduleSave();
-          const img = el.querySelector(".avatar img");
-          if (img) img.src = placeholderImg;
-          return;
-        }
         if (action === "addChild") {
           addChildTo(node.id);
           openEditor(node.id);
@@ -1642,7 +1630,6 @@
       `;
 
       el.addEventListener("click", () => {
-        // si estás en otra pestaña, vuelve al árbol
         if (!isTreeTabActive()) setActiveTab("tree");
         openEditor(node.id);
       });
@@ -1669,10 +1656,9 @@
       return "lvl-3";
     }
 
-    // ✅ regla nueva: hasta 4 por fila desde 3ra generación y también si hay >4 en cualquier nivel
     function colsForKids(n){
       if (n <= 0) return 0;
-      return Math.min(4, n); // 1..4 por fila; 5+ se parte en 2+ filas automáticamente
+      return Math.min(4, n);
     }
 
     function renderSubtree(node, depth = 0, { isOriginal = false } = {}) {
@@ -1688,8 +1674,6 @@
 
         const row = document.createElement("div");
         row.className = "childrenRow";
-
-        // ✅ siempre hasta 4 por fila (incluye 3ra generación en adelante)
         row.style.setProperty("--cols", String(colsForKids(node.children.length)));
 
         node.children.forEach(ch => {
@@ -1740,8 +1724,6 @@
 
     /* =========================================================
        INICIO BLOQUE: CUMPLEAÑOS (SIN AÑOS, FILTRA POR MES)
-       - ✅ Panel: foto + nombre + fecha (mes/día)
-       - ✅ Botones ◀ ▶ funcionan (solo mes)
        ========================================================= */
     function parseYMD(ymd){
       if (!ymd || typeof ymd !== "string") return null;
@@ -1829,7 +1811,7 @@
       if (!bdayCalEl || !bdayMonthEl) return;
 
       const m = bdayView.m;
-      bdayMonthEl.textContent = monthNameEs(m); // ✅ sin año
+      bdayMonthEl.textContent = monthNameEs(m);
 
       const all = collectBirthdays().filter(p => p.m === m);
       const map = new Map(); // day -> people[]
@@ -1839,13 +1821,13 @@
         map.set(p.d, arr);
       });
 
-      const y = new Date().getFullYear(); // solo para cuadrar días/semana
+      const y = new Date().getFullYear();
       let daysInMonth = new Date(y, m + 1, 0).getDate();
       if (m === 1 && map.has(29) && daysInMonth === 28) daysInMonth = 29;
 
       const first = new Date(y, m, 1);
-      const jsDow = first.getDay();        // 0 dom ... 6 sáb
-      const startOffset = (jsDow + 6) % 7; // lunes=0
+      const jsDow = first.getDay();
+      const startOffset = (jsDow + 6) % 7;
 
       const dows = ["Lun","Mar","Mié","Jue","Vie","Sáb","Dom"];
       const grid = document.createElement("div");
@@ -1887,12 +1869,10 @@
     }
 
     function renderBirthdays(){
-      // solo si el tab existe (y aunque esté oculto, no hace daño)
       renderBirthdayList();
       renderBirthdayCalendar();
     }
 
-    // ✅ listeners ◀ ▶ (una sola vez, aquí — no dentro del editor)
     if (bdayPrevBtn && bdayNextBtn){
       bdayPrevBtn.addEventListener("click", () => {
         bdayView.m = (bdayView.m + 11) % 12;
@@ -1912,10 +1892,8 @@
        INICIO BLOQUE: RENDER GENERAL
        ========================================================= */
     function renderAll(){
-      // Portada
       renderCover();
 
-      // Padres
       if (parentsGen){
         parentsGen.innerHTML = "";
         const cw = document.createElement("div");
@@ -1926,7 +1904,6 @@
         cw.appendChild(renderNodeCircle(state.parents[1], "lvl-parent"));
       }
 
-      // Hijos (11 columnas auto-anchas por contenido)
       if (childrenGen){
         childrenGen.innerHTML = "";
         const grid = document.createElement("div");
@@ -1943,10 +1920,8 @@
         childrenGen.appendChild(grid);
       }
 
-      // Cumpleaños (si estás editando, igual lo puede pintar; es liviano)
       renderBirthdays();
 
-      // ✅ no romper zoom cuando el árbol está oculto por tabs
       if (isTreeTabActive()){
         requestAnimationFrame(() => refreshZoomBounds(false));
       }
@@ -2189,6 +2164,7 @@
       return out;
     }
 
+    /* ✅ Resultados: solo foto + nombre (sin role/ID) */
     function showResults(items){
       searchResults.innerHTML = "";
       if (!items.length) {
@@ -2202,7 +2178,6 @@
           <div class="srThumb"><img alt="" src="${escapeAttr(it.photo_url || placeholderImg)}"></div>
           <div class="srText">
             <div class="srName">${escapeHtml(it.name || "Sin nombre")}</div>
-            <div class="srMeta">${escapeHtml(it.role || it.id)} • id: ${escapeHtml(it.id)}</div>
           </div>
         `;
         div.addEventListener("click", () => {
@@ -2285,7 +2260,6 @@
     }
 
     function measureBase(){
-      // si está oculto por tabs, evita base=0
       if (!isTreeTabActive()) return 1;
 
       baseW = Math.max(1, zoomContent.scrollWidth);
@@ -2415,21 +2389,18 @@
        INICIO BLOQUE: INIT
        ========================================================= */
     (async () => {
-      // tab por defecto: árbol
       const saved = (() => { try { return localStorage.getItem("fa_tab"); } catch { return null; } })();
       setActiveTab(saved || "tree");
 
       state = normalizeState(state);
       renderAll();
 
-      // si arrancas en árbol, fit
       if (isTreeTabActive()){
         refreshZoomBounds(true);
       }
 
       await boot();
 
-      // al conectar, re-fit si estás en árbol
       if (isTreeTabActive()){
         requestAnimationFrame(() => fitAll());
       }
