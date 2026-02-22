@@ -1106,6 +1106,7 @@ para que ilumine tanto a quienes las leen ahora como a quienes aún no han nacid
     let supabase = null;
     let TREE_ID = DEFAULT_CFG.treeId;
     let BUCKET  = DEFAULT_CFG.bucket;
+    const LOCKS_ENABLED = true; // ✅ Arango: blindado por defecto
 
     let savingTimer = null;
     let applyingRemote = false;
@@ -1471,7 +1472,7 @@ para que ilumine tanto a quienes las leen ahora como a quienes aún no han nacid
       editorBody.innerHTML = "";
 
       // ✅ BLINDADO: nunca mostrar botón "Eliminar" para personas (no parejas)
-      const removable = false;
+      const removable = true;
 
       const card = editorPersonCard(n, { removable, isSpouse: hit.isSpouse });
 
@@ -2413,5 +2414,6 @@ para que ilumine tanto a quienes las leen ahora como a quienes aún no han nacid
   </script>
 </body>
 </html>
+
 
 
